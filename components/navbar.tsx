@@ -1,72 +1,111 @@
-// components/Navbar.tsx
-import { Search, User, ShoppingCart } from "lucide-react";
+"use client";
+import { Search, Handbag,  Menu, X } from "lucide-react";
 import Link from "next/link";
+import { useState } from "react";
+import { Button } from "@/components/ui/button";
 
 export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <header className="border-b border-gray-200 bg-white sticky top-0 z-50">
-      <nav className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 md:h-20">
-          <div className="hidden md:flex items-center gap-8">
-            <Link
-              href="/new"
-              className="text-caps font-mono uppercase tracking-wider text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              New
-            </Link>
-            <Link
-              href="/shop"
-              className="text-caps font-mono uppercase tracking-wider text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Shop
-            </Link>
-            <Link
-              href="/community"
-              className="text-caps font-mono uppercase tracking-wider text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              Community
+    <header className="border-b border-gray-200 bg-background sticky top-0 z-50">
+      <nav className="px-4 lg:px-6">
+        <div className="flex items-center gap-1 md:justify-between h-14">
+          <Button
+            className="md:hidden shrink-0"
+            size="icon"
+            variant="ghost"
+            onClick={() => setIsOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+
+          <div className="hidden md:flex items-center gap-5 ">
+            <Link href="/home">Home</Link>
+            <Link href="/shop">Shop products</Link>
+            <Link href="/contact">Contact</Link>
+          </div>
+
+          {/* Logo - unchanged, stays centered */}
+          <div className="md:absolute left-1/2 top-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
+            <Link href="/">
+              <span className="tracking-[-0.03em] uppercase text-[18px] font-bold opacity-70">
+                tokunbo
+              </span>
             </Link>
           </div>
 
-   
-          <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-            <Link
-              href="/"
-              className="text-2xl md:text-3xl font-bold text-gray-900"
-            >
-              <span className="font-mono tracking-tight">ECOSPOONS</span>
-            </Link>
-          </div>
+          {/* Right icons - unchanged */}
+          <div className="flex items-center gap-5 ml-auto md:ml-0">
+            <div className="flex gap-2 items-center">
+              <Search className="w-5 h-5 cursor-pointer" />
+              <span>Search</span>
+            </div>
 
-          <div className="flex items-center gap-6 md:gap-8">
-            <button
-              aria-label="Search"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              <Search className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.5} />
-            </button>
-
-            <Link
-              href="/account"
-              aria-label="Account"
-              className="text-gray-700 hover:text-gray-900 transition-colors"
-            >
-              <User className="h-5 w-5 md:h-6 md:w-6" strokeWidth={1.5} />
-            </Link>
-
-            <Link
-              href="/cart"
-              aria-label="Shopping Cart"
-              className="text-gray-700 hover:text-gray-900 transition-colors relative"
-            >
-              <ShoppingCart
-                className="h-5 w-5 md:h-6 md:w-6"
-                strokeWidth={1.5}
-              />
-            </Link>
+            <div className="flex gap-2 items-center">
+              <Handbag  className="w-5 h-5 cursor-pointer" />
+              <span>Cart</span>
+            </div>
           </div>
         </div>
       </nav>
+
+      {/* Mobile menu overlay - only appears when isOpen */}
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 md:hidden"
+          onClick={() => setIsOpen(false)}
+        >
+          <div
+            className="fixed inset-y-0 left-0 w-4/5 max-w-xs bg-background p-6 flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-8">
+              <span className="font-bold text-xl font-sans text-gray-900 tracking-tight">
+                ECOUTENSILS
+              </span>
+              <button
+                className="text-gray-700 hover:text-gray-900"
+                aria-label="Close menu"
+                onClick={() => setIsOpen(false)}
+              >
+                <X />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <Link
+                href="/home"
+                className="font-medium uppercase text-gray-700 hover:text-gray-900 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                href="/shop"
+                className="font-medium uppercase text-gray-700 hover:text-gray-900 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Shop
+              </Link>
+              <Link
+                href="/about"
+                className="font-medium uppercase text-gray-700 hover:text-gray-900 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                About
+              </Link>
+              <Link
+                href="/contact"
+                className="font-medium uppercase text-gray-700 hover:text-gray-900 transition-colors"
+                onClick={() => setIsOpen(false)}
+              >
+                Contact
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

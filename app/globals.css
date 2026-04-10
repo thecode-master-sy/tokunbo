@@ -5,13 +5,16 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-
-    --fs-body: clamp(15px, 0.95vw + 0.4rem, 19px);
-    --fs-caps: clamp(12px, 0.8vw + 0.3rem, 15px);
-    --fs-h1: clamp(2rem, 5vw + 1rem, 4.5rem);
-    --fs-h2: clamp(1.5rem, 3.8vw + 0.8rem, 3rem);
-    --background: oklch(1 0 0);
+    --background: #f5f6ee;
     --foreground: oklch(0.145 0 0);
+    --hero: #f08822;
+    --category: #edebec;
+
+    --fs-body: clamp(14px, 1.1vw, 16px);
+    --fs-caps: clamp(12px, 0.8vw + 0.3rem, 13px);
+    --fs-h1: clamp(2rem, 5vw + 1rem, 4.5rem);
+    --fs-h2: clamp(1rem, 2.5vw + 0.8rem, 2rem);
+
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
     --popover: oklch(1 0 0);
@@ -47,14 +50,18 @@
 @theme inline {
     --color-background: var(--background);
     --color-foreground: var(--foreground);
-    --font-sans: var(--font-sans);
+    --color-category: var(--category);
+    --color-hero: var(--hero);
+    --font-inter: var(--font-inter);
     --font-mono: var(--font-geist-mono);
+    --font-tenor-sans: var(--tenor-sans);
 
     --text-body: var(--fs-body);
     --text-caps: var(--fs-caps);
     --text-h1: var(--fs-h1);
     --text-h2: var(--fs-h2);
-    --font-heading: var(--font-sans);
+    --font-heading: var(--font-inter);
+
     --color-sidebar-ring: var(--sidebar-ring);
     --color-sidebar-border: var(--sidebar-border);
     --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
@@ -94,11 +101,10 @@
 }
 
 body {
-    @apply font-sans;
+    @apply font-inter;
 }
 
 .dark {
-
     --background: oklch(0.145 0 0);
 
     --foreground: oklch(0.985 0 0);
@@ -163,13 +169,13 @@ body {
 }
 
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+    * {
+        @apply border-border outline-ring/50;
     }
-  body {
-    @apply bg-background text-foreground;
+    body {
+        @apply bg-background text-foreground text-body;
     }
-  html {
-    @apply font-sans;
+    html {
+        @apply font-sans;
     }
 }
