@@ -1,5 +1,5 @@
 "use client";
-import { Search, Handbag,  Menu, X } from "lucide-react";
+import { Search, Handbag, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
@@ -9,7 +9,10 @@ export default function Navbar() {
 
   return (
     <header className="border-b border-gray-200 bg-background sticky top-0 z-50">
-      <nav className="px-4 lg:px-6">
+      <div className="bg-banner text-center text-caps py-2 font-light">
+        We are only open from 9am - 10am
+      </div>
+      <nav className="px-4 lg:px-6 relative">
         <div className="flex items-center gap-1 md:justify-between h-14">
           <Button
             className="md:hidden shrink-0"
@@ -27,6 +30,7 @@ export default function Navbar() {
           </div>
 
           {/* Logo - unchanged, stays centered */}
+
           <div className="md:absolute left-1/2 top-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
             <Link href="/">
               <span className="tracking-[-0.03em] uppercase text-[18px] font-bold opacity-70">
@@ -43,7 +47,7 @@ export default function Navbar() {
             </div>
 
             <div className="flex gap-2 items-center">
-              <Handbag  className="w-5 h-5 cursor-pointer" />
+              <Handbag className="w-5 h-5 cursor-pointer" />
               <span>Cart</span>
             </div>
           </div>

@@ -9,8 +9,9 @@
     --foreground: oklch(0.145 0 0);
     --hero: #f08822;
     --category: #edebec;
+    --banner: #d9e2fd;
 
-    --fs-body: clamp(14px, 1.1vw, 16px);
+    --fs-body: clamp(14px, 1.3vw, 16px);
     --fs-caps: clamp(12px, 0.8vw + 0.3rem, 13px);
     --fs-h1: clamp(2rem, 5vw + 1rem, 4.5rem);
     --fs-h2: clamp(1rem, 2.5vw + 0.8rem, 2rem);
@@ -52,6 +53,7 @@
     --color-foreground: var(--foreground);
     --color-category: var(--category);
     --color-hero: var(--hero);
+    --color-banner: var(--banner);
     --font-inter: var(--font-inter);
     --font-mono: var(--font-geist-mono);
     --font-tenor-sans: var(--tenor-sans);
