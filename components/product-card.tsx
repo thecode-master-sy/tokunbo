@@ -3,7 +3,7 @@ import { Product } from "@/lib/product-types";
 
 export default function ProductCard({ product }: { product: Product }) {
   return (
-    <div className="p-3 bg-category rounded-md">
+    <div className="p-3 bg-category rounded-md space-y-4">
       <div className="w-full aspect-[1/1.1]">
         <Image
           src={product.imageUrl}
@@ -15,7 +15,8 @@ export default function ProductCard({ product }: { product: Product }) {
       </div>
 
       <div>
-        <span>{product.name}</span>
+        <p className="font-bold">{product.price}</p>
+        <p>{product.name}</p>
       </div>
     </div>
   );

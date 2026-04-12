@@ -1,7 +1,7 @@
 import ProductCard from "@/components/product-card";
 import { Product } from "@/lib/product-types";
 
-const bestSellingProducts: Product[] = [
+const newestArrivals: Product[] = [
   {
     name: "BLES Digital Air Fryer - Stainless Steel & Black",
     imageUrl: "/images/product-images/Bles-digital-air-fryer.jpeg",
@@ -24,13 +24,13 @@ const bestSellingProducts: Product[] = [
   },
 ];
 
-export default function BestSellingProductsSection() {
+export default function NewestArrivals() {
   return (
     <div className="px-4 pt-7">
-      <h2 className="text-h3 -tracking-[0.01em]">Best selling products</h2>
+      <h2 className="text-h3 -tracking-[0.01em]">Newest arrivals</h2>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-        {bestSellingProducts.map((product, index) => (
+        {newestArrivals.map((product, index) => (
           <ProductCard key={index} product={product} />
         ))}
       </div>
