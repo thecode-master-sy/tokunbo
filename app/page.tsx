@@ -2,6 +2,7 @@ import HeroSection from "@/app/_sections/hero";
 import ProductCategories from "@/app/_sections/product_categories";
 import BestSellingProductsSection from "@/app/_sections/best-selling-products";
 import NewestArrivals from "./_sections/new-arrivals";
+import Footer from "./_sections/footer";
 
 export default function Home() {
   return (
@@ -10,6 +11,7 @@ export default function Home() {
       <ProductCategories />
       <BestSellingProductsSection />
       <NewestArrivals />
+      <Footer />
     </div>
   );
 }
