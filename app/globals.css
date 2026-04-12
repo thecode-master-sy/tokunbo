@@ -11,10 +11,11 @@
     --category: #edebec;
     --banner: #d9e2fd;
 
-    --fs-body: clamp(14px, 1.3vw, 16px);
+    --fs-body: clamp(13px, 1.3vw, 15px);
     --fs-caps: clamp(12px, 0.8vw + 0.3rem, 13px);
     --fs-h1: clamp(2rem, 5vw + 1rem, 4.5rem);
-    --fs-h2: clamp(1rem, 2.5vw + 0.8rem, 2rem);
+    --fs-h2: clamp(1.5rem, 2.5vw + 0.8rem, 2rem);
+    --fs-h3: clamp(1rem, 2vw + 0.2rem, 1.5rem);
 
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
@@ -62,6 +63,7 @@
     --text-caps: var(--fs-caps);
     --text-h1: var(--fs-h1);
     --text-h2: var(--fs-h2);
+    --text-h3: var(--fs-h3);
     --font-heading: var(--font-inter);
 
     --color-sidebar-ring: var(--sidebar-ring);

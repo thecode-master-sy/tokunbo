@@ -1,20 +1,6 @@
 import Category from "@/components/category";
 import { Category as CategoryType } from "@/lib/product-types";
 
-// const categories = [
-//   "Pots",
-//   "Blenders",
-//   "Kettles",
-//   "Frying pans",
-//   "Air fryer",
-//   "Knives",
-//   "Pot covers",
-//   "Gas cookers",
-//   "Children's toys",
-// ];
-//
-//
-
 const categories: CategoryType[] = [
   {
     name: "Pots",
@@ -50,7 +36,7 @@ const categories: CategoryType[] = [
   },
   {
     name: "Frying pans",
-    imageUrl: "",
+    imageUrl: "/images/category/childrens-toys.jpg",
   },
 ];
 
