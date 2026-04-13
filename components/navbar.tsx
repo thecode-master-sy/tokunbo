@@ -65,9 +65,11 @@ export default function Navbar() {
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex justify-between items-center mb-8">
-              <span className="font-bold text-xl font-sans text-gray-900 tracking-tight">
-                ECOUTENSILS
-              </span>
+              <Link href="/">
+                <span className="tracking-[-0.03em] uppercase text-[18px] font-bold opacity-70">
+                  tokunbo
+                </span>
+              </Link>
               <button
                 className="text-gray-700 hover:text-gray-900"
                 aria-label="Close menu"
@@ -78,32 +80,16 @@ export default function Navbar() {
             </div>
 
             <div className="flex flex-col gap-6">
-              <Link
-                href="/home"
-                className="font-medium uppercase text-gray-700 hover:text-gray-900 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link href="/home" onClick={() => setIsOpen(false)}>
                 Home
               </Link>
-              <Link
-                href="/shop"
-                className="font-medium uppercase text-gray-700 hover:text-gray-900 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link href="/shop" onClick={() => setIsOpen(false)}>
                 Shop
               </Link>
-              <Link
-                href="/about"
-                className="font-medium uppercase text-gray-700 hover:text-gray-900 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link href="/about" onClick={() => setIsOpen(false)}>
                 About
               </Link>
-              <Link
-                href="/contact"
-                className="font-medium uppercase text-gray-700 hover:text-gray-900 transition-colors"
-                onClick={() => setIsOpen(false)}
-              >
+              <Link href="/contact" onClick={() => setIsOpen(false)}>
                 Contact
               </Link>
             </div>
