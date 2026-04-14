@@ -24,7 +24,7 @@ export default function Navbar() {
           </Button>
 
           <div className="hidden md:flex items-center gap-5 ">
-            <Link href="/home">Home</Link>
+            <Link href="/">Home</Link>
             <Link href="/shop">Shop products</Link>
             <Link href="/contact">Contact</Link>
           </div>

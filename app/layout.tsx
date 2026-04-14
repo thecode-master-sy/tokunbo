@@ -3,13 +3,14 @@ import { Geist_Mono, Tenor_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import { Inter } from "next/font/google";
+import Footer from "@/components/footer"
 
 const tenor_sans = Tenor_Sans({
   variable: "--tenor-sans",
-  subsets: ['latin'],
+  subsets: ["latin"],
   weight: "400",
-  display: "swap"
-})
+  display: "swap",
+});
 
 const inter = Inter({
   variable: "--font-inter",
@@ -40,6 +41,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

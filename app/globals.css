@@ -15,7 +15,7 @@
     --fs-caps: clamp(12px, 0.8vw + 0.3rem, 13px);
     --fs-h1: clamp(2rem, 5vw + 1rem, 4.5rem);
     --fs-h2: clamp(1.5rem, 2.5vw + 0.8rem, 2rem);
-    --fs-h3: clamp(1rem, 2vw + 0.2rem, 1.6rem);
+    --fs-h3: clamp(1rem, 2vw + 0.1rem, 1.3rem);
     --fs-h4: clamp(15px, 1.5vw + 0.3rem, 1.1rem);
     --card: oklch(1 0 0);
     --card-foreground: oklch(0.145 0 0);
