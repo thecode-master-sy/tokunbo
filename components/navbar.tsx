@@ -1,8 +1,9 @@
 "use client";
-import { Search, Handbag, Menu, X } from "lucide-react";
+import { Search, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import Cart from "@/components/cart";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -46,10 +47,7 @@ export default function Navbar() {
               <span>Search</span>
             </div>
 
-            <div className="flex gap-2 items-center">
-              <Handbag className="w-5 h-5 cursor-pointer" />
-              <span>Cart</span>
-            </div>
+            <Cart />
           </div>
         </div>
       </nav>

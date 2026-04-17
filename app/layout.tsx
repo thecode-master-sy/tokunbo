@@ -3,7 +3,8 @@ import { Geist_Mono, Tenor_Sans } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/navbar";
 import { Inter } from "next/font/google";
-import Footer from "@/components/footer"
+import Footer from "@/components/footer";
+import { CartProvider } from "@/providers/cart-provider";
 
 const tenor_sans = Tenor_Sans({
   variable: "--tenor-sans",
@@ -39,9 +40,11 @@ export default function RootLayout({
       className={`${inter.variable} ${geistMono.variable} ${tenor_sans.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <Navbar />
-        {children}
-        <Footer />
+        <CartProvider>
+          {" "}
+          <Navbar />
+          {children} <Footer />
+        </CartProvider>
       </body>
     </html>
   );
