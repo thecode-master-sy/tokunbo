@@ -4,15 +4,23 @@ import Link from "next/link";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import Cart from "@/components/cart";
+import MarqueeBanner from "@/components/marquee-banner";
 
 export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
     <header className="border-b border-gray-200 bg-background sticky top-0 z-50">
-      <div className="bg-banner text-center text-caps py-2 font-light">
-        We are only open from 9am - 10am
-      </div>
+      {/*<div className="bg-banner text-center text-caps py-2 font-light flex gap-4 px-4">
+        <span>Welcome to our store</span>
+        <span>We are Open from 8am - 5pm! ⌚</span>
+        <span>No refunds unless we don't deliver</span>
+        <span>
+          Feedback / Complaints are only valid within 4 hours after receiving
+          your order
+        </span>
+      </div>*/}
+      <MarqueeBanner />
       <nav className="px-4 lg:px-6 relative">
         <div className="flex items-center gap-1 md:justify-between h-14">
           <Button
