@@ -23,7 +23,7 @@ export default function ProductCard({ product }: { product: Product }) {
       >
         <Handbag className="w-4 h-4 cursor-pointer" />
       </button>
-      <Link href={`/products/${product.id}`}>
+      <Link className="inline-block space-y-2" href={`/products/${product.id}`}>
         <div className="w-full aspect-[1/1.1]">
           <Image
             src={product.imageUrl}
@@ -40,7 +40,7 @@ export default function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="flex gap-2 flex-wrap">
-          <div className="uppercase text-[12px] font-mono bg-banner w-max px-3 py-1 rounded-full">
+          <div className="uppercase text-[11px] font-mono bg-banner w-max px-3 py-1 rounded-full">
             <span>{product.category}</span>
           </div>
         </div>

@@ -31,7 +31,7 @@ export default function Cart() {
           )}
         </button>
       </SheetTrigger>
-      <SheetContent className=" h-screen flex gap-4" showCloseButton={false}>
+      <SheetContent className=" h-svh flex gap-4" showCloseButton={false}>
         <SheetHeader className="border-b h-15 flex justify-between items-center w-full flex-row">
           <SheetTitle className="text-h4 font-normal">Your Cart</SheetTitle>
 
@@ -39,12 +39,12 @@ export default function Cart() {
             <X className="w-5 h-5 cursor-pointer" />
           </SheetClose>
         </SheetHeader>
-        <div className="h-[calc(100vh_-_60px_-_16px)]">
+        <div className="h-[calc(100svh_-_60px_-_16px)]">
           {items.length == 0 ? (
             <CartEmpty />
           ) : (
             <>
-              <div className="overflow-y-auto h-[calc(100vh_-_132px_-_16px)] py-4  px-4 space-y-4 border">
+              <div className="overflow-y-auto h-[calc(100svh_-_132px_-_16px)] py-4  px-4 space-y-4 border">
                 {items.map((item) => (
                   <CartItemComponent key={item.id} item={item} />
                 ))}
