@@ -4,6 +4,7 @@ import { Product } from "@/lib/product-types";
 import { Handbag } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/providers/cart-provider";
+import { urlFor } from "@/lib/sanity/image-utility";
 
 export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCart((state) => state.addItem);
@@ -13,21 +14,24 @@ export default function ProductCard({ product }: { product: Product }) {
       <button
         onClick={() =>
           addItem({
-            id: product.id,
+            id: product._id,
             name: product.name,
             price: product.price,
-            image: product.imageUrl,
+            image: urlFor(product.images[0]).width(600).url(),
           })
         }
         className="absolute z- top-4 right-4 text-caps bg-category cursor-pointer w-8 h-8 flex justify-center items-center rounded-full"
       >
         <Handbag className="w-4 h-4 cursor-pointer" />
       </button>
-      <Link className="inline-block space-y-2" href={`/products/${product.id}`}>
+      <Link
+        className="inline-block space-y-2"
+        href={`/products/${product.slug.current}`}
+      >
         <div className="w-full aspect-[1/1.1]">
           <Image
-            src={product.imageUrl}
-            alt="bles digital air fryer"
+            src={urlFor(product.images[0]).width(600).url()}
+            alt={product.images[0]?.alt || product.name}
             width={200}
             height={200}
             className="w-full h-full rounded-md"
@@ -41,7 +45,7 @@ export default function ProductCard({ product }: { product: Product }) {
 
         <div className="flex gap-2 flex-wrap">
           <div className="uppercase text-[11px] font-mono bg-banner w-max px-3 py-1 rounded-full">
-            <span>{product.category}</span>
+            <span>{product.category.name}</span>
           </div>
         </div>
       </Link>
