@@ -6,18 +6,19 @@ import {
 import { client } from "@/lib/sanity/client";
 import { defineQuery } from "next-sanity";
 import { Product } from "./product-types";
+import { cache } from "react";
 
-export async function getBestSellingProducts(): Promise<Product[]> {
+export const getBestSellingProducts = cache(async () => {
   const products: Product[] = await client.fetch(bestSellingProductsQuery);
   return products;
-}
+});
 
-export async function getFeaturedProducts(): Promise<Product[]> {
+export const getFeaturedProducts = cache(async () => {
   const products: Product[] = await client.fetch(featuredProductsQuery);
   return products;
-}
+});
 
-export async function getNewestArrivals(): Promise<Product[]> {
+export const getNewestArrivals = cache(async () => {
   const products: Product[] = await client.fetch(newestArrivalQuery);
   return products;
-}
+});
