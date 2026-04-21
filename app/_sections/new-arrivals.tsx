@@ -5,6 +5,11 @@ import { getNewestArrivals } from "@/lib/dal";
 
 export default async function NewestArrivals() {
   const newestArrivals = await getNewestArrivals();
+
+  if (!newestArrivals) {
+    return <div>loading...</div>;
+  }
+
   return (
     <div className="px-4 pt-7">
       <div className="flex items-center justify-between">
@@ -16,7 +21,7 @@ export default async function NewestArrivals() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-        {newestArrivals?.map((product, index) => (
+        {newestArrivals.map((product, index) => (
           <ProductCard key={index} product={product} />
         ))}
       </div>

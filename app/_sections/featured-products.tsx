@@ -6,7 +6,10 @@ import { getFeaturedProducts } from "@/lib/dal";
 export default async function FeaturedProducts() {
   const featuredProducts = await getFeaturedProducts();
 
-  console.log(featuredProducts);
+  if (!featuredProducts) {
+    return <div>loading...</div>;
+  }
+
   return (
     <div className="px-4 pt-7">
       <div className="flex items-center justify-between">
@@ -18,7 +21,7 @@ export default async function FeaturedProducts() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-        {featuredProducts?.map((product, index) => (
+        {featuredProducts.map((product, index) => (
           <ProductCard key={index} product={product} />
         ))}
       </div>

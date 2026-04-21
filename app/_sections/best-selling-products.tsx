@@ -5,6 +5,10 @@ import Link from "next/link";
 export default async function BestSellingProductsSection() {
   const bestSellingProducts = await getBestSellingProducts();
 
+  if (!bestSellingProducts) {
+    return <div>Loading...</div>;
+  }
+
   return (
     <div className="px-4 pt-7">
       <div className="flex items-center justify-between">
@@ -16,7 +20,7 @@ export default async function BestSellingProductsSection() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-        {bestSellingProducts?.map((product, index) => (
+        {bestSellingProducts.map((product, index) => (
           <ProductCard key={index} product={product} />
         ))}
       </div>
