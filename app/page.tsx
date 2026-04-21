@@ -4,6 +4,11 @@ import BestSellingProductsSection from "@/app/_sections/best-selling-products";
 import NewestArrivals from "./_sections/new-arrivals";
 import FeaturedProducts from "@/app/_sections/featured-products";
 
+import { client } from "@/lib/sanity/client";
+
+console.log(client);
+console.log(client.config());
+
 export default function Home() {
   return (
     <div>
