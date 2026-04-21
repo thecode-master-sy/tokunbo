@@ -16,7 +16,7 @@ export default async function NewestArrivals() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-        {newestArrivals.map((product, index) => (
+        {newestArrivals?.map((product, index) => (
           <ProductCard key={index} product={product} />
         ))}
       </div>

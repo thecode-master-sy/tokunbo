@@ -16,7 +16,7 @@ export default async function BestSellingProductsSection() {
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
-        {bestSellingProducts.map((product, index) => (
+        {bestSellingProducts?.map((product, index) => (
           <ProductCard key={index} product={product} />
         ))}
       </div>
