@@ -1,6 +1,23 @@
 import Link from "next/link";
+import Category from "@/app/shop/_sections/category";
+import ProductDisplay from "@/app/shop/_sections/product-display";
+import { getProducts, getTotalProductsCount } from "@/lib/dal";
 
-export default function Shop() {
+export default async function Shop({
+  searchParams,
+}: {
+  searchParams?: Promise<{ page?: string }>;
+}) {
+  const params = (await searchParams) ?? {};
+  const page = Math.max(1, Number(params.page ?? "1") || 1);
+
+  const [products, totalCount] = await Promise.all([
+    getProducts(page, 20),
+    getTotalProductsCount(),
+  ]);
+
+  const totalPages = Math.ceil(totalCount / 20);
+
   return (
     <div className="pt-4 px-4 lg:px-6">
       <div className=" uppercase  gap-1 items-center font-mono py-4">
@@ -20,43 +37,12 @@ export default function Shop() {
         <h1 className="text-h2 -tracking-[0.034em]">Shop Products</h1>
       </div>
 
-      <div className="py-4 flex justify-between">
-        <div className="flex gap-2">
-          <Link
-            href="/"
-            className="uppercase inline-block text-caps font-mono rounded-full px-4 py-1 bg-banner"
-          >
-            all products
-          </Link>
-          <Link
-            href="/"
-            className="uppercase flex items-center  text-caps font-mono rounded-full px-4 py-1 bg-category"
-          >
-            Kitchen appliances
-          </Link>
-          <Link
-            href="/"
-            className="uppercase  flex items-center text-caps font-mono rounded-full px-4 py-1 bg-category"
-          >
-            Kitchen utensils
-          </Link>
-          <Link
-            href="/"
-            className="uppercase flex items-center  text-caps font-mono rounded-full px-4 py-1 bg-category"
-          >
-            other
-          </Link>
-        </div>
-
-        <div>
-          <Link
-            href="/"
-            className="uppercase flex items-center  text-caps font-mono rounded-full px-4 py-1 bg-category"
-          >
-            Sort
-          </Link>
-        </div>
-      </div>
+      <Category />
+      <ProductDisplay
+        products={products}
+        currentPage={page}
+        totalPages={totalPages}
+      />
     </div>
   );
 }

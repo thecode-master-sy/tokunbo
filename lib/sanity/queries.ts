@@ -12,3 +12,12 @@ export const featuredProductsQuery = `*[_type == "siteSettings"][0].homepage.fea
     ...,
     category->
   }`;
+
+export const productsQuery = `
+*[_type == "product" && status == "active"]
+| order(_createdAt desc)
+[$offset...$offset + $limit]{
+  ...,
+  category->
+}
+`;
