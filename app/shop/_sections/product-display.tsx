@@ -15,9 +15,9 @@ export default function ProductDisplay({
 }: ProductDisplayProps) {
   return (
     <div className="space-y-8">
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {products.map((product) => (
-          <ProductCard key={product._id} product={product} />
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+        {products.map((product, index) => (
+          <ProductCard key={index} product={product} />
         ))}
       </div>
 
