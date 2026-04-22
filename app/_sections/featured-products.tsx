@@ -6,14 +6,12 @@ import { getFeaturedProducts } from "@/lib/dal";
 export default async function FeaturedProducts() {
   const featuredProducts = await getFeaturedProducts();
 
-  if (!featuredProducts) {
-    return <div>loading...</div>;
-  }
-
   return (
     <div className="px-4 pt-7">
       <div className="flex items-center justify-between">
-        <h2 className="text-h3 -tracking-[0.01em]">Featured products</h2>
+        <h2 className="text-h3 -tracking-[0.015em] font-medium">
+          Featured products
+        </h2>
         <Link href="/best-sellers" className="underline opacity-80 ">
           <span className="hidden md:inline">See more featured products</span>
           <span className="md:hidden underline">See more</span>

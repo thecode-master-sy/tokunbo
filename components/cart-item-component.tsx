@@ -34,7 +34,7 @@ export default function CartItemComponent({
       </div>
 
       {/* 2. Content Section */}
-      <div className="space-y-4">
+      <div className="space-y-4 flex-1">
         <div className="flex flex-col gap-2">
           <h3 className="font-medium">{name}</h3>
           <p className="opacity-80">₦{(price * quantity).toLocaleString()}</p>

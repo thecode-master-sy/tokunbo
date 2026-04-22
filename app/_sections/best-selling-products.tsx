@@ -5,14 +5,12 @@ import Link from "next/link";
 export default async function BestSellingProductsSection() {
   const bestSellingProducts = await getBestSellingProducts();
 
-  if (!bestSellingProducts) {
-    return <div>Loading...</div>;
-  }
-
   return (
     <div className="px-4 pt-7">
       <div className="flex items-center justify-between">
-        <h2 className="text-h3 -tracking-[0.01em]">Best selling products</h2>
+        <h2 className="text-h3 -tracking-[0.015em] font-medium">
+          Best selling products
+        </h2>
         <Link href="/best-sellers" className="underline opacity-80 ">
           <span className="hidden md:inline">See more best sellers</span>
           <span className="md:hidden underline">See more</span>

@@ -6,14 +6,12 @@ import { getNewestArrivals } from "@/lib/dal";
 export default async function NewestArrivals() {
   const newestArrivals = await getNewestArrivals();
 
-  if (!newestArrivals) {
-    return <div>loading...</div>;
-  }
-
   return (
     <div className="px-4 pt-7">
       <div className="flex items-center justify-between">
-        <h2 className="text-h3 -tracking-[0.01em]">Newest arrivals</h2>
+        <h2 className="text-h3 -tracking-[0.015em] font-medium">
+          Newest arrivals
+        </h2>
         <Link href="/best-sellers" className="underline opacity-80">
           <span className="hidden md:inline"> See newest arrivals</span>
           <span className="md:hidden underline">See more</span>
