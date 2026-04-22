@@ -31,7 +31,7 @@ export default function Cart() {
           )}
         </button>
       </SheetTrigger>
-      <SheetContent className=" h-svh flex gap-4" showCloseButton={false}>
+      <SheetContent className=" h-svh flex gap-4 z-60" showCloseButton={false}>
         <SheetHeader className="border-b h-15 flex justify-between items-center w-full flex-row">
           <SheetTitle className="text-h4 font-normal">Your Cart</SheetTitle>
 

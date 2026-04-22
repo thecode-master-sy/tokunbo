@@ -10,7 +10,7 @@ export default function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <header className="border-b border-gray-200 bg-background sticky top-0 z-50">
+    <header className="border-b border-gray-200 bg-background sticky top-0 z-60">
       {/*<div className="bg-banner text-center text-caps py-2 font-light flex gap-4 px-4">
         <span>Welcome to our store</span>
         <span>We are Open from 8am - 5pm! ⌚</span>
