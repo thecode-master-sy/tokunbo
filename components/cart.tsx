@@ -18,17 +18,14 @@ import CartItemComponent from "@/components/cart-item-component";
 export default function Cart() {
   const items = useCart((state) => state.items);
   const totalPrice = useCart((state) => state.totalPrice);
-  const totalItems = useCart((state) => state.totalItems);
+  const totalItemsFn = useCart((state) => state.totalItems);
+  const totalItems = totalItemsFn();
   return (
     <Sheet>
       <SheetTrigger asChild>
         <button className="flex gap-2 items-center cursor-pointer">
           <Handbag className="w-5 h-5 cursor-pointer" />
-          {totalItems() > 0 ? (
-            <span>{`Cart (${totalItems()})`}</span>
-          ) : (
-            <span>Cart</span>
-          )}
+          <span>Cart</span> {totalItems > 0 && <span>({totalItems})</span>}
         </button>
       </SheetTrigger>
       <SheetContent className=" h-svh flex gap-4 z-60" showCloseButton={false}>

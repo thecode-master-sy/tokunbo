@@ -13,11 +13,12 @@ export const featuredProductsQuery = `*[_type == "siteSettings"][0].homepage.fea
     category->
   }`;
 
-export const productsQuery = `
-*[_type == "product" && status == "active"]
-| order(_createdAt desc)
-[$offset...$offset + $limit]{
-  ...,
-  category->
-}
-`;
+export const productsQuery = `*[_type == "product" && (count($categories) == 0 || category->slug.current in $categories)]
+  | order(_createdAt desc) [$offset...$limit] {
+    ...,
+    "category": category->{
+      name,
+      "slug": slug.current
+    },
+    "images": images[].asset->url
+}`;

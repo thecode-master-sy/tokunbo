@@ -2,11 +2,22 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp, X, SlidersHorizontal } from "lucide-react";
+import { useRouter, useSearchParams } from "next/navigation";
 
-const FILTER_OPTIONS: Record<string, string[]> = {
-  "Kitchen Utensils": ["Yoga", "Running", "Gym"],
-  "Kitchen Appliances": ["Breathable", "Waterproof", "Warmth"],
-  Other: ["Children's Toys"],
+const FILTER_OPTIONS: Record<string, { name: string; slug: string }[]> = {
+  "Kitchen Utensils": [
+    { name: "Pots", slug: "pots" },
+    { name: "Pot covers", slug: "pot-covers" },
+    { name: "Frying pans", slug: "frying-pans" },
+    { name: "Knives", slug: "knives" },
+    { name: "Kettles", slug: "kettles" },
+  ],
+  "Kitchen Appliances": [
+    { name: "Air fryer", slug: "air-fryers" },
+    { name: "Gas cookers", slug: "gas-cookers" },
+    { name: "Blenders", slug: "blenders" },
+  ],
+  Other: [{ name: "Children's Toys", slug: "children-s-toy-s" }],
 };
 
 const SORT_OPTIONS = [
@@ -24,61 +35,97 @@ export default function ShopCategory() {
   const [isSortOpen, setIsSortOpen] = useState(false);
   const [activeSort, setActiveSort] = useState("Featured");
 
-  // Shared Sort Dropdown Component Logic
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const updateCategories = (value: string, checked: boolean) => {
+    const params = new URLSearchParams(searchParams.toString());
+    const current = params.getAll("category");
+
+    const next = checked
+      ? Array.from(new Set([...current, value]))
+      : current.filter((item) => item !== value);
+
+    params.delete("category");
+    next.forEach((item) => params.append("category", item));
+    params.set("page", "1");
+
+    router.push(`/shop?${params.toString()}`);
+  };
+
+  const updateSort = (value: string) => {
+    const params = new URLSearchParams(searchParams.toString());
+    params.set("sort", value);
+    params.set("page", "1");
+    router.push(`/shop?${params.toString()}`);
+    setActiveSort(value);
+    setIsSortOpen(false);
+  };
 
   return (
-    <div className="py-4 border-b border-gray-200 px-4 md:px-0">
+    <div className="py-4 border-b border-gray-200">
       {openFilter !== null && (
         <div
           className="fixed top-0 left-0 right-0 bottom-0 z-50"
           onClick={() => setOpenFilter(null)}
-        ></div>
+        />
       )}
-      {/* --- DESKTOP VIEW --- */}
+
       <div className="hidden md:flex items-center gap-2 relative z-50">
         <div className="flex flex-wrap items-center gap-2">
-          {Object.keys(FILTER_OPTIONS).map((category) => (
-            <div key={category} className="relative">
+          {Object.entries(FILTER_OPTIONS).map(([group, options]) => (
+            <div key={group} className="relative">
               <button
                 onClick={() => {
-                  setOpenFilter(openFilter === category ? null : category);
+                  setOpenFilter(openFilter === group ? null : group);
                   setIsSortOpen(false);
                 }}
-                className={`flex items-center gap-2 px-4 py-2 uppercase  text-caps font-mono border rounded-full transition-colors ${
-                  openFilter === category
+                className={`flex items-center gap-2 px-4 py-2 uppercase bg-category text-caps font-mono rounded-full transition-colors ${
+                  openFilter === group
                     ? "border-blue-600 ring-1 ring-blue-600"
-                    : "border-black/80"
+                    : ""
                 }`}
               >
-                {category}
-                {openFilter === category ? (
+                {group}
+                {openFilter === group ? (
                   <ChevronUp size={16} />
                 ) : (
                   <ChevronDown size={16} />
                 )}
               </button>
 
-              {openFilter === category && (
-                <div className="absolute left-0 mt-1 w-64 bg-white border border-black z-50 shadow-lg p-4">
+              {openFilter === group && (
+                <div className="absolute left-0 mt-2 w-64 bg-white border-black z-50 shadow-lg p-4">
                   <div className="flex flex-col gap-3">
-                    {FILTER_OPTIONS[category].map((option) => (
-                      <label
-                        key={option}
-                        className="flex items-center gap-3 cursor-pointer hover:text-gray-600"
-                      >
-                        <input
-                          type="checkbox"
-                          className="w-5 h-5 border-black rounded-none accent-black"
-                        />
-                        <span className="text-sm">{option}</span>
-                      </label>
-                    ))}
+                    {options.map((option) => {
+                      const checked = searchParams
+                        .getAll("category")
+                        .includes(option.slug);
+
+                      return (
+                        <label
+                          key={option.slug}
+                          className="flex items-center gap-3 cursor-pointer hover:text-gray-600"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={(e) =>
+                              updateCategories(option.slug, e.target.checked)
+                            }
+                            className="w-5 h-5 border-black rounded-none accent-black"
+                          />
+                          <span className="text-sm">{option.name}</span>
+                        </label>
+                      );
+                    })}
                   </div>
                 </div>
               )}
             </div>
           ))}
         </div>
+
         <div className="ml-auto">
           <SortDropdown
             isMobile={false}
@@ -86,18 +133,18 @@ export default function ShopCategory() {
             isSortOpen={isSortOpen}
             setActiveSort={setActiveSort}
             activeSort={activeSort}
+            onSelectSort={updateSort}
           />
         </div>
       </div>
 
-      {/* --- MOBILE VIEW --- */}
       <div className="flex md:hidden gap-2">
         <button
           onClick={() => {
             setIsMobileMenuOpen(true);
             setIsSortOpen(false);
           }}
-          className="flex-1 flex items-center justify-center gap-3 border border-black/80 py-2 px-4 text-caps font-mono uppercase rouded-full"
+          className="flex items-center rounded-full justify-center gap-2 bg-category py-2 px-4 text-caps font-mono uppercase rouded-full"
         >
           <SlidersHorizontal size={20} /> Filters
         </button>
@@ -108,10 +155,10 @@ export default function ShopCategory() {
           isSortOpen={isSortOpen}
           setActiveSort={setActiveSort}
           activeSort={activeSort}
+          onSelectSort={updateSort}
         />
       </div>
 
-      {/* --- MOBILE FILTERS OVERLAY --- */}
       {isMobileMenuOpen && (
         <div className="fixed inset-0 bg-white z-[100] overflow-y-auto p-6">
           <div className="flex justify-between items-start mb-8">
@@ -128,11 +175,33 @@ export default function ShopCategory() {
           </div>
 
           <div className="flex flex-col">
-            {Object.keys(FILTER_OPTIONS).map((category) => (
-              <div key={category} className="border-t border-black/20 py-5">
-                <button className="flex items-center gap-2 border border-black/20 bg-gray-50 px-3 py-1 text-base">
-                  {category} <ChevronDown size={16} />
-                </button>
+            {Object.entries(FILTER_OPTIONS).map(([group, options]) => (
+              <div key={group} className="border-t border-black/20 py-5">
+                <p className="mb-3 font-medium">{group}</p>
+                <div className="flex flex-col gap-3">
+                  {options.map((option) => {
+                    const checked = searchParams
+                      .getAll("category")
+                      .includes(option.slug);
+
+                    return (
+                      <label
+                        key={option.slug}
+                        className="flex items-center gap-3 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(e) =>
+                            updateCategories(option.slug, e.target.checked)
+                          }
+                          className="w-5 h-5 border-black rounded-none accent-black"
+                        />
+                        <span className="text-sm">{option.name}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
             ))}
             <div className="border-t border-black/20" />
@@ -149,17 +218,19 @@ const SortDropdown = ({
   isSortOpen,
   setActiveSort,
   activeSort,
+  onSelectSort,
 }: {
   isMobile: boolean;
   setIsSortOpen: React.Dispatch<React.SetStateAction<boolean>>;
   isSortOpen: boolean;
   setActiveSort: React.Dispatch<React.SetStateAction<string>>;
   activeSort: string;
+  onSelectSort: (value: string) => void;
 }) => (
   <div className={`relative ${isMobile ? "flex-1" : ""}`}>
     <button
       onClick={() => setIsSortOpen(!isSortOpen)}
-      className={`flex items-center justify-between gap-3 border border-black/80 uppercase font-mono text-caps rounded-full transition-colors px-4 py-2 text-sm ml-auto`}
+      className="flex items-center justify-between gap-2 bg-category uppercase font-mono text-caps rounded-full transition-colors px-4 py-2 md:ml-auto"
     >
       <span>Sort By</span>
       {isSortOpen ? (
@@ -170,22 +241,18 @@ const SortDropdown = ({
     </button>
 
     {isSortOpen && (
-      <div
-        className={`absolute right-0 mt-1 bg-white border border-black z-50 shadow-xl p-6
-        ${isMobile ? "w-[200%]" : "w-72"}`}
-      >
+      <div className="absolute right-0 mt-1 bg-white z-50 shadow-xl p-6 w-72">
         <div className="flex flex-col gap-5">
           {SORT_OPTIONS.map((option, idx) => (
             <div key={option}>
               <label
                 className="flex items-center gap-4 cursor-pointer group"
-                onClick={() => {
-                  setActiveSort(option);
-                  setIsSortOpen(false);
-                }}
+                onClick={() => onSelectSort(option)}
               >
                 <div
-                  className={`w-5 h-5 border border-black flex-shrink-0 transition-colors ${activeSort === option ? "bg-black" : "bg-white"}`}
+                  className={`w-5 h-5 border border-black flex-shrink-0 transition-colors ${
+                    activeSort === option ? "bg-black" : "bg-white"
+                  }`}
                 >
                   {activeSort === option && (
                     <div className="w-full h-full flex items-center justify-center">

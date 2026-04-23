@@ -24,16 +24,30 @@ export const getNewestArrivals = cache(async () => {
   return products;
 });
 
-export const getProducts = cache(async (page: number, limit = 20) => {
+export const getProducts = async ({
+  page,
+  limit = 20,
+  categories = [],
+  sort,
+}: {
+  page: number;
+  limit?: number;
+  categories?: string[];
+  sort?: string;
+}) => {
   const offset = (page - 1) * limit;
 
-  const products: Product[] = await client.fetch(productsQuery, {
+  const products = await client.fetch(productsQuery, {
     offset,
     limit,
+    categories,
+    sort,
   });
 
+  console.log(products);
+
   return products;
-});
+};
 
 export async function getTotalProductsCount() {
   const total = await client.fetch(
