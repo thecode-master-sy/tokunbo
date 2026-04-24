@@ -3,9 +3,10 @@ import {
   featuredProductsQuery,
   newestArrivalQuery,
   productsQuery,
+  singleProductQuery,
 } from "@/lib/sanity/queries";
 import { client } from "@/lib/sanity/client";
-import { defineQuery } from "next-sanity";
+
 import { Product } from "./product-types";
 import { cache } from "react";
 
@@ -57,4 +58,12 @@ export const getTotalProductsCount = cache(async () => {
   );
 
   return total as number;
+});
+
+export const getSingleProduct = cache(async (slug: string) => {
+  const product: Product = await client.fetch(singleProductQuery, {
+    slug,
+  });
+
+  return product;
 });

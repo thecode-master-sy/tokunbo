@@ -22,3 +22,12 @@ export const productsQuery = `*[_type == "product" && (count($categories) == 0 |
     },
     "images": images[].asset->url
 }`;
+
+export const singleProductQuery = `*[_type == "product" && slug.current == $slug][0] {
+  ...,
+  "images": images[].asset->url,
+  "category": category->{
+    name,
+    "slug": slug.current
+  },
+}`;

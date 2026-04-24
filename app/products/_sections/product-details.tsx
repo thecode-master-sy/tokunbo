@@ -2,8 +2,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import QuantitySelector from "@/components/quantity-selector";
+import { Product } from "@/lib/product-types";
+import { urlFor } from "@/lib/sanity/image-utility";
 
-export default function ProductDetails() {
+export default function ProductDetails({ product }: { product: Product }) {
   return (
     <div>
       <div className=" uppercase  gap-1 items-center font-mono md:hidden py-4">
@@ -15,18 +17,19 @@ export default function ProductDetails() {
         </Link>{" "}
         <span>{"/"}</span>
         <span className="bg-category px-3 rounded-full py-1 text-[11px]">
-          bles-digital...
+          {product.name}
         </span>
       </div>
       <div className="flex flex-col md:flex-row">
         <div className="md:sticky self-start md:top-23 md:w-[40%] w-full">
           <div className="w-full">
             <Image
-              src="/images/product-images/multi-color-stock-pot.jpeg"
+              src={urlFor(product.images[0]).width(600).url()}
               className="w-full aspect-[1/1.1] md:min-h-screen"
               alt="product image"
-              width={100}
-              height={100}
+              width={800}
+              height={880}
+              priority={true}
             />
           </div>
         </div>
@@ -41,11 +44,11 @@ export default function ProductDetails() {
               </Link>{" "}
               <span>{"/"}</span>
               <span className="bg-category px-3 rounded-full py-1 text-[11px]">
-                bles-digital...
+                {product.name}
               </span>
             </div>
-            <h1 className="text-h2 font-bold mt-2">BLES Digital Air Fryer</h1>
-            <p className="text-h3 mt-4">₦5,000</p>
+            <h1 className="text-h2 font-bold mt-2">{product.name}</h1>
+            <p className="text-h3 mt-4">{`₦${product.price}`}</p>
           </div>
 
           <div className="flex items-center gap-1">
@@ -53,20 +56,15 @@ export default function ProductDetails() {
             <span className="text-xl">★★★★★</span>
           </div>
 
-          <p className="text-gray-700 leading-relaxed">
-            Our high-performance digital air fryer uses rapid heat circulation
-            to deliver a perfect golden crunch with up to 85% less oil,
-            featuring intuitive touch presets for everything from crispy wings
-            to roasted vegetables.
-          </p>
+          <p className="text-gray-700 leading-relaxed">{product.description}</p>
 
           {/* Spacer to demonstrate the scroll/sticky effect */}
           <div className="border-t border-gray-200 pt-10">
             <h3 className="font-bold">Product Details & Features</h3>
             <ul className="list-disc ml-5 mt-4 space-y-2">
-              <li>Rapid Air Circulation</li>
-              <li>One-Touch Digital Presets</li>
-              <li>Non-Stick Easy Clean</li>
+              {product.productDetails?.map((item, index) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </div>
 
