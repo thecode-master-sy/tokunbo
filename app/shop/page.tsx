@@ -1,33 +1,24 @@
+// app/shop/page.tsx
 import Link from "next/link";
 import Category from "@/app/shop/_sections/category";
 import ProductDisplay from "@/app/shop/_sections/product-display";
 import { getProducts, getTotalProductsCount } from "@/lib/dal";
+import { loadSearchParams } from "@/lib/nuqs/search-params";
+import type { SearchParams } from "nuqs/server";
 
-export default async function Shop({
-  searchParams,
-}: {
-  searchParams?: Promise<{
-    page?: string;
-    category?: string | string[];
-    sort?: string;
-  }>;
-}) {
-  const params = (await searchParams) ?? {};
+type PageProps = {
+  searchParams: Promise<SearchParams>;
+};
 
-  const page = Math.max(1, Number(params.page ?? "1") || 1);
-
-  const categories = Array.isArray(params.category)
-    ? params.category
-    : params.category
-      ? [params.category]
-      : [];
+export default async function Shop({ searchParams }: PageProps) {
+  const { category, sort, page } = await loadSearchParams(searchParams);
 
   const [products, totalCount] = await Promise.all([
     getProducts({
-      page,
+      page: page,
       limit: 20,
-      categories,
-      sort: params.sort,
+      categories: category,
+      sort: sort,
     }),
     getTotalProductsCount(),
   ]);
@@ -42,19 +33,16 @@ export default async function Shop({
           className="bg-category px-3 rounded-full py-1 text-[11px]"
         >
           Home
-        </Link>{" "}
-        <span>{"/"}</span>
+        </Link>
+        <span>/</span>
         <span className="bg-category px-3 rounded-full py-1 text-[11px]">
           shop products
         </span>
       </div>
 
-      <div>
-        <h1 className="text-h2 -tracking-[0.034em]">Shop Products</h1>
-      </div>
+      <h1 className="text-h2 -tracking-[0.034em]">Shop Products</h1>
 
       <Category />
-
       <ProductDisplay
         products={products}
         currentPage={page}

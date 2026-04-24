@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar";
 import { Inter } from "next/font/google";
 import Footer from "@/components/footer";
 import { CartProvider } from "@/providers/cart-provider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
 
 const tenor_sans = Tenor_Sans({
   variable: "--tenor-sans",
@@ -43,7 +44,7 @@ export default function RootLayout({
         <CartProvider>
           {" "}
           <Navbar />
-          {children} <Footer />
+          <NuqsAdapter>{children}</NuqsAdapter> <Footer />
         </CartProvider>
       </body>
     </html>

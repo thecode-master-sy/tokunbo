@@ -2,7 +2,13 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp, X, SlidersHorizontal } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import {
+  useQueryStates,
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsString,
+} from "nuqs";
+import { searchParams } from "@/lib/nuqs/search-params";
 
 const FILTER_OPTIONS: Record<string, { name: string; slug: string }[]> = {
   "Kitchen Utensils": [
@@ -33,32 +39,22 @@ export default function ShopCategory() {
   const [openFilter, setOpenFilter] = useState<string | null>(null);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
-  const [activeSort, setActiveSort] = useState("Featured");
 
-  const router = useRouter();
-  const searchParams = useSearchParams();
+  const [{ category, sort, page }, setParams] = useQueryStates(searchParams, {
+    history: "push",
+    shallow: false,
+  });
 
-  const updateCategories = (value: string, checked: boolean) => {
-    const params = new URLSearchParams(searchParams.toString());
-    const current = params.getAll("category");
-
+  const updateCategory = (value: string, checked: boolean) => {
     const next = checked
-      ? Array.from(new Set([...current, value]))
-      : current.filter((item) => item !== value);
+      ? [...category, value]
+      : category.filter((item) => item !== value);
 
-    params.delete("category");
-    next.forEach((item) => params.append("category", item));
-    params.set("page", "1");
-
-    router.push(`/shop?${params.toString()}`);
+    setParams({ category: next, page: 1 });
   };
 
   const updateSort = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString());
-    params.set("sort", value);
-    params.set("page", "1");
-    router.push(`/shop?${params.toString()}`);
-    setActiveSort(value);
+    setParams({ sort: value, page: 1 });
     setIsSortOpen(false);
   };
 
@@ -98,9 +94,7 @@ export default function ShopCategory() {
                 <div className="absolute left-0 mt-2 w-64 bg-white border-black z-50 shadow-lg p-4">
                   <div className="flex flex-col gap-3">
                     {options.map((option) => {
-                      const checked = searchParams
-                        .getAll("category")
-                        .includes(option.slug);
+                      const checked = category.includes(option.slug);
 
                       return (
                         <label
@@ -111,7 +105,7 @@ export default function ShopCategory() {
                             type="checkbox"
                             checked={checked}
                             onChange={(e) =>
-                              updateCategories(option.slug, e.target.checked)
+                              updateCategory(option.slug, e.target.checked)
                             }
                             className="w-5 h-5 border-black rounded-none accent-black"
                           />
@@ -131,8 +125,8 @@ export default function ShopCategory() {
             isMobile={false}
             setIsSortOpen={setIsSortOpen}
             isSortOpen={isSortOpen}
-            setActiveSort={setActiveSort}
-            activeSort={activeSort}
+            setActiveSort={() => {}}
+            activeSort={sort}
             onSelectSort={updateSort}
           />
         </div>
@@ -153,8 +147,8 @@ export default function ShopCategory() {
           isMobile={true}
           setIsSortOpen={setIsSortOpen}
           isSortOpen={isSortOpen}
-          setActiveSort={setActiveSort}
-          activeSort={activeSort}
+          setActiveSort={() => {}}
+          activeSort={sort}
           onSelectSort={updateSort}
         />
       </div>
@@ -180,9 +174,7 @@ export default function ShopCategory() {
                 <p className="mb-3 font-medium">{group}</p>
                 <div className="flex flex-col gap-3">
                   {options.map((option) => {
-                    const checked = searchParams
-                      .getAll("category")
-                      .includes(option.slug);
+                    const checked = category.includes(option.slug);
 
                     return (
                       <label
@@ -193,7 +185,7 @@ export default function ShopCategory() {
                           type="checkbox"
                           checked={checked}
                           onChange={(e) =>
-                            updateCategories(option.slug, e.target.checked)
+                            updateCategory(option.slug, e.target.checked)
                           }
                           className="w-5 h-5 border-black rounded-none accent-black"
                         />
@@ -204,7 +196,6 @@ export default function ShopCategory() {
                 </div>
               </div>
             ))}
-            <div className="border-t border-black/20" />
           </div>
         </div>
       )}
@@ -216,7 +207,6 @@ const SortDropdown = ({
   isMobile = false,
   setIsSortOpen,
   isSortOpen,
-  setActiveSort,
   activeSort,
   onSelectSort,
 }: {
