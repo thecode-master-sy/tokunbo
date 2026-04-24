@@ -2,9 +2,13 @@
 import React, { useState } from "react";
 import { Minus, Plus } from "lucide-react";
 
-export default function QuantitySelector() {
-  const [quantity, setQuantity] = useState(1);
-
+export default function QuantitySelector({
+  quantity,
+  setQuantity,
+}: {
+  quantity: number;
+  setQuantity: React.Dispatch<React.SetStateAction<number>>;
+}) {
   return (
     <div className="flex items-center min-w-[120px] rounded-full  justify-between border border-gray-400  px-4 py-3">
       {/* Decrease Button */}

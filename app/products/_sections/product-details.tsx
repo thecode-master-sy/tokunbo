@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import QuantitySelector from "@/components/quantity-selector";
 import { Product } from "@/lib/product-types";
 import { urlFor } from "@/lib/sanity/image-utility";
+import ProductDetailActions from "./product-detail-actions";
 
 export default function ProductDetails({ product }: { product: Product }) {
   return (
@@ -68,15 +69,7 @@ export default function ProductDetails({ product }: { product: Product }) {
             </ul>
           </div>
 
-          <div className="flex flex-col lg:flex-row gap-2">
-            <QuantitySelector />
-            <Button
-              size={"lg"}
-              className="w-full bg-hero text-foreground cursor-pointer rounded-full h-12 lg:max-w-[300px]"
-            >
-              Add to cart
-            </Button>
-          </div>
+          <ProductDetailActions product={product} />
         </div>
       </div>
     </div>
