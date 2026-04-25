@@ -1,6 +1,6 @@
-import ProductDetails from "@/app/products/_sections/product-details";
+import ProductDetails from "@/app/(shopping)/products/_sections/product-details";
 import { getSingleProduct, getSimilarProductsFromCategory } from "@/lib/dal";
-import RecommendedProducts from "@/app/products/_sections/recommended-products";
+import RecommendedProducts from "@/app/(shopping)/products/_sections/recommended-products";
 
 export default async function Product({
   params,

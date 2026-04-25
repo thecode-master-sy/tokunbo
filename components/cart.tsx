@@ -14,6 +14,7 @@ import { Handbag, X } from "lucide-react";
 import CartEmpty from "@/components/cart-empty";
 import { useCart } from "@/providers/cart-provider";
 import CartItemComponent from "@/components/cart-item-component";
+import Link from "next/link";
 
 export default function Cart() {
   const items = useCart((state) => state.items);
@@ -51,9 +52,14 @@ export default function Cart() {
                 <Button
                   size="lg"
                   type="submit"
-                  className="w-full h-12 bg-hero text-black rounded-full cursor-pointer uppercase font-medium"
+                  className="w-full h-12 bg-hero text-black hover:bg-amber-600 rounded-full cursor-pointer uppercase font-medium"
                 >
-                  {` Checkout - ₦${totalPrice().toLocaleString()}`}
+                  <Link
+                    href="/checkout"
+                    className="w-full h-full inline-flex items-center justify-center"
+                  >
+                    <span>{` Checkout - ₦${totalPrice().toLocaleString()}`}</span>
+                  </Link>
                 </Button>
               </SheetFooter>
             </>

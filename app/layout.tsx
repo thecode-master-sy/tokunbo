@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Geist_Mono, Tenor_Sans } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/navbar";
 import { Inter } from "next/font/google";
-import Footer from "@/components/footer";
 import { CartProvider } from "@/providers/cart-provider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
 
@@ -42,9 +40,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <CartProvider>
-          {" "}
-          <Navbar />
-          <NuqsAdapter>{children}</NuqsAdapter> <Footer />
+          <NuqsAdapter>{children}</NuqsAdapter>
         </CartProvider>
       </body>
     </html>

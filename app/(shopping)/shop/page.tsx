@@ -1,7 +1,7 @@
 // app/shop/page.tsx
 import Link from "next/link";
-import Category from "@/app/shop/_sections/category";
-import ProductDisplay from "@/app/shop/_sections/product-display";
+import Category from "@/app/(shopping)/shop/_sections/category";
+import ProductDisplay from "@/app/(shopping)/shop/_sections/product-display";
 import { getProducts, getTotalProductsCount } from "@/lib/dal";
 import { loadSearchParams } from "@/lib/nuqs/search-params";
 import type { SearchParams } from "nuqs/server";
