@@ -4,6 +4,7 @@ import {
   newestArrivalQuery,
   productsQuery,
   singleProductQuery,
+  relatedProductsQuery,
 } from "@/lib/sanity/queries";
 import { client } from "@/lib/sanity/client";
 
@@ -67,3 +68,13 @@ export const getSingleProduct = cache(async (slug: string) => {
 
   return product;
 });
+
+export const getSimilarProductsFromCategory = cache(
+  async (categoryId: string, productId: string) => {
+    const products: Product[] = await client.fetch(relatedProductsQuery, {
+      categoryId: categoryId,
+      productId: productId,
+    });
+    return products;
+  },
+);

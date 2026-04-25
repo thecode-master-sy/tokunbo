@@ -20,9 +20,6 @@ export default function Footer() {
             placeholder="Enter your email address"
             className="bg-white rounded-sm h-10 text-body"
           />
-          <button className="bg-banner h-10 flex justify-center items-center rounded-full w-full">
-            Subscribe
-          </button>
 
           <div className="flex mb-15 mt-16 gap-4">
             <SiInstagram size={18} />

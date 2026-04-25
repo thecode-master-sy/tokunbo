@@ -19,15 +19,18 @@ export const productsQuery = `*[_type == "product" && (count($categories) == 0 |
     "category": category->{
       name,
       "slug": slug.current
-    },
-    "images": images[].asset->url
+    }
 }`;
 
-export const singleProductQuery = `*[_type == "product" && slug.current == $slug][0] {
-  ...,
-  "images": images[].asset->url,
-  "category": category->{
-    name,
-    "slug": slug.current
-  },
-}`;
+export const singleProductQuery = `*[_type == "product" && slug.current == $slug][0]`;
+
+export const relatedProductsQuery = `
+  *[_type == "product" &&
+    category._ref == $categoryId &&
+    _id != $productId &&
+    status == "active"
+  ][0...4] {
+    ...,
+    category ->
+  }
+`;

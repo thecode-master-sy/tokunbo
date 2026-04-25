@@ -18,6 +18,7 @@ export default function ProductCard({ product }: { product: Product }) {
             name: product.name,
             price: product.price,
             image: urlFor(product.images[0]).width(600).url(),
+            quantity: 1,
           })
         }
         className="absolute z- top-4 right-4 text-caps bg-category cursor-pointer w-8 h-8 flex justify-center items-center rounded-full"

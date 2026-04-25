@@ -1,6 +1,6 @@
 import ProductDetails from "@/app/products/_sections/product-details";
-import { getSingleProduct } from "@/lib/dal";
-//import RecommendedProducts from "@/app/products/_sections/recommended-products";
+import { getSingleProduct, getSimilarProductsFromCategory } from "@/lib/dal";
+import RecommendedProducts from "@/app/products/_sections/recommended-products";
 
 export default async function Product({
   params,
@@ -9,10 +9,15 @@ export default async function Product({
 }) {
   const { id } = await params;
   const product = await getSingleProduct(id);
+  console.log(product.category._ref);
+  const recommendedProducts = await getSimilarProductsFromCategory(
+    product.category._ref,
+    product._id,
+  );
   return (
     <div className="px-4 lg:px-6">
       <ProductDetails product={product} />
-      {/*<RecommendedProducts />*/}
+      <RecommendedProducts recommendedProducts={recommendedProducts} />
     </div>
   );
 }

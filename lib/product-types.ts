@@ -46,6 +46,7 @@ export type Product = {
     current: string;
   };
   category: {
+    _id: string;
     _type: "reference";
     _ref: string;
     name: string;
@@ -62,4 +63,5 @@ export type Product = {
   productDetails?: string[];
   shortDescription?: string;
   discountPrice?: number;
+  categoryName: string;
 };
