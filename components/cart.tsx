@@ -51,7 +51,7 @@ export default function Cart() {
                 <Button
                   size="lg"
                   type="submit"
-                  className="w-full h-12 bg-hero text-black rounded-full cursor-pointer"
+                  className="w-full h-12 bg-hero text-black rounded-full cursor-pointer uppercase font-medium"
                 >
                   {` Checkout - ₦${totalPrice().toLocaleString()}`}
                 </Button>

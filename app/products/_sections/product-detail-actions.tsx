@@ -14,7 +14,7 @@ export default function ProductDetailActions({
   const [quantity, setQuantity] = useState(1);
   const addItem = useCart((state) => state.addItem);
   return (
-    <div className="flex flex-col lg:flex-row gap-2">
+    <div className="flex flex-col gap-4">
       <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
       <Button
         onClick={() =>
@@ -27,7 +27,7 @@ export default function ProductDetailActions({
           })
         }
         size={"lg"}
-        className="w-full bg-hero text-foreground cursor-pointer rounded-full h-12 lg:max-w-[300px]"
+        className="w-full bg-hero text-foreground cursor-pointer rounded-full h-12 uppercase font-medium -tracking-[0.01em]"
       >
         Add to cart
       </Button>
