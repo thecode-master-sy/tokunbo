@@ -1,3 +1,5 @@
+import { CircleQuestionMark } from "lucide-react";
+
 export const ChevronRight = () => (
   <svg
     width="13"
@@ -24,20 +26,7 @@ export const ChevronDown = () => (
   </svg>
 );
 
-export const InfoIcon = () => (
-  <svg
-    width="14"
-    height="14"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    className="shrink-0 opacity-55"
-  >
-    <circle cx="12" cy="12" r="10" />
-    <path d="M12 16v-4M12 8h.01" />
-  </svg>
-);
+export const InfoIcon = () => <CircleQuestionMark size={13} />;
 
 export const LockIcon = () => (
   <svg

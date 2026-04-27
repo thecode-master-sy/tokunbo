@@ -1,12 +1,5 @@
 import { TagIcon, InfoIcon } from "./checkout-icons";
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { CartItem } from "@/stores/cart-store";
 
 const fmt = (n: number) =>
   "₦" +

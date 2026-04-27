@@ -15,14 +15,7 @@ import {
   PinIcon,
   BagIcon,
 } from "@/app/checkout/_sections/checkout-icons";
-
-interface CartItem {
-  id: number;
-  name: string;
-  price: number;
-  quantity: number;
-  image: string;
-}
+import { useCart } from "@/providers/cart-provider";
 
 interface DeliveryLocation {
   id: number;
@@ -31,23 +24,6 @@ interface DeliveryLocation {
   readyTime: string;
   fee: number;
 }
-
-const CART_ITEMS: CartItem[] = [
-  {
-    id: 1,
-    name: "Strawberries (Not to be ordered alone)",
-    price: 1800,
-    quantity: 3,
-    image: "/images/strawberry.jpg",
-  },
-  {
-    id: 2,
-    name: "3 Bowls Of 330ml Exotic Berry Parfait",
-    price: 34500,
-    quantity: 1,
-    image: "/images/parfait.jpg",
-  },
-];
 
 const LOCATIONS: DeliveryLocation[] = [
   {
@@ -142,12 +118,13 @@ export default function CheckoutClient() {
   const [showDiscountInput, setShowDiscountInput] = useState(false);
   const [summaryOpen, setSummaryOpen] = useState(false);
   const [paying, setPaying] = useState(false);
-
-  const subtotal = CART_ITEMS.reduce((s, i) => s + i.price * i.quantity, 0);
+  const CART_ITEMS = useCart((state) => state.items);
+  const subtotal = useCart((state) => state.totalPrice());
   const tax = Math.round(subtotal * TAX_RATE);
   const tipAmt = addTip ? TIP_AMOUNT : 0;
   const total = subtotal + tax + tipAmt - discount;
-  const totalItems = CART_ITEMS.reduce((s, i) => s + i.quantity, 0);
+  const totalItemsFn = useCart((state) => state.totalItems);
+  const totalItems = totalItemsFn();
   const visibleLocs = showAllLocs ? LOCATIONS : [LOCATIONS[0]];
   const hiddenCount = LOCATIONS.length - 1;
 
@@ -167,8 +144,8 @@ export default function CheckoutClient() {
   };
 
   return (
-    <div className="min-h-screen bg-[#f7f5f2] text-[#111]">
-      <div className="hidden border-b border-[#ddd8d0] bg-[#eeeae4] max-[960px]:block">
+    <div className="min-h-screen bg-background text-[#111]">
+      <div className="hidden border-b border-[#ddd8d0] bg-[#eeeae4] max-[1028px]:block">
         <button
           onClick={() => setSummaryOpen((v) => !v)}
           className="flex w-full items-center justify-between px-5 py-3.5 text-sm font-medium"
@@ -215,17 +192,10 @@ export default function CheckoutClient() {
         )}
       </div>
 
-      <div className="mx-auto grid min-h-screen grid-cols-1 md:grid-cols-[2fr_1fr] lg:grid-cols-[1fr_500px]">
-        <main className="w-full px-4 py-5 lg:justify-self-end  max-w-[600px] mx-auto">
+      <div className="mx-auto grid min-h-screen grid-cols-1 lg:grid-cols-[1fr_500px]">
+        <main className="w-full px-11 py-11 lg:justify-self-end  max-w-[600px] mx-auto">
           <section className="mb-9">
-            <SectionHead
-              title="Contact"
-              right={
-                <a href="/login" className="text-sm text-blue-600 no-underline">
-                  Sign in
-                </a>
-              }
-            />
+            <SectionHead title="Contact" />
             <FloatInput
               id="email"
               label="Email"
@@ -234,7 +204,7 @@ export default function CheckoutClient() {
               onChange={(e) => setEmail(e.target.value)}
               autoComplete="email"
             />
-            <label className="mt-1 flex items-center gap-2.5 text-sm text-[#444]">
+            <label className="mt-4 flex items-center gap-2 text-sm text-[#444]">
               <input
                 type="checkbox"
                 checked={marketing}
@@ -338,29 +308,6 @@ export default function CheckoutClient() {
                   purchase.
                 </div>
               )}
-
-              <label
-                className={`flex items-center gap-3 px-4 py-3.5 cursor-pointer ${payMethod === "nomba" ? "bg-[#eef2ff]" : ""}`}
-              >
-                <input
-                  type="radio"
-                  name="pay"
-                  checked={payMethod === "nomba"}
-                  onChange={() => setPayMethod("nomba")}
-                  className="shrink-0 accent-blue-600"
-                />
-                <span className="flex-1 text-sm font-medium">
-                  Nomba (Faster, Safer Checkout)
-                </span>
-                <div className="flex items-center gap-1.5">
-                  <MiniCard label="VISA" textColor="#fff" bg="#00579F" />
-                  <MiniCard label="MC" textColor="#fff" bg="#EB001B" />
-                  <MiniCard label="AMEX" textColor="#fff" bg="#007BC1" />
-                  <span className="rounded bg-[#f0ece6] px-1.5 py-[2px] text-[12px] font-semibold text-[#666]">
-                    +2
-                  </span>
-                </div>
-              </label>
             </div>
           </section>
 
@@ -401,22 +348,14 @@ export default function CheckoutClient() {
 
             <FloatInput
               id="addr"
-              label="Input your correct address here – ₦2,000 for update/change"
+              label="Shipping Address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
               autoComplete="street-address"
               className="mb-3"
             />
-            <FloatInput
-              id="altphone"
-              label="📞 Alternative Phone number"
-              value={altPhone}
-              onChange={(e) => setAltPhone(e.target.value)}
-              type="tel"
-              className="mb-3"
-            />
 
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3 mt-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-2 mt-3">
               <FloatInput
                 id="city"
                 label="City"
@@ -443,14 +382,6 @@ export default function CheckoutClient() {
                   <ChevronDown />
                 </span>
               </div>
-
-              <FloatInput
-                id="zip"
-                label="🚫 RIDER WILL ONLY STOP AT YOUR GATE"
-                value={zip}
-                onChange={(e) => setZip(e.target.value)}
-                autoComplete="postal-code"
-              />
             </div>
 
             <div className="relative mt-3">
@@ -479,14 +410,14 @@ export default function CheckoutClient() {
                 onChange={(e) => setAddTip(e.target.checked)}
                 className="h-[17px] w-[17px] shrink-0 accent-[#111]"
               />
-              <span>Show your support for the team at MelonyPine</span>
+              <span>Show your support for the team at Blessing Tokunbo</span>
             </label>
           </section>
 
           <button
             onClick={() => {}}
             disabled={paying}
-            className="mb-6 flex w-full items-center justify-center rounded-[10px] bg-[#22c55e] p-[17px] text-[16px] font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-70"
+            className="mb-6 flex w-full items-center justify-center rounded-[10px] bg-hero p-[17px] text-[16px] font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-70"
           >
             {paying ? (
               <span className="h-[22px] w-[22px] animate-spin rounded-full border-[2.5px] border-white/30 border-t-white" />
@@ -508,7 +439,7 @@ export default function CheckoutClient() {
           </div>
         </main>
 
-        <aside className="hidden border-l border-[#ddd8d0] bg-[#eeeae4] border px-11 py-[44px] md:block">
+        <aside className="hidden border-l border-[#ddd8d0] bg-[#eeeae4] border px-11 py-[44px] lg:block">
           <div className="sticky top-8">
             <SummaryContent
               cartItems={CART_ITEMS}
