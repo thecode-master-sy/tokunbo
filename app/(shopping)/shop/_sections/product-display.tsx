@@ -1,17 +1,19 @@
 import { Product } from "@/lib/product-types";
 import ProductCard from "@/components/product-card";
-import Pagination from "@/components/pagination";
+import PaginationComponent from "@/app/(shopping)/shop/_sections/pagination";
+import { PaginationSearchParams } from "@/lib/nuqs/search-params";
 
 type ProductDisplayProps = {
   products: Product[];
   currentPage: number;
   totalPages: number;
+  pagination: Promise<PaginationSearchParams>;
 };
 
 export default function ProductDisplay({
   products,
-  currentPage,
   totalPages,
+  pagination,
 }: ProductDisplayProps) {
   return (
     <div className="space-y-8">
@@ -21,7 +23,7 @@ export default function ProductDisplay({
         ))}
       </div>
 
-      <Pagination currentPage={currentPage} totalPages={totalPages} />
+      <PaginationComponent numPages={totalPages} pagination={pagination} />
     </div>
   );
 }

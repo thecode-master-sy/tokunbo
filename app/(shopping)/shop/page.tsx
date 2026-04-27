@@ -6,12 +6,14 @@ import { getProducts, getTotalProductsCount } from "@/lib/dal";
 import { loadSearchParams } from "@/lib/nuqs/search-params";
 import type { SearchParams } from "nuqs/server";
 
-type PageProps = {
+export type PageProps = {
   searchParams: Promise<SearchParams>;
 };
 
 export default async function Shop({ searchParams }: PageProps) {
-  const { category, sort, page } = await loadSearchParams(searchParams);
+  const pagination = loadSearchParams(searchParams);
+
+  const { page, sort, category } = await pagination;
 
   const [products, totalCount] = await Promise.all([
     getProducts({
@@ -47,6 +49,7 @@ export default async function Shop({ searchParams }: PageProps) {
         products={products}
         currentPage={page}
         totalPages={totalPages}
+        pagination={pagination}
       />
     </div>
   );

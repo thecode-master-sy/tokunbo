@@ -5,8 +5,10 @@ import {
   productsQuery,
   singleProductQuery,
   relatedProductsQuery,
+  categoriesQuery,
 } from "@/lib/sanity/queries";
 import { client } from "@/lib/sanity/client";
+import { Category } from "./product-types";
 
 import { Product } from "./product-types";
 import { cache } from "react";
@@ -78,3 +80,7 @@ export const getSimilarProductsFromCategory = cache(
     return products;
   },
 );
+
+export const getCategories = cache(async () => {
+  return (await client.fetch(categoriesQuery)) as Category[];
+});

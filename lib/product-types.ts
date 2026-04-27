@@ -1,6 +1,15 @@
 export type Category = {
   name: string;
-  imageUrl: string;
+  _id: string;
+  slug: {
+    current: string;
+  };
+  image: {
+    alt: string;
+    asset: {
+      _ref: string;
+    };
+  };
 };
 
 export type BestSellingProduct = {

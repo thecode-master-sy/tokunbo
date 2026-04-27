@@ -1,48 +1,8 @@
 import Category from "@/components/category";
-import { Category as CategoryType } from "@/lib/product-types";
+import { getCategories } from "@/lib/dal";
 
-const categories: CategoryType[] = [
-  {
-    name: "Pots",
-    imageUrl: "/images/category/pot.png",
-  },
-
-  {
-    name: "Kettles",
-    imageUrl: "/images/category/kettle.jpg",
-  },
-  {
-    name: "Knives",
-    imageUrl: "/images/category/knives.jpg",
-  },
-  {
-    name: "Blenders",
-    imageUrl: "/images/category/blender.jpg",
-  },
-  {
-    name: "Gas cookers",
-    imageUrl: "/images/category/gas-cooker.jpg",
-  },
-
-  {
-    name: "Pot covers",
-    imageUrl: "/images/category/pot-covers.jpg",
-  },
-  {
-    name: "Air fryers",
-    imageUrl: "/images/category/air-fryer.jpg",
-  },
-  {
-    name: "Children's toy's",
-    imageUrl: "/images/category/childrens-toys.jpg",
-  },
-  {
-    name: "Frying pans",
-    imageUrl: "/images/category/childrens-toys.jpg",
-  },
-];
-
-export default function ProductCategories() {
+export default async function ProductCategories() {
+  const categories = await getCategories();
   return (
     <div className="overflow-x-hidden px-4 lg:px-6">
       <div className="flex flex-wrap md:w-max gap-2 items-center py-4">
