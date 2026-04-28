@@ -13,14 +13,15 @@ export type PageProps = {
 export default async function Shop({ searchParams }: PageProps) {
   const pagination = loadSearchParams(searchParams);
 
-  const { page, sort, category } = await pagination;
+  const { page, sort, category, query } = await pagination;
 
   const [products, totalCount] = await Promise.all([
     getProducts({
-      page: page,
+      page,
       limit: 20,
       categories: category,
-      sort: sort,
+      sort,
+      query,
     }),
     getTotalProductsCount(),
   ]);

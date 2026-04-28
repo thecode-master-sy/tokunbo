@@ -12,6 +12,7 @@ import {
 import { useQueryState } from "nuqs";
 
 export const searchParams = {
+  query: parseAsString.withDefault(""),
   page: parseAsInteger.withDefault(1),
   sort: parseAsString.withDefault("Featured"),
   category: parseAsArrayOf(parseAsString).withDefault([]),

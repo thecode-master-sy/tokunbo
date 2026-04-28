@@ -13,9 +13,18 @@ export const featuredProductsQuery = `*[_type == "siteSettings"][0].homepage.fea
     category->
   }`;
 
-export const productsQuery = `*[_type == "product" && (count($categories) == 0 || category->slug.current in $categories)]
-  | order(_createdAt desc) [$offset...$limit] {
-    ...,
+export const productsQuery = `*[_type == "product" && status == "active" &&
+  (count($categories) == 0 || category->slug.current in $categories) &&
+  (
+    !defined($query) || $query == "" ||
+    name match $query + "*" ||
+    brand match $query + "*" ||
+    sku match $query ||
+    tags[] match $query
+  )
+]
+| order(_createdAt desc) [$offset...$limit] {
+   ...,
     "category": category->{
       name,
       "slug": slug.current
@@ -35,10 +44,9 @@ export const relatedProductsQuery = `
   }
 `;
 
-
 export const categoriesQuery = `*[_type == "category"]{
   _id,
   name,
   slug,
   image
-}`
+}`;

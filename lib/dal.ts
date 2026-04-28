@@ -34,11 +34,13 @@ export const getProducts = cache(
     limit = 20,
     categories = [],
     sort,
+    query,
   }: {
     page: number;
     limit?: number;
     categories?: string[];
     sort?: string;
+    query?: string;
   }) => {
     const offset = (page - 1) * limit;
 
@@ -47,6 +49,7 @@ export const getProducts = cache(
       limit,
       categories,
       sort,
+      query,
     });
 
     console.log(products);

@@ -21,7 +21,7 @@ export default async function ServerPaginationControls({
   numPages,
   pagination,
 }: PaginationControlsProps) {
-  const { page, sort, category } = await pagination;
+  const { page, sort, category, query } = await pagination;
 
   const isFirstPage = page <= 1;
   const isLastPage = page >= numPages;
@@ -33,6 +33,7 @@ export default async function ServerPaginationControls({
       page: safePage,
       sort,
       category,
+      query,
     });
   }
 
@@ -74,8 +75,6 @@ export default async function ServerPaginationControls({
           />
         </PaginationItem>
       </PaginationContent>
-
-      
     </Pagination>
   );
 }
