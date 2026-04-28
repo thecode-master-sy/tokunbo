@@ -23,7 +23,7 @@ export const productsQuery = `*[_type == "product" && status == "active" &&
     tags[] match $query
   )
 ]
-| order(_createdAt desc) [$offset....$offset + $limit] {
+| order(_createdAt desc) [$offset...$offset + $limit] {
    ...,
     "category": category->{
       name,
