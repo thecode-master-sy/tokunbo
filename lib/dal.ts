@@ -13,6 +13,8 @@ import { Category } from "./product-types";
 import { Product } from "./product-types";
 import { cache } from "react";
 
+//move this out to a separate file.
+
 export const getBestSellingProducts = cache(async () => {
   const products: Product[] = await client.fetch(bestSellingProductsQuery);
   return products;
@@ -49,8 +51,8 @@ export const getProducts = cache(
       limit,
       categories,
       sort,
-      query,
-    });
+      query: query ?? "",
+    } as Record<string, unknown>); //find a better fix for this.
 
     console.log(products);
 
