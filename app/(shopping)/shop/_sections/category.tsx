@@ -2,13 +2,7 @@
 
 import { useState } from "react";
 import { ChevronDown, ChevronUp, X, SlidersHorizontal } from "lucide-react";
-import {
-  useQueryStates,
-  parseAsArrayOf,
-  parseAsInteger,
-  parseAsString,
-} from "nuqs";
-import { searchParams } from "@/lib/nuqs/search-params";
+import { searchParams, useSearchParams } from "@/lib/nuqs/search-params";
 
 const FILTER_OPTIONS: Record<string, { name: string; slug: string }[]> = {
   "Kitchen Utensils": [
@@ -40,10 +34,7 @@ export default function ShopCategory() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isSortOpen, setIsSortOpen] = useState(false);
 
-  const [{ category, sort, page }, setParams] = useQueryStates(searchParams, {
-    history: "push",
-    shallow: false,
-  });
+  const [{ category, sort, page, query }, setParams] = useSearchParams();
 
   const updateCategory = (value: string, checked: boolean) => {
     const next = checked
@@ -57,6 +48,23 @@ export default function ShopCategory() {
     setParams({ sort: value, page: 1 });
     setIsSortOpen(false);
   };
+
+  const selectedCategories = Object.values(FILTER_OPTIONS)
+    .flat()
+    .filter((item) => category.includes(item.slug));
+
+  const removeCategory = (value: string) => {
+    setParams({
+      category: category.filter((item) => item !== value),
+      page: 1,
+    });
+  };
+
+  const clearAllFilters = () => {
+    setParams(null);
+  };
+
+  const hasFilters = category.length > 0 || query !== "";
 
   return (
     <div className="py-4 border-b border-gray-200">
@@ -131,6 +139,32 @@ export default function ShopCategory() {
           />
         </div>
       </div>
+
+      {hasFilters && (
+        <div className="flex flex-wrap items-center gap-3 my-4">
+          {selectedCategories.map((item) => (
+            <button
+              key={item.slug}
+              type="button"
+              onClick={() => removeCategory(item.slug)}
+              className="flex items-center gap-2 bg-banner text-sm cursor-pointer px-3 py-1"
+            >
+              <span>{item.name}</span>
+              <X size={16} />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {hasFilters && (
+        <button
+          type="button"
+          onClick={clearAllFilters}
+          className="underline text-sm cursor-pointer"
+        >
+          Clear all Filters
+        </button>
+      )}
 
       <div className="flex md:hidden gap-2">
         <button

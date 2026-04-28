@@ -9,7 +9,7 @@ import {
   type inferParserType,
 } from "nuqs/server";
 
-import { useQueryState } from "nuqs";
+import { useQueryState, useQueryStates } from "nuqs";
 
 export const searchParams = {
   query: parseAsString.withDefault(""),
@@ -25,6 +25,12 @@ export const usePage = (options: Options = {}) =>
     "page",
     searchParams.page.withOptions({ ...options, shallow: false }),
   );
+
+export const useSearchParams = (options: Options = {}) =>
+  useQueryStates(searchParams, {
+    ...options,
+    shallow: false,
+  });
 
 export const loadSearchParams = createLoader(searchParams);
 export const getPaginatedLink = createSerializer(searchParams);
