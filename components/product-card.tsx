@@ -5,6 +5,8 @@ import { Handbag } from "lucide-react";
 import Link from "next/link";
 import { useCart } from "@/providers/cart-provider";
 import { urlFor } from "@/lib/sanity/image-utility";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 
 export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCart((state) => state.addItem);
@@ -12,15 +14,23 @@ export default function ProductCard({ product }: { product: Product }) {
   return (
     <div className="p-3 bg-category rounded-md space-y-4 h-full relative">
       <button
-        onClick={() =>
+        onClick={() => {
           addItem({
             id: product._id,
             name: product.name,
             price: product.price,
             image: urlFor(product.images[0]).width(600).url(),
             quantity: 1,
-          })
-        }
+          });
+          toast.success("Item added to cart", {
+            position: "bottom-center",
+            action: (
+              <Button className="ml-auto bg-white text-black">
+                <Link href="/cart">View cart</Link>
+              </Button>
+            ),
+          });
+        }}
         className="absolute z- top-4 right-4 text-caps bg-category cursor-pointer w-8 h-8 flex justify-center items-center rounded-full"
       >
         <Handbag className="w-4 h-4 cursor-pointer" />

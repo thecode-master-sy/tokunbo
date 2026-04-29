@@ -4,6 +4,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import { CartProvider } from "@/providers/cart-provider";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Toaster } from "@/components/ui/sonner";
 
 const tenor_sans = Tenor_Sans({
   variable: "--tenor-sans",
@@ -41,6 +42,7 @@ export default function RootLayout({
       <body className="min-h-full flex flex-col">
         <CartProvider>
           <NuqsAdapter>{children}</NuqsAdapter>
+          <Toaster visibleToasts={1} />
         </CartProvider>
       </body>
     </html>
