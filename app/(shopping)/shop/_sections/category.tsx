@@ -140,6 +140,27 @@ export default function ShopCategory() {
         </div>
       </div>
 
+      <div className="flex md:hidden gap-2">
+        <button
+          onClick={() => {
+            setIsMobileMenuOpen(true);
+            setIsSortOpen(false);
+          }}
+          className="flex items-center rounded-full justify-center gap-2 bg-category py-2 px-4 text-caps font-mono uppercase rouded-full"
+        >
+          <SlidersHorizontal size={20} /> Filters
+        </button>
+
+        <SortDropdown
+          isMobile={true}
+          setIsSortOpen={setIsSortOpen}
+          isSortOpen={isSortOpen}
+          setActiveSort={() => {}}
+          activeSort={sort}
+          onSelectSort={updateSort}
+        />
+      </div>
+
       {hasFilters && (
         <div className="flex flex-wrap items-center gap-3 my-4">
           {selectedCategories.map((item) => (
@@ -165,27 +186,6 @@ export default function ShopCategory() {
           Clear all Filters
         </button>
       )}
-
-      <div className="flex md:hidden gap-2">
-        <button
-          onClick={() => {
-            setIsMobileMenuOpen(true);
-            setIsSortOpen(false);
-          }}
-          className="flex items-center rounded-full justify-center gap-2 bg-category py-2 px-4 text-caps font-mono uppercase rouded-full"
-        >
-          <SlidersHorizontal size={20} /> Filters
-        </button>
-
-        <SortDropdown
-          isMobile={true}
-          setIsSortOpen={setIsSortOpen}
-          isSortOpen={isSortOpen}
-          setActiveSort={() => {}}
-          activeSort={sort}
-          onSelectSort={updateSort}
-        />
-      </div>
 
       {isMobileMenuOpen && (
         <div className="fixed inset-0 bg-white z-[100] overflow-y-auto p-6">
@@ -284,9 +284,7 @@ const SortDropdown = ({
                     </div>
                   )}
                 </div>
-                <span className="text-base font-medium whitespace-nowrap">
-                  {option}
-                </span>
+                <span className="whitespace-nowrap">{option}</span>
               </label>
               {idx === 3 && <hr className="mt-5 border-black/20" />}
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
@@ -10,7 +10,9 @@ import { getPaginatedLink } from "@/lib/nuqs/search-params";
 
 export default function HeroSection() {
   const [query, setQuery] = useState("");
+  const [isPending, startTransition] = useTransition();
   const router = useRouter();
+
   function pageURL(query: string) {
     return getPaginatedLink("/shop", {
       query,
@@ -20,7 +22,9 @@ export default function HeroSection() {
   const handleSearch = () => {
     const urlToPush = pageURL(query);
 
-    router.push(urlToPush);
+    startTransition(() => {
+      router.push(urlToPush);
+    });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -55,9 +59,14 @@ export default function HeroSection() {
               size="icon"
               variant="ghost"
               onClick={handleSearch}
+              disabled={isPending}
               className="absolute top-1/2 right-4 -translate-y-1/2"
             >
-              <Search />
+              {isPending ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-black/40 border-t-black" />
+              ) : (
+                <Search />
+              )}
             </Button>
           </div>
         </div>
