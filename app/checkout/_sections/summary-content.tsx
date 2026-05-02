@@ -1,5 +1,6 @@
 import { TagIcon, InfoIcon } from "./checkout-icons";
 import { CartItem } from "@/stores/cart-store";
+import { Input } from "@/components/ui/input";
 
 const fmt = (n: number) =>
   "₦" +
@@ -45,79 +46,59 @@ export function SummaryContent({
 }) {
   return (
     <>
-      <ul className="mb-5 flex flex-col gap-4 list-none">
+      <ul className="mb-4 flex flex-col gap-4 list-none lg:h-60 lg:overflow-y-scroll py-4">
         {cartItems.map((item) => (
           <li key={item.id} className="flex items-center gap-3.5">
             <div className="relative shrink-0">
               <img
                 src={item.image}
                 alt={item.name}
-                className="h-16 w-16 rounded-[10px] border border-[#d4d0ca] bg-[#f0ece6] object-cover"
+                className="h-16 w-16 rounded-[10px] border border-white border-3 bg-[#f0ece6] object-cover"
               />
-              <span className="absolute -right-2 -top-2 flex h-[22px] w-[22px] items-center justify-center rounded-full bg-[#333] text-[11px] font-bold text-white">
+              <span className="absolute -right-2 -top-2 flex h-[22px] w-[22px] border-2 border-white items-center justify-center rounded-md bg-[#333] text-[11px] font-bold text-white">
                 {item.quantity}
               </span>
             </div>
-            <span className="flex-1 text-[13.5px] leading-5 text-[#333]">
-              {item.name}
-            </span>
-            <span className="whitespace-nowrap text-[13.5px] font-semibold text-[#111]">
+            <span className="flex-1 text-sm">{item.name}</span>
+            <span className="whitespace-nowrap text-sm">
               {fmt(item.price * item.quantity)}
             </span>
           </li>
         ))}
       </ul>
 
-      <div className="my-4 h-px bg-[#d4d0ca]" />
+      <div className="my-4 h-px bg-border" />
 
-      {!showDiscountInput ? (
-        <button
-          onClick={() => setShowDiscountInput(true)}
-          className="mb-4 flex items-center gap-2 bg-transparent p-0 text-sm font-medium text-[#111] underline underline-offset-2"
-        >
-          <TagIcon /> Add discount
-        </button>
-      ) : (
-        <div className="mb-1">
-          <div className="mb-1 flex gap-2.5">
-            <input
-              placeholder="Discount code"
-              value={discountCode}
-              onChange={(e) => {
-                setDiscountCode(e.target.value);
-                setDiscountMsg(null);
-              }}
-              className="flex-1 rounded-lg border border-[#c8c4be] bg-white px-4 py-[11px] text-sm text-[#111] outline-none"
-            />
-            <button className="rounded-lg border border-[#c0bcb4] bg-white px-[18px] py-[11px] text-sm font-medium text-[#444]">
-              Apply
-            </button>
-          </div>
-          {discountMsg && (
-            <p
-              className={`mt-1 text-xs ${discountMsg.ok ? "text-green-600" : "text-red-600"}`}
-            >
-              {discountMsg.text}
-            </p>
-          )}
+      <div>
+        <div className="flex gap-2.5">
+          <Input
+            placeholder="Discount code"
+            value={discountCode}
+            onChange={(e) => {
+              setDiscountCode(e.target.value);
+              setDiscountMsg(null);
+            }}
+            className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
+          />
+          <button className="rounded-lg border border-[#c0bcb4] bg-white px-[18px] py-[11px] text-sm font-medium text-[#444]">
+            Apply
+          </button>
         </div>
-      )}
+      </div>
 
-      <div className="my-4 h-px bg-[#d4d0ca]" />
-
-      <div className="flex flex-col gap-[11px]">
-        <div className="flex items-center justify-between text-sm text-[#555]">
+      <div className="flex flex-col gap-4 mt-4">
+        <div className="flex items-center justify-between text-sm">
           <span className="flex items-center gap-[5px]">
             Subtotal · {totalItems} items
           </span>
           <span>{fmt(subtotal)}</span>
         </div>
 
-        <div className="flex items-center justify-between text-sm text-[#555]">
+        <div className="flex items-center justify-between text-sm">
           <span className="flex items-center gap-[5px]">
             Pickup in store <InfoIcon />
           </span>
-          <span className="font-medium text-[#111]">FREE</span>
+          <span>free</span>
         </div>
 
         {discount > 0 && (
@@ -128,13 +109,13 @@ export function SummaryContent({
         )}
 
         {addTip && (
-          <div className="flex items-center justify-between text-sm text-[#555]">
+          <div className="flex items-center justify-between text-sm">
             <span>Tip</span>
             <span>{fmt(tipAmount)}</span>
           </div>
         )}
 
-        <div className="flex items-center justify-between text-sm text-[#555]">
+        <div className="flex items-center justify-between text-sm">
           <span className="flex items-center gap-[5px]">
             Estimated taxes <InfoIcon />
           </span>
@@ -142,14 +123,12 @@ export function SummaryContent({
         </div>
       </div>
 
-      <div className="my-4 h-px bg-[#d4d0ca]" />
+      <div className="my-4 h-px bg-border" />
 
       <div className="flex items-baseline justify-between">
-        <span className="text-[17px] font-bold text-[#111]">Total</span>
-        <span className="text-xl font-bold text-[#111]">
-          <small className="mr-[2px] text-xs font-normal text-[#888]">
-            NGN{" "}
-          </small>
+        <span className="text-[17px] font-bold ">Total</span>
+        <span className="text-xl font-bold">
+          <small className="mr-[2px] text-xs font-normal">NGN </small>
           {fmt(total)}
         </span>
       </div>

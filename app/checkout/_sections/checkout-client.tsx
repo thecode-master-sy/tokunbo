@@ -5,87 +5,13 @@ import { FloatInput } from "@/app/checkout/_sections/float-input";
 import { SectionHead } from "@/app/checkout/_sections/section-head";
 import { MiniCard } from "@/app/checkout/_sections/mini-card";
 import { SummaryContent } from "@/app/checkout/_sections/summary-content";
-import {
-  ChevronRight,
-  ChevronDown,
-  InfoIcon,
-  LockIcon,
-  ClockIcon,
-  TagIcon,
-  PinIcon,
-  BagIcon,
-} from "@/app/checkout/_sections/checkout-icons";
+import { ChevronDown, LockIcon } from "@/app/checkout/_sections/checkout-icons";
 import { useCart } from "@/providers/cart-provider";
-
-interface DeliveryLocation {
-  id: number;
-  storeName: string;
-  address: string;
-  readyTime: string;
-  fee: number;
-}
-
-const LOCATIONS: DeliveryLocation[] = [
-  {
-    id: 1,
-    storeName: "Yoghurt and Granola",
-    address:
-      "#ABUJA PICKUP - 14 Musa Danjuma street by Zardock Heights School, 69 Road Gwarinpa., #LAGOS MAINLAND PICKUP- No. 4 Bunmi Joseph street, Gbagada Phase 2, Kosofe, #LAGOS ISLAND PICKUP - 4 Muritala Eletu Way, Osapa London, Lekki LA, Nigeria",
-    readyTime: "Usually ready in 1 hour",
-    fee: 0,
-  },
-  {
-    id: 2,
-    storeName: "Yoghurt and Granola – VI",
-    address:
-      "#LAGOS ISLAND PICKUP - 22 Akin Adesola Street, Victoria Island, Lagos, Nigeria",
-    readyTime: "Usually ready in 2 hours",
-    fee: 0,
-  },
-];
+import { Input } from "@/components/ui/input";
+import DeliveryForm from "./delivery-form";
 
 const TAX_RATE = 0.002;
 const TIP_AMOUNT = 500;
-
-const NIGERIAN_STATES = [
-  "Abia",
-  "Adamawa",
-  "Akwa Ibom",
-  "Anambra",
-  "Bauchi",
-  "Bayelsa",
-  "Benue",
-  "Borno",
-  "Cross River",
-  "Delta",
-  "Ebonyi",
-  "Edo",
-  "Ekiti",
-  "Enugu",
-  "FCT",
-  "Gombe",
-  "Imo",
-  "Jigawa",
-  "Kaduna",
-  "Kano",
-  "Katsina",
-  "Kebbi",
-  "Kogi",
-  "Kwara",
-  "Lagos",
-  "Nasarawa",
-  "Niger",
-  "Ogun",
-  "Ondo",
-  "Osun",
-  "Oyo",
-  "Plateau",
-  "Rivers",
-  "Sokoto",
-  "Taraba",
-  "Yobe",
-  "Zamfara",
-];
 
 const fmt = (n: number) =>
   "₦" +
@@ -94,20 +20,33 @@ const fmt = (n: number) =>
     maximumFractionDigits: 2,
   });
 
+export type CheckoutForm = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  phone: string;
+  city: string;
+  zip: string;
+  state: string;
+};
+
+const defaultFormValue = {
+  email: "",
+  firstName: "",
+  lastName: "",
+  address: "",
+  phone: "",
+  city: "",
+  zip: "",
+  state: "",
+};
+
 export default function CheckoutClient() {
-  const [email, setEmail] = useState("");
+  const [checkoutForm, setCheckoutForm] =
+    useState<CheckoutForm>(defaultFormValue);
   const [marketing, setMarketing] = useState(false);
-  const [locationId, setLocationId] = useState(1);
-  const [showAllLocs, setShowAllLocs] = useState(false);
   const [payMethod, setPayMethod] = useState<"paystack" | "nomba">("paystack");
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [address, setAddress] = useState("");
-  const [altPhone, setAltPhone] = useState("");
-  const [city, setCity] = useState("");
-  const [stateVal, setStateVal] = useState("");
-  const [zip, setZip] = useState("");
-  const [phone, setPhone] = useState("");
   const [addTip, setAddTip] = useState(false);
   const [discountCode, setDiscountCode] = useState("");
   const [discount, setDiscount] = useState(0);
@@ -125,8 +64,6 @@ export default function CheckoutClient() {
   const total = subtotal + tax + tipAmt - discount;
   const totalItemsFn = useCart((state) => state.totalItems);
   const totalItems = totalItemsFn();
-  const visibleLocs = showAllLocs ? LOCATIONS : [LOCATIONS[0]];
-  const hiddenCount = LOCATIONS.length - 1;
 
   const applyDiscount = () => {
     if (!discountCode.trim()) {
@@ -144,32 +81,32 @@ export default function CheckoutClient() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-[#111]">
-      <div className="hidden border-b border-[#ddd8d0] bg-[#eeeae4] max-[1028px]:block">
+    <div className="min-h-screen bg-background">
+      <div className="lg:hidden">
         <button
           onClick={() => setSummaryOpen((v) => !v)}
-          className="flex w-full items-center justify-between px-5 py-3.5 text-sm font-medium"
+          className=" w-full flex   bg-category border-b justify-center"
         >
-          <span className="flex items-center gap-2 text-blue-600">
-            <BagIcon />
-            Order summary
-            <span
-              className={
-                summaryOpen
-                  ? "rotate-180 transition-transform"
-                  : "transition-transform"
-              }
-            >
-              <ChevronDown />
+          <span className="flex w-full items-center justify-between  min-h-[4.5rem] sm:max-w-[580px] px-3.5 py-2">
+            <span className="flex items-center gap-2">
+              <span className="text-[#414042]">Order summary</span>
+              <span
+                className={
+                  summaryOpen
+                    ? "rotate-180 transition-transform"
+                    : "transition-transform"
+                }
+              >
+                <ChevronDown />
+              </span>
             </span>
-          </span>
-          <span className="text-[15px] font-bold text-[#111]">
-            {fmt(total)}
+
+            <span className="text-[18px] font-bold">{fmt(total)}</span>
           </span>
         </button>
 
         {summaryOpen && (
-          <div className="border-t border-[#ddd8d0] px-5 pb-1 pt-5">
+          <div className="border-t border-[#ddd8d0] bg-category px-3.5 pt-2 pb-4">
             <SummaryContent
               cartItems={CART_ITEMS}
               subtotal={subtotal}
@@ -192,255 +129,114 @@ export default function CheckoutClient() {
         )}
       </div>
 
-      <div className="mx-auto grid min-h-screen grid-cols-1 lg:grid-cols-[1fr_500px]">
-        <main className="w-full px-11 py-11 lg:justify-self-end  max-w-[600px] mx-auto">
-          <section className="mb-9">
-            <SectionHead title="Contact" />
-            <FloatInput
-              id="email"
-              label="Email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              autoComplete="email"
-            />
-            <label className="mt-4 flex items-center gap-2 text-sm text-[#444]">
-              <input
-                type="checkbox"
-                checked={marketing}
-                onChange={(e) => setMarketing(e.target.checked)}
-                className="h-4 w-4 shrink-0 accent-[#111]"
+      <div className="mx-auto grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(min-content,calc(50%+5rem))_1fr]">
+        <main className="flex lg:justify-end justify-center">
+          <div className="w-full px-3.5 py-11 lg:px-9 sm:max-w-[580px]">
+            <section className="mb-9">
+              <div className="space-y-4">
+                <h3 className="text-[20px] font-medium">Contact</h3>
+
+                <Input
+                  placeholder="Email"
+                  className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
+                />
+              </div>
+              <label className="mt-4 flex items-center gap-2 text-sm text-[#444]">
+                <input
+                  type="checkbox"
+                  checked={marketing}
+                  onChange={(e) => setMarketing(e.target.checked)}
+                  className="h-4 w-4 shrink-0 accent-[#111]"
+                />
+                <span>Email me with news and offers</span>
+              </label>
+            </section>
+
+            <section className="mb-9">
+              <DeliveryForm
+                formValues={checkoutForm}
+                setFormValues={setCheckoutForm}
               />
-              <span>Email me with news and offers</span>
-            </label>
-          </section>
+            </section>
 
-          <section className="mb-9">
-            <SectionHead
-              title="Delivery"
-              right={
-                <span className="flex items-center gap-1.5 text-[13px] font-medium text-blue-600">
-                  <PinIcon /> Nigeria
-                </span>
-              }
-            />
-            <p className="mb-3.5 text-[13.5px] text-[#666]">
-              There are {LOCATIONS.length} locations with your item
-            </p>
+            <section className="mb-9">
+              <SectionHead title="Payment" />
+              <p className="mb-3.5 flex items-center gap-1.5 text-[13.5px] text-[#666]">
+                <LockIcon /> All transactions are secure and encrypted.
+              </p>
 
-            <div className="flex flex-col gap-2.5">
-              {visibleLocs.map((loc) => (
+              <div className="overflow-hidden rounded-[10px] border border-[#d4d0ca] bg-white">
                 <label
-                  key={loc.id}
-                  className={`flex items-start gap-3 rounded-[10px] border bg-white px-4 py-3.5 cursor-pointer ${
-                    locationId === loc.id ? "border-[#111]" : "border-[#d4d0ca]"
-                  }`}
+                  className={`flex items-center gap-3 px-4 py-3.5 border-b border-[#e8e4de] cursor-pointer ${payMethod === "paystack" ? "bg-[#eef2ff]" : ""}`}
                 >
                   <input
                     type="radio"
-                    name="loc"
-                    checked={locationId === loc.id}
-                    onChange={() => setLocationId(loc.id)}
-                    className="mt-[3px] shrink-0 accent-[#111]"
+                    name="pay"
+                    checked={payMethod === "paystack"}
+                    onChange={() => setPayMethod("paystack")}
+                    className="shrink-0 accent-blue-600"
                   />
-                  <div className="min-w-0 flex-1">
-                    <div className="mb-1.5 flex gap-2">
-                      <span className="text-sm font-semibold">
-                        {loc.storeName}
-                      </span>
-                      <span className="ml-auto text-sm font-semibold">
-                        {loc.fee === 0 ? "FREE" : fmt(loc.fee)}
-                      </span>
-                    </div>
-                    <p className="mb-1.5 text-[13px] leading-5 text-[#666]">
-                      {loc.address}
-                    </p>
-                    <p className="flex items-center gap-1.5 text-xs text-[#888]">
-                      <ClockIcon /> {loc.readyTime}
-                    </p>
+                  <span className="flex-1 text-sm font-medium">Paystack</span>
+                  <div className="flex items-center gap-1.5">
+                    <MiniCard label="MC" textColor="#fff" bg="#EB001B" />
+                    <MiniCard label="VISA" textColor="#fff" bg="#00579F" />
+                    <MiniCard label="MTN" textColor="#000" bg="#FFC107" />
+                    <span className="rounded bg-[#f0ece6] px-1.5 py-[2px] text-[12px] font-semibold text-[#666]">
+                      +5
+                    </span>
                   </div>
                 </label>
-              ))}
 
-              {!showAllLocs && hiddenCount > 0 && (
-                <button
-                  onClick={() => setShowAllLocs(true)}
-                  className="flex items-center justify-between rounded-[10px] border border-[#d4d0ca] bg-white px-4 py-3.5 text-sm font-medium text-blue-600"
-                >
-                  {hiddenCount} more location{hiddenCount > 1 ? "s" : ""}{" "}
-                  <ChevronRight />
-                </button>
-              )}
-            </div>
-          </section>
+                {payMethod === "paystack" && (
+                  <div className="border-b border-[#e8e4de] bg-[#f8f7f5] px-4 py-3 text-center text-[13.5px] text-[#555]">
+                    You&apos;ll be redirected to Paystack to complete your
+                    purchase.
+                  </div>
+                )}
+              </div>
+            </section>
 
-          <section className="mb-9">
-            <SectionHead title="Payment" />
-            <p className="mb-3.5 flex items-center gap-1.5 text-[13.5px] text-[#666]">
-              <LockIcon /> All transactions are secure and encrypted.
-            </p>
-
-            <div className="overflow-hidden rounded-[10px] border border-[#d4d0ca] bg-white">
-              <label
-                className={`flex items-center gap-3 px-4 py-3.5 border-b border-[#e8e4de] cursor-pointer ${payMethod === "paystack" ? "bg-[#eef2ff]" : ""}`}
-              >
+            <section className="mb-9">
+              <SectionHead title="Add tip" />
+              <label className="flex items-center gap-3 rounded-[10px] border border-[#d4d0ca] bg-white px-4 py-3.5 text-sm text-[#333]">
                 <input
-                  type="radio"
-                  name="pay"
-                  checked={payMethod === "paystack"}
-                  onChange={() => setPayMethod("paystack")}
-                  className="shrink-0 accent-blue-600"
+                  type="checkbox"
+                  checked={addTip}
+                  onChange={(e) => setAddTip(e.target.checked)}
+                  className="h-[17px] w-[17px] shrink-0 accent-[#111]"
                 />
-                <span className="flex-1 text-sm font-medium">Paystack</span>
-                <div className="flex items-center gap-1.5">
-                  <MiniCard label="MC" textColor="#fff" bg="#EB001B" />
-                  <MiniCard label="VISA" textColor="#fff" bg="#00579F" />
-                  <MiniCard label="MTN" textColor="#000" bg="#FFC107" />
-                  <span className="rounded bg-[#f0ece6] px-1.5 py-[2px] text-[12px] font-semibold text-[#666]">
-                    +5
-                  </span>
-                </div>
+                <span>Show your support for the team at Blessing Tokunbo</span>
               </label>
+            </section>
 
-              {payMethod === "paystack" && (
-                <div className="border-b border-[#e8e4de] bg-[#f8f7f5] px-4 py-3 text-center text-[13.5px] text-[#555]">
-                  You&apos;ll be redirected to Paystack to complete your
-                  purchase.
-                </div>
+            <button
+              onClick={() => {}}
+              disabled={paying}
+              className="mb-6 flex w-full items-center justify-center rounded-[10px] bg-hero p-[17px] text-[16px] font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {paying ? (
+                <span className="h-[22px] w-[22px] animate-spin rounded-full border-[2.5px] border-white/30 border-t-white" />
+              ) : (
+                "Pay now"
               )}
-            </div>
-          </section>
+            </button>
 
-          <section className="mb-9">
-            <SectionHead title="Billing address" />
-
-            <div className="relative mb-3">
-              <span className="pointer-events-none absolute left-4 top-2 z-10 text-[10.5px] text-[#888]">
-                Country/Region
-              </span>
-              <select
-                defaultValue="Nigeria"
-                className="w-full appearance-none rounded-lg border border-[#d4d0ca] bg-white px-4 pb-2 pt-5 text-[15px] text-[#111] outline-none"
-              >
-                <option>Nigeria</option>
-              </select>
-              <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#666]">
-                <ChevronDown />
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 mb-3">
-              <FloatInput
-                id="fname"
-                label="First name"
-                value={firstName}
-                onChange={(e) => setFirstName(e.target.value)}
-                autoComplete="given-name"
-              />
-              <FloatInput
-                id="lname"
-                label="Last name"
-                value={lastName}
-                onChange={(e) => setLastName(e.target.value)}
-                autoComplete="family-name"
-              />
-            </div>
-
-            <FloatInput
-              id="addr"
-              label="Shipping Address"
-              value={address}
-              onChange={(e) => setAddress(e.target.value)}
-              autoComplete="street-address"
-              className="mb-3"
-            />
-
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-2 mt-3">
-              <FloatInput
-                id="city"
-                label="City"
-                value={city}
-                onChange={(e) => setCity(e.target.value)}
-                autoComplete="address-level2"
-              />
-
-              <div className="relative">
-                <span className="pointer-events-none absolute left-4 top-2 z-10 text-[10.5px] text-[#888]">
-                  State
-                </span>
-                <select
-                  value={stateVal}
-                  onChange={(e) => setStateVal(e.target.value)}
-                  className="w-full appearance-none rounded-lg border border-[#d4d0ca] bg-white px-4 pb-2 pt-5 text-[15px] text-[#111] outline-none"
+            <div className="flex flex-wrap gap-5">
+              {["Refund policy", "Shipping", "Terms of service"].map((link) => (
+                <a
+                  key={link}
+                  href={`/${link.toLowerCase().replace(" ", "-")}`}
+                  className="text-[13px] text-blue-600 no-underline"
                 >
-                  <option value="" />
-                  {NIGERIAN_STATES.map((s) => (
-                    <option key={s}>{s}</option>
-                  ))}
-                </select>
-                <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#666]">
-                  <ChevronDown />
-                </span>
-              </div>
+                  {link}
+                </a>
+              ))}
             </div>
-
-            <div className="relative mt-3">
-              <FloatInput
-                id="phone"
-                label="Phone (required)"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                type="tel"
-                autoComplete="tel"
-              />
-              <div className="pointer-events-none absolute right-4 top-1/2 flex -translate-y-1/2 items-center gap-1.5 text-[18px]">
-                <InfoIcon />
-                <span>🇳🇬</span>
-                <ChevronDown />
-              </div>
-            </div>
-          </section>
-
-          <section className="mb-9">
-            <SectionHead title="Add tip" />
-            <label className="flex items-center gap-3 rounded-[10px] border border-[#d4d0ca] bg-white px-4 py-3.5 text-sm text-[#333]">
-              <input
-                type="checkbox"
-                checked={addTip}
-                onChange={(e) => setAddTip(e.target.checked)}
-                className="h-[17px] w-[17px] shrink-0 accent-[#111]"
-              />
-              <span>Show your support for the team at Blessing Tokunbo</span>
-            </label>
-          </section>
-
-          <button
-            onClick={() => {}}
-            disabled={paying}
-            className="mb-6 flex w-full items-center justify-center rounded-[10px] bg-hero p-[17px] text-[16px] font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-70"
-          >
-            {paying ? (
-              <span className="h-[22px] w-[22px] animate-spin rounded-full border-[2.5px] border-white/30 border-t-white" />
-            ) : (
-              "Pay now"
-            )}
-          </button>
-
-          <div className="flex flex-wrap gap-5">
-            {["Refund policy", "Shipping", "Terms of service"].map((link) => (
-              <a
-                key={link}
-                href={`/${link.toLowerCase().replace(" ", "-")}`}
-                className="text-[13px] text-blue-600 no-underline"
-              >
-                {link}
-              </a>
-            ))}
           </div>
         </main>
 
-        <aside className="hidden border-l border-[#ddd8d0] bg-[#eeeae4] border px-11 py-[44px] lg:block">
-          <div className="sticky top-8">
+        <aside className="hidden border-l border-[#ddd8d0] bg-[#eeeae4]  lg:block">
+          <div className="sticky top-8 px-9 py-11 max-w-[420px]">
             <SummaryContent
               cartItems={CART_ITEMS}
               subtotal={subtotal}
