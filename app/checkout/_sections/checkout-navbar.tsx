@@ -14,7 +14,9 @@ export default function CheckoutNavBar() {
           </Link>
         </div>
 
-        <Handbag size={24} strokeWidth={1.5} />
+        <Link href="/cart">
+          <Handbag size={24} strokeWidth={1.5} />
+        </Link>
       </div>
     </header>
   );

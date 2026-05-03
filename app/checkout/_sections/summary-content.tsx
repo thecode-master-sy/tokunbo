@@ -46,7 +46,7 @@ export function SummaryContent({
 }) {
   return (
     <>
-      <ul className="mb-4 flex flex-col gap-4 list-none lg:h-60 lg:overflow-y-scroll py-4">
+      <ul className="mb-4 flex flex-col gap-4 list-none lg:h-60 lg:overflow-y-auto py-4">
         {cartItems.map((item) => (
           <li key={item.id} className="flex items-center gap-3.5">
             <div className="relative shrink-0">

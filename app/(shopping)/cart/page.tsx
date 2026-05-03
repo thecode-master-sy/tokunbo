@@ -1,3 +1,11 @@
+import CartHeroSection from "./_sections/cart-hero";
+import CartBody from "./_sections/cart-body";
+
 export default function CartComponent() {
-  return <div>this is the cart component</div>;
+  return (
+    <div>
+      <CartHeroSection />
+      <CartBody />
+    </div>
+  );
 }
