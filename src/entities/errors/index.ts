@@ -50,6 +50,14 @@ interface NetworkError extends BaseErrorType {
   type: "Network Error";
 }
 
+interface Conflict extends BaseErrorType {
+  type: "Conflict";
+}
+
+interface BadGateway extends BaseErrorType {
+  type: "BadGateway";
+}
+
 export type ApplicationError =
   | NotFoundError
   | UniqueConstraintViolationError
@@ -60,7 +68,9 @@ export type ApplicationError =
   | OperationError
   | InvalidToken
   | TooManyRequests
-  | NetworkError;
+  | NetworkError
+  | Conflict
+  | BadGateway;
 
 export type ApplicationErrorApiExtended = ApplicationError & ApiResponse;
 
@@ -120,6 +130,10 @@ export const mapErrorToStatusCode = (
       return 400;
     case "NotFoundError":
       return 404;
+    case "Conflict":
+      return 409;
+    case "BadGateway":
+      return 502;
     default:
       return 500;
   }

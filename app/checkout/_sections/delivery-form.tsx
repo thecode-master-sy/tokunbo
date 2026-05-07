@@ -45,7 +45,7 @@ const NIGERIAN_STATES = [
 ];
 
 export default function DeliveryForm({
-  formValues: { firstName, lastName, address, city, state, phone },
+  formValues: { customerFirstName, customerLastName, address, city, state, phone },
   setFormValues,
 }: {
   formValues: CheckoutForm;
@@ -73,18 +73,18 @@ export default function DeliveryForm({
       <div className="flex flex-col gap-4 sm:flex-row">
         <Input
           id="fname"
-          value={firstName}
+          value={customerFirstName}
           onChange={(e) =>
-            setFormValues((prev) => ({ ...prev, firstName: e.target.value }))
+            setFormValues((prev) => ({ ...prev, customerFirstName: e.target.value }))
           }
           className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
           placeholder="First name"
         />
         <Input
           id="lname"
-          value={lastName}
+          value={customerLastName}
           onChange={(e) =>
-            setFormValues((prev) => ({ ...prev, lastName: e.target.value }))
+            setFormValues((prev) => ({ ...prev, customerLastName: e.target.value }))
           }
           className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
           placeholder="Last name"

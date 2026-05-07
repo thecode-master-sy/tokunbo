@@ -1,0 +1,5121 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+.gitignore
+AGENTS.md
+app/_sections/best-selling-products.tsx
+app/_sections/featured-products.tsx
+app/_sections/hero.tsx
+app/_sections/new-arrivals.tsx
+app/_sections/product_categories.tsx
+app/(shopping)/cart/_sections/cart-body.tsx
+app/(shopping)/cart/_sections/cart-hero.tsx
+app/(shopping)/cart/page.tsx
+app/(shopping)/layout.tsx
+app/(shopping)/page.tsx
+app/(shopping)/products/_sections/product-detail-actions.tsx
+app/(shopping)/products/_sections/product-details.tsx
+app/(shopping)/products/_sections/recommended-products.tsx
+app/(shopping)/products/[id]/page.tsx
+app/(shopping)/shop/_sections/category.tsx
+app/(shopping)/shop/_sections/pagination.tsx
+app/(shopping)/shop/_sections/product-display.tsx
+app/(shopping)/shop/page.tsx
+app/api/paystack/initialize/route.ts
+app/checkout/_sections/checkout-client.tsx
+app/checkout/_sections/checkout-icons.tsx
+app/checkout/_sections/checkout-navbar.tsx
+app/checkout/_sections/delivery-form.tsx
+app/checkout/_sections/float-input.tsx
+app/checkout/_sections/mini-card.tsx
+app/checkout/_sections/section-head.tsx
+app/checkout/_sections/summary-content.tsx
+app/checkout/page.tsx
+app/favicon.ico
+app/globals.css
+app/layout.tsx
+CLAUDE.md
+components.json
+components/cart-empty.tsx
+components/cart-item-component.tsx
+components/cart.tsx
+components/category.tsx
+components/footer.tsx
+components/marquee-banner.tsx
+components/navbar.tsx
+components/product-card.tsx
+components/quantity-selector.tsx
+components/search-bar.tsx
+components/ui/button.tsx
+components/ui/drawer.tsx
+components/ui/dropdown-menu.tsx
+components/ui/input.tsx
+components/ui/pagination.tsx
+components/ui/sheet.tsx
+components/ui/sonner.tsx
+db/index.ts
+db/schema/cart-items.ts
+db/schema/cart.ts
+db/schema/index.ts
+db/schema/order.ts
+drizzle.config.ts
+env.ts
+eslint.config.mjs
+lib/checkout-type.ts
+lib/dal.ts
+lib/nuqs/search-params.ts
+lib/product-types.ts
+lib/sanity/client.ts
+lib/sanity/image-utility.ts
+lib/sanity/queries.ts
+lib/utils.ts
+next.config.ts
+package.json
+postcss.config.mjs
+providers/cart-provider.tsx
+public/file.svg
+public/globe.svg
+public/images/category/air-fryer.jpg
+public/images/category/blender.jpg
+public/images/category/childrens-toys.jpg
+public/images/category/gas-cooker.jpg
+public/images/category/kettle.jpg
+public/images/category/knives.jpg
+public/images/category/pot-covers.jpg
+public/images/category/pot.png
+public/images/product-images/Bles-digital-air-fryer.jpeg
+public/images/product-images/commercial-grade-blend.jpeg
+public/images/product-images/multi-color-stock-pot.jpeg
+public/images/product-images/newest.jpeg
+public/images/product-images/tempered-pot-lids.jpeg
+public/next.svg
+public/vercel.svg
+public/window.svg
+README.md
+src/application/repositories/cart-item.repository.interface.ts
+src/application/repositories/cart.repository.interface.ts
+src/application/repositories/order.repository.interface.ts
+src/application/services/email.service.interface.ts
+src/application/services/payment.service.interface.ts
+src/application/services/rateLimiter.service.interface.ts
+src/application/use-cases/payment/initialize-payment.use-case.ts
+src/entities/errors/index.ts
+src/entities/models/api.ts
+src/entities/models/order.ts
+src/entities/models/payment.ts
+src/infrastructure/repositories/order.repository.ts
+src/infrastructure/services/payment.service.ts
+src/infrastructure/services/paystack.service.ts
+src/lib/fp.ts
+stores/cart-store.ts
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="app/api/paystack/initialize/route.ts">
+
+</file>
+
+<file path="db/index.ts">
+import { drizzle, PostgresJsTransaction } from "drizzle-orm/postgres-js";
+import postgres from "postgres";
+import env from "@/env";
+import * as schema from "@/db/schema";
+import { ExtractTablesWithRelations } from "drizzle-orm";
+
+export const client = postgres(env.DATABASE_URL);
+
+const db = drizzle(client, {
+  schema,
+  logger: true,
+});
+
+export type db = typeof db;
+
+export type Transaction = PostgresJsTransaction<
+  typeof schema,
+  ExtractTablesWithRelations<typeof schema>
+>;
+export default db;
+</file>
+
+<file path="db/schema/cart-items.ts">
+import {
+  pgTable,
+  uuid,
+  text,
+  numeric,
+  integer,
+  index,
+} from "drizzle-orm/pg-core";
+import carts from "./cart";
+
+const cartItems = pgTable(
+  "cart_items",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    cartId: uuid("cart_id")
+      .notNull()
+      .references(() => carts.id, { onDelete: "cascade" }),
+    sanityProductId: text("sanity_product_id").notNull(),
+    sanityVariantId: text("sanity_variant_id"), // null if no variant selected
+    sanityProductName: text("sanity_product_name").notNull(),
+    sanityVariantName: text("sanity_variant_name"), // e.g. "Red / XL"
+    imageUrl: text("image_url"),
+    quantity: integer("quantity").notNull(),
+    unitPrice: numeric("unit_price", { precision: 12, scale: 2 }).notNull(),
+    totalPrice: numeric("total_price", { precision: 12, scale: 2 }).notNull(),
+  },
+  (t) => [index("cart_items_cart_idx").on(t.cartId)],
+).enableRLS();
+
+export default cartItems;
+</file>
+
+<file path="db/schema/cart.ts">
+import { pgTable, uuid, timestamp } from "drizzle-orm/pg-core";
+
+const carts = pgTable("carts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export default carts;
+</file>
+
+<file path="db/schema/index.ts">
+export { default as orderTable } from "./order";
+export { default as cartTable } from "./cart";
+export { default as cartItemTable } from "./cart-items";
+</file>
+
+<file path="db/schema/order.ts">
+import {
+  pgTable,
+  pgEnum,
+  uuid,
+  text,
+  timestamp,
+  jsonb,
+  numeric,
+  uniqueIndex,
+  index,
+} from "drizzle-orm/pg-core";
+import { DeliveryAddress } from "@/src/entities/models/order";
+
+export const orderStatusEnum = pgEnum("order_status", [
+  "pending",
+  "confirmed",
+  "processing",
+  "shipped",
+  "delivered",
+  "cancelled",
+  "refunded",
+]);
+
+const orders = pgTable(
+  "orders",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    orderNumber: text("order_number").notNull(),
+    customerEmail: text("customer_email").notNull(),
+    customerFirstName: text("customer_first_name").notNull(),
+    customerLastName: text("customer_last_name").notNull(),
+    phone: text("phone").notNull(),
+    status: orderStatusEnum("status").notNull().default("pending"),
+    deliveryAddress: jsonb("delivery_address")
+      .$type<DeliveryAddress>()
+      .notNull(),
+    subtotal: numeric("subtotal", { precision: 12, scale: 2 }).notNull(),
+    discountAmount: numeric("discount_amount", { precision: 12, scale: 2 })
+      .notNull()
+      .default("0"),
+    total: numeric("total", { precision: 12, scale: 2 }).notNull(),
+    paymentReference: text("payment_reference"),
+    paystackTransactionId: text("paystack_transaction_id"),
+    paidAt: timestamp("paid_at"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  },
+  (t) => [
+    uniqueIndex("orders_order_number_idx").on(t.orderNumber),
+    index("orders_email_idx").on(t.customerEmail),
+    index("orders_payment_ref_idx").on(t.paymentReference),
+    index("orders_status_idx").on(t.status),
+  ],
+).enableRLS();
+
+export default orders;
+</file>
+
+<file path="drizzle.config.ts">
+import { defineConfig } from "drizzle-kit";
+import env from "@/env";
+
+export default defineConfig({
+  schema: "./db/schema/index.ts",
+  out: "./supabase/migrations",
+  dialect: "postgresql",
+  dbCredentials: {
+    url: env.DATABASE_URL,
+  },
+  verbose: true,
+  strict: true,
+});
+</file>
+
+<file path="env.ts">
+import { config } from "dotenv";
+import { expand } from "dotenv-expand";
+import { ZodError, z } from "zod";
+
+const EnvSchema = z.object({
+  NODE_ENV: z.string().default("development"),
+  DATABASE_URL: z.string(),
+  RESEND_API_KEY: z.string(),
+  UPSTASH_REDIS_REST_URL: z.string(),
+  UPSTASH_REDIS_REST_TOKEN: z.string(),
+  PAYSTACK_SECRET_KEY: z.string(),
+  PAYSTACK_PUBLIC_KEY: z.string(),
+});
+
+export type EnvSchema = z.infer<typeof EnvSchema>;
+
+expand(config());
+
+try {
+  EnvSchema.parse(process.env);
+} catch (error) {
+  if (error instanceof ZodError) {
+    let message = "Missing required values in .env:\n";
+    error.issues.forEach((issue) => {
+      message += issue.path[0] + "\n";
+    });
+    const e = new Error(message);
+    e.stack = "";
+    throw e;
+  } else {
+    console.error(error);
+  }
+}
+
+export default EnvSchema.parse(process.env);
+</file>
+
+<file path="src/application/repositories/cart-item.repository.interface.ts">
+
+</file>
+
+<file path="src/application/repositories/cart.repository.interface.ts">
+
+</file>
+
+<file path="src/application/repositories/order.repository.interface.ts">
+import { Either } from "@/src/lib/fp";
+import { ApplicationError } from "@/src/entities/errors";
+import { Option } from "@/src/lib/fp";
+import { NewOrder } from "@/src/entities/models/order";
+
+export interface IOrderRepository {
+  createOrder(input: NewOrder): Promise<Either<ApplicationError, string>>;
+}
+</file>
+
+<file path="src/application/services/email.service.interface.ts">
+
+</file>
+
+<file path="src/application/services/payment.service.interface.ts">
+import { Either } from "@/src/lib/fp";
+import { ApplicationError } from "@/src/entities/errors";
+import {
+  PaymentRequest,
+  PaymentResponse,
+  PaymentVerificationResponse,
+  PaymentRefundResponse,
+} from "@/src/entities/models/payment";
+
+export interface IPaymentService {
+  initializeTransaction(
+    request: PaymentRequest,
+  ): Promise<Either<ApplicationError, PaymentResponse>>;
+  verifyTransaction(
+    reference: string,
+  ): Promise<Either<ApplicationError, PaymentVerificationResponse>>;
+  refund(
+    paymentReference: string,
+    amount?: number,
+  ): Promise<Either<ApplicationError, PaymentRefundResponse>>;
+}
+</file>
+
+<file path="src/application/services/rateLimiter.service.interface.ts">
+
+</file>
+
+<file path="src/application/use-cases/payment/initialize-payment.use-case.ts">
+import makePaymentService from "@/src/infrastructure/services/payment.service";
+
+const initializePaymentUseCase = () => {
+  const paymentService = makePaymentService("paystack");
+
+  //create order
+
+
+  //then initialize transaction.
+};
+
+export default initializePaymentUseCase;
+</file>
+
+<file path="src/entities/models/order.ts">
+import { z } from "zod";
+
+type OrderStatus =
+  | "pending"
+  | "confirmed"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "cancelled"
+  | "refunded";
+
+export const cartItemSchema = z.object({
+  sanityProductId: z.string().min(1, "Product ID is required"),
+  sanityVariantId: z.string().optional(),
+  sanityProductName: z.string().min(1, "Product name is required"),
+  sanityVariantName: z.string().optional(),
+  imageUrl: z.string().url("Invalid image URL").optional(),
+  quantity: z.number().int().min(1, "Quantity must be at least 1"),
+  unitPrice: z.number().positive("Unit price must be greater than 0"),
+});
+
+type cartItem = z.infer<typeof cartItemSchema>;
+
+export type DeliveryAddress = {
+  city: string;
+  state: string;
+  address: string;
+  country: string;
+  firstName: string;
+  lastName: string;
+  phone: string;
+};
+
+type Order = {
+  id: string;
+  orderNumber: string;
+  customerEmail: string;
+  customerFirstName: string;
+  customerLastName: string;
+  phone: string;
+  amount: number;
+  status: OrderStatus;
+  paymentReference: string;
+  subtotal: string;
+  total: string;
+  deliveryAddress: DeliveryAddress;
+  items: cartItem[];
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type NewOrder = Omit<Order, "id" | "createdAt" | "updatedAt">;
+
+export const CreateOrderSchema = z.object({
+  customerEmail: z
+    .email({
+      message: "Please provide a vaild email address",
+    })
+    .max(255),
+  customerFirstName: z.string().min(1, "First name is required"),
+  customerLastName: z.string().min(1, "Last name is required"),
+  country: z.string().min(1, "Country is required"),
+  address: z.string().min(1, "Address is required"),
+  state: z.string().min(1, "State is required"),
+  phone: z.string().min(10, "Phone number must be at least 10 digits"),
+  items: z.array(cartItemSchema).min(1, "Order must have at least one item"),
+  discountAmount: z.number().min(0, "Discount cannot be negative").default(0),
+});
+</file>
+
+<file path="src/entities/models/payment.ts">
+export type PaymentRequest = {
+  email: string;
+  amount: number;
+  reference: string;
+  currency?: string;
+  callback_url?: string;
+  metadata?: {
+    orderNumber: string;
+    [key: string]: unknown;
+  };
+};
+
+export type PaymentResponse = {
+  success: boolean;
+  authorizationUrl?: string;
+  reference?: string;
+  message?: string;
+};
+
+export type PaymentVerificationResponse = {
+  success: boolean;
+  reference: string;
+  amount: number;
+  status: "success" | "failed" | "abandoned" | "pending";
+  channel: "card" | "bank" | "ussd" | "qr" | "mobile_money" | "bank_transfer";
+  paidAt: string;
+  message?: string;
+};
+
+export type PaymentRefundResponse = {
+  reference: string;
+  success: boolean;
+  amount: number;
+  message?: string;
+};
+</file>
+
+<file path="src/infrastructure/repositories/order.repository.ts">
+import { Either, left, right } from "@/src/lib/fp";
+import {
+  ApplicationError,
+  makeError,
+  mapPostgrestErrorToApplicationError,
+} from "@/src/entities/errors";
+import { IOrderRepository } from "@/src/application/repositories/order.repository.interface";
+import { NewOrder } from "@/src/entities/models/order";
+import db from "@/db";
+import { orderTable } from "@/db/schema";
+import { PostgresError } from "postgres";
+
+const makeOrderRepository = (): IOrderRepository => {
+  const createOrder = async (
+    input: NewOrder,
+  ): Promise<Either<ApplicationError, string>> => {
+    try {
+      const [order] = await db
+        .insert(orderTable)
+        .values(input)
+        .returning({ orderNumber: orderTable.orderNumber });
+
+      return right(order.orderNumber);
+    } catch (error) {
+      return left(mapPostgrestErrorToApplicationError(error as PostgresError));
+    }
+  };
+
+  return { createOrder };
+};
+
+export default makeOrderRepository;
+</file>
+
+<file path="src/infrastructure/services/payment.service.ts">
+import { IPaymentService } from "@/src/application/services/payment.service.interface";
+import makePaystackService from "./paystack.service";
+
+type PaymentProvider = "paystack";
+
+const makePaymentService = (provider: PaymentProvider): IPaymentService => {
+  return makePaystackService();
+};
+
+export default makePaymentService;
+</file>
+
+<file path="src/infrastructure/services/paystack.service.ts">
+// src/lib/payment/providers/paystack.provider.ts
+import { left, right } from "@/src/lib/fp";
+import { IPaymentService } from "@/src/application/services/payment.service.interface";
+import { makeError, ApplicationError } from "@/src/entities/errors";
+import {
+  PaymentRequest,
+  PaymentResponse,
+  PaymentVerificationResponse,
+  PaymentRefundResponse,
+} from "@/src/entities/models/payment";
+import env from "@/env";
+
+const PAYSTACK_BASE_URL = "https://api.paystack.co";
+
+const makePaystackService = (): IPaymentService => {
+  const headers = {
+    Authorization: `Bearer ${env.PAYSTACK_SECRET_KEY}`,
+    "Content-Type": "application/json",
+  };
+
+  const initializeTransaction = async (request: PaymentRequest) => {
+    try {
+      const response = await fetch(
+        `${PAYSTACK_BASE_URL}/transaction/initialize`,
+        {
+          method: "POST",
+          headers,
+          body: JSON.stringify({
+            email: request.email,
+            amount: request.amount,
+            reference: request.reference,
+            currency: request.currency ?? "NGN",
+            callback_url: request.callback_url,
+            metadata: request.metadata,
+          }),
+        },
+      );
+
+      const data = await response.json();
+
+      if (!data.status) {
+        return left(
+          makeError("OperationError", "Failed to initialize transaction", {
+            cause: data,
+          }),
+        );
+      }
+
+      return right<PaymentResponse>({
+        success: true,
+        authorizationUrl: data.data.authorization_url,
+        reference: data.data.reference,
+        message: "Payment initialized sucessfully",
+      });
+    } catch (error) {
+      return left(
+        makeError("BadGateway", "Failed to reach Paystack", {
+          cause: error,
+        }),
+      );
+    }
+  };
+
+  const verifyTransaction = async (reference: string) => {
+    try {
+      const response = await fetch(
+        `${PAYSTACK_BASE_URL}/transaction/verify/${encodeURIComponent(reference)}`,
+        { method: "GET", headers },
+      );
+
+      const data = await response.json();
+
+      if (!data.status) {
+        return left(
+          makeError("OperationError", "Failed to verify transaction", {
+            cause: data,
+          }),
+        );
+      }
+
+      return right<PaymentVerificationResponse>({
+        success: true,
+        reference: data.data.reference,
+        amount: data.data.amount,
+        status: data.data.status,
+        channel: data.data.channel,
+        paidAt: data.data.paid_at,
+      });
+    } catch (error) {
+      return left(
+        makeError("BadGateway", "Failed to reach Paystack", {
+          cause: error,
+        }),
+      );
+    }
+  };
+
+  const refund = async (paymentReference: string, amount?: number) => {
+    try {
+      const body: Record<string, unknown> = {
+        transaction: paymentReference,
+      };
+
+      if (amount !== undefined) {
+        body.amount = amount;
+      }
+
+      const response = await fetch(`${PAYSTACK_BASE_URL}/refund`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(body),
+      });
+
+      const data = await response.json();
+
+      if (!data.status) {
+        return left(
+          makeError("OperationError", "Failed to process refund", {
+            cause: data,
+          }),
+        );
+      }
+
+      return right<PaymentRefundResponse>({
+        reference: data.data.transaction.reference,
+        success: true,
+        amount: data.data.amount,
+        message: data.message,
+      });
+    } catch (error) {
+      return left(
+        makeError("BadGateway", "Failed to reach Paystack", {
+          cause: error,
+        }),
+      );
+    }
+  };
+
+  return {
+    initializeTransaction,
+    verifyTransaction,
+    refund,
+  };
+};
+
+export default makePaystackService;
+</file>
+
+<file path=".gitignore">
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.*
+.yarn/*
+!.yarn/patches
+!.yarn/plugins
+!.yarn/releases
+!.yarn/versions
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+
+# production
+/build
+
+# misc
+.DS_Store
+*.pem
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# env files (can opt-in for committing if needed)
+.env*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+next-env.d.ts
+</file>
+
+<file path="AGENTS.md">
+<!-- BEGIN:nextjs-agent-rules -->
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` before writing any code. Heed deprecation notices.
+<!-- END:nextjs-agent-rules -->
+</file>
+
+<file path="app/(shopping)/cart/_sections/cart-body.tsx">
+"use client";
+import { useCart } from "@/providers/cart-provider";
+import CartEmpty from "@/components/cart-empty";
+import CartItemComponent from "@/components/cart-item-component";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+
+export default function CartBody() {
+  const items = useCart((state) => state.items);
+  const totalPrice = useCart((state) => state.totalPrice);
+  return (
+    <div className="py-10 w-full relative grid md:grid-cols-[1.5fr_1fr] md:justify-between gap-y-4 gap-x-16 px-4">
+      <div className="w-full ">
+        {items.length == 0 ? (
+          <div>
+            <h3>Your Cart is empty.</h3>
+          </div>
+        ) : (
+          <div className="space-y-4">
+            {items.map((item) => (
+              <CartItemComponent key={item.id} item={item} />
+            ))}
+          </div>
+        )}
+      </div>
+
+      <div className="flex-1 sticky top-0">
+        <div className="max-w-md mx-auto p-4 space-y-6">
+          {/* Order Notes Section */}
+          <div className="space-y-2">
+            <label
+              htmlFor="order-notes"
+              className="block text-sm tracking-wide"
+            >
+              ORDER NOTES
+            </label>
+            <textarea
+              id="order-notes"
+              className="w-full h-32 border-b border-gray-300 focus:outline-none focus:border-black resize-none"
+            />
+          </div>
+
+          {/* Checkout Section */}
+          <div className="space-y-3">
+            <Button
+              size="lg"
+              type="submit"
+              className="w-full h-12 bg-hero text-black hover:bg-amber-600 rounded-full cursor-pointer uppercase font-medium"
+            >
+              <Link
+                href="/checkout"
+                className="w-full h-full inline-flex items-center justify-center"
+              >
+                <span>{` Checkout - ₦${totalPrice().toLocaleString()}`}</span>
+              </Link>
+            </Button>
+
+            <div className="text-center text-xs text-gray-500">
+              Shipping & taxes calculated at checkout
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(shopping)/cart/_sections/cart-hero.tsx">
+"use client";
+import { useCart } from "@/providers/cart-provider";
+
+export default function CartHeroSection() {
+  const totalItemsFn = useCart((state) => state.totalItems);
+  const totalItems = totalItemsFn();
+  return (
+    <div className="relative bg-hero">
+      <div className="bg-hero px-4 pt-20 pb-15 space-y-4">
+        <h1 className="text-h2 text-center -tracking-[0.05em] font-light">
+          Your Cart Items ({totalItems})
+        </h1>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(shopping)/layout.tsx">
+import type { Metadata } from "next";
+import Footer from "@/components/footer";
+import Navbar from "@/components/navbar";
+
+export const metadata: Metadata = {
+  title: "Reusable kitchen utensils",
+  description: "Created by thecodemaster",
+};
+
+export default function ShoppingAreaLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <div>
+      <Navbar />
+      {children}
+      <Footer />
+    </div>
+  );
+}
+</file>
+
+<file path="app/(shopping)/page.tsx">
+import HeroSection from "@/app/_sections/hero";
+import ProductCategories from "@/app/_sections/product_categories";
+import BestSellingProductsSection from "@/app/_sections/best-selling-products";
+import NewestArrivals from "../_sections/new-arrivals";
+import FeaturedProducts from "@/app/_sections/featured-products";
+
+import { client } from "@/lib/sanity/client";
+
+console.log(client);
+console.log(client.config());
+
+export default function Home() {
+  return (
+    <div>
+      <HeroSection />
+      <ProductCategories />
+      <BestSellingProductsSection />
+      <FeaturedProducts />
+      <NewestArrivals />
+    </div>
+  );
+}
+</file>
+
+<file path="app/(shopping)/products/_sections/product-detail-actions.tsx">
+"use client";
+import { Button } from "@/components/ui/button";
+import QuantitySelector from "@/components/quantity-selector";
+import { useCart } from "@/providers/cart-provider";
+import { Product } from "@/lib/product-types";
+import { urlFor } from "@/lib/sanity/image-utility";
+import { useState } from "react";
+
+export default function ProductDetailActions({
+  product,
+}: {
+  product: Product;
+}) {
+  const [quantity, setQuantity] = useState(1);
+  const addItem = useCart((state) => state.addItem);
+  return (
+    <div className="flex flex-col gap-4">
+      <QuantitySelector quantity={quantity} setQuantity={setQuantity} />
+      <Button
+        onClick={() =>
+          addItem({
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            image: urlFor(product.images[0]).width(600).url(),
+            quantity,
+          })
+        }
+        size={"lg"}
+        className="w-full bg-hero text-foreground cursor-pointer rounded-full h-12 uppercase font-medium -tracking-[0.01em]"
+      >
+        Add to cart
+      </Button>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(shopping)/products/_sections/product-details.tsx">
+import Image from "next/image";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import QuantitySelector from "@/components/quantity-selector";
+import { Product } from "@/lib/product-types";
+import { urlFor } from "@/lib/sanity/image-utility";
+import ProductDetailActions from "./product-detail-actions";
+
+export default function ProductDetails({ product }: { product: Product }) {
+  return (
+    <div>
+      <div className=" uppercase  gap-1 items-center font-mono md:hidden py-4">
+        <Link
+          href="/"
+          className="bg-category px-3 rounded-full py-1 text-[11px]"
+        >
+          Home
+        </Link>{" "}
+        <span>{"/"}</span>
+        <span className="bg-category px-3 rounded-full py-1 text-[11px]">
+          {product.name}
+        </span>
+      </div>
+      <div className="flex flex-col md:flex-row">
+        <div className="md:sticky self-start md:top-23 w-full">
+          <div className="w-full">
+            <Image
+              src={urlFor(product.images[0]).width(600).url()}
+              className="w-full aspect-[1/1.1] md:min-h-screen"
+              alt="product image"
+              width={800}
+              height={880}
+              priority={true}
+            />
+          </div>
+        </div>
+        <div className="w-full md:flex flex-col items-center  lg:px-20 md:px-12 md:py-12">
+          <div className="space-y-6 md:max-w-[400px]">
+            <div>
+              <div className=" uppercase md:flex gap-1 items-center font-mono hidden ">
+                <Link
+                  href="/"
+                  className="bg-category px-3 rounded-full py-1 text-[11px]"
+                >
+                  Home
+                </Link>{" "}
+                <span>{"/"}</span>
+                <span className="bg-category px-3 rounded-full py-1 text-[11px]">
+                  {product.name}
+                </span>
+              </div>
+              <h1 className="text-h2 font-bold mt-2">{product.name}</h1>
+              <p className="text-h3 mt-4">{`₦${product.price}`}</p>
+            </div>
+
+            <div className="flex items-center gap-1">
+              {/* Star icons would go here */}
+              <span className="text-xl">★★★★★</span>
+            </div>
+
+            <p className="text-gray-700 leading-relaxed md:max-w-[45ch]">
+              {product.description}
+            </p>
+
+            {/* Spacer to demonstrate the scroll/sticky effect */}
+            <div className="border-t border-gray-200 pt-10">
+              <h3 className="font-bold">Product Details & Features</h3>
+              <ul className="list-disc ml-5 mt-4 space-y-2">
+                {product.productDetails?.map((item, index) => (
+                  <li key={index}>{item}</li>
+                ))}
+              </ul>
+            </div>
+
+            <ProductDetailActions product={product} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(shopping)/products/_sections/recommended-products.tsx">
+import ProductCard from "@/components/product-card";
+import { Product } from "@/lib/product-types";
+import Link from "next/link";
+
+export default function RecommendedProducts({
+  recommendedProducts,
+}: {
+  recommendedProducts: Product[];
+}) {
+  return (
+    <div className="px-4 pt-20">
+      <div className="flex items-center justify-between">
+        <h2 className="text-h3 -tracking-[0.01em]">Recommended Products</h2>
+        <Link href="/best-sellers" className="text-underline text-70">
+          <span className="hidden md:inline-block"> See more</span>
+          <span className="md:hidden">See more</span>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+        {recommendedProducts.map((product, index) => (
+          <ProductCard key={index} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/(shopping)/products/[id]/page.tsx">
+import ProductDetails from "@/app/(shopping)/products/_sections/product-details";
+import { getSingleProduct, getSimilarProductsFromCategory } from "@/lib/dal";
+import RecommendedProducts from "@/app/(shopping)/products/_sections/recommended-products";
+
+export default async function Product({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
+  const product = await getSingleProduct(id);
+  console.log(product.category._ref);
+  const recommendedProducts = await getSimilarProductsFromCategory(
+    product.category._ref,
+    product._id,
+  );
+  return (
+    <div className="px-4 lg:px-6">
+      <ProductDetails product={product} />
+      <RecommendedProducts recommendedProducts={recommendedProducts} />
+    </div>
+  );
+}
+</file>
+
+<file path="app/checkout/_sections/delivery-form.tsx">
+"use client";
+import { ChevronDown } from "./checkout-icons";
+import { CheckoutForm } from "./checkout-client";
+import { Input } from "@/components/ui/input";
+import { CircleQuestionMark } from "lucide-react";
+
+const NIGERIAN_STATES = [
+  "Abia",
+  "Adamawa",
+  "Akwa Ibom",
+  "Anambra",
+  "Bauchi",
+  "Bayelsa",
+  "Benue",
+  "Borno",
+  "Cross River",
+  "Delta",
+  "Ebonyi",
+  "Edo",
+  "Ekiti",
+  "Enugu",
+  "FCT",
+  "Gombe",
+  "Imo",
+  "Jigawa",
+  "Kaduna",
+  "Kano",
+  "Katsina",
+  "Kebbi",
+  "Kogi",
+  "Kwara",
+  "Lagos",
+  "Nasarawa",
+  "Niger",
+  "Ogun",
+  "Ondo",
+  "Osun",
+  "Oyo",
+  "Plateau",
+  "Rivers",
+  "Sokoto",
+  "Taraba",
+  "Yobe",
+  "Zamfara",
+];
+
+export default function DeliveryForm({
+  formValues: { firstName, lastName, address, city, state, phone },
+  setFormValues,
+}: {
+  formValues: CheckoutForm;
+  setFormValues: React.Dispatch<React.SetStateAction<CheckoutForm>>;
+}) {
+  return (
+    <div className="space-y-4">
+      <h2 className="text-[20px] font-medium">Delivery</h2>
+
+      <div className="relative">
+        <span className="pointer-events-none absolute left-3 top-2 z-10 text-[12px] text-[#888]">
+          Country/Region
+        </span>
+        <select
+          defaultValue="Nigeria"
+          className="w-full appearance-none rounded-md outline-none  px-3 pt-7 pb-2 h-auto bg-white border text-sm"
+        >
+          <option>Nigeria</option>
+        </select>
+        <span className="pointer-events-none absolute right-4 top-1/2 -translate-y-1/2 text-[#666]">
+          <ChevronDown />
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-4 sm:flex-row">
+        <Input
+          id="fname"
+          value={firstName}
+          onChange={(e) =>
+            setFormValues((prev) => ({ ...prev, firstName: e.target.value }))
+          }
+          className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
+          placeholder="First name"
+        />
+        <Input
+          id="lname"
+          value={lastName}
+          onChange={(e) =>
+            setFormValues((prev) => ({ ...prev, lastName: e.target.value }))
+          }
+          className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
+          placeholder="Last name"
+        />
+      </div>
+
+      <Input
+        id="addr"
+        value={address}
+        onChange={(e) =>
+          setFormValues((prev) => ({ ...prev, address: e.target.value }))
+        }
+        autoComplete="street-address"
+        className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
+        placeholder="Address"
+      />
+
+      <div className="flex gap-4 flex-col sm:flex-row">
+        <Input
+          id="city"
+          value={city}
+          onChange={(e) =>
+            setFormValues((prev) => ({ ...prev, city: e.target.value }))
+          }
+          className="w-full px-3 py-3.5 h-auto bg-white border text-sm flex-1"
+          placeholder="City"
+        />
+
+        <div className="relative flex-1">
+          <span className="pointer-events-none absolute left-3 top-2 z-10 text-[11px] text-[#888]">
+            State
+          </span>
+          <select
+            value={state}
+            onChange={(e) =>
+              setFormValues((prev) => ({ ...prev, state: e.target.value }))
+            }
+            className="w-full appearance-none rounded-md outline-none  px-3 pt-7 pb-2 h-auto bg-white border text-sm"
+          >
+            <option value="" />
+            {NIGERIAN_STATES.map((s) => (
+              <option key={s}>{s}</option>
+            ))}
+          </select>
+          <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-[#666]">
+            <ChevronDown />
+          </span>
+        </div>
+      </div>
+
+      <div className="relative mt-3">
+        <Input
+          id="phone"
+          value={phone}
+          onChange={(e) =>
+            setFormValues((prev) => ({ ...prev, phone: e.target.value }))
+          }
+          type="tel"
+          autoComplete="tel"
+          className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
+          placeholder="Phone"
+        />
+        <div className="pointer-events-none absolute right-4 top-1/2 flex -translate-y-1/2 items-center gap-1.5 text-[18px]">
+          <CircleQuestionMark strokeWidth={1.5} size={15} />
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/checkout/_sections/mini-card.tsx">
+export function MiniCard({
+  label,
+  textColor,
+  bg,
+}: {
+  label: string;
+  textColor: string;
+  bg: string;
+}) {
+  return (
+    <span
+      className="inline-flex shrink-0 items-center justify-center rounded border border-[#e0ddd8] px-[7px] py-[3px] text-[10px] font-extrabold tracking-[0.04em]"
+      style={{ color: textColor, background: bg }}
+    >
+      {label}
+    </span>
+  );
+}
+</file>
+
+<file path="app/checkout/_sections/section-head.tsx">
+import React from "react";
+
+export function SectionHead({
+  title,
+  right,
+}: {
+  title: string;
+  right?: React.ReactNode;
+}) {
+  return (
+    <div className="mb-4 flex items-center justify-between">
+      <h2 className="text-[19px] font-semibold tracking-[-0.02em] text-[#0f0f0f]">
+        {title}
+      </h2>
+      {right}
+    </div>
+  );
+}
+</file>
+
+<file path="CLAUDE.md">
+@AGENTS.md
+</file>
+
+<file path="components.json">
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "radix-nova",
+  "rsc": true,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "app/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "rtl": false,
+  "aliases": {
+    "components": "@/components",
+    "utils": "@/lib/utils",
+    "ui": "@/components/ui",
+    "lib": "@/lib",
+    "hooks": "@/hooks"
+  },
+  "menuColor": "default",
+  "menuAccent": "subtle",
+  "registries": {}
+}
+</file>
+
+<file path="components/cart-empty.tsx">
+"use client";
+import Image from "next/image";
+import { Button } from "@/components/ui/button";
+
+export default function CartEmpty() {
+  return (
+    <div className="flex flex-col h-full overflow-hidden">
+      <div className="p-4">
+        <p className="text-center">Your cart is empty.</p>
+      </div>
+
+      {/* Middle Section: This acts as a spacer to push content to the bottom */}
+      <div className="flex-1" />
+
+      {/* Bottom Section: New Arrivals & Button */}
+      <div className="mt-auto">
+        <div className="p-4">
+          <h3 className="text-h4">Explore our new arrivals</h3>
+        </div>
+
+        {/* Optimized Image Container */}
+        <div className="relative aspect-video w-full overflow-hidden">
+          <Image
+            src="/images/product-images/newest.jpeg"
+            alt="newest arrival"
+            fill
+            sizes="(max-width: 768px) 100vw, 400px"
+            className="object-cover"
+            priority // Loads this image faster
+          />
+          <span className="px-4 uppercase py-1 bg-category rounded-full absolute top-4 left-4 font-mono text-[11px]">
+            New arrival
+          </span>
+        </div>
+
+        <div className="px-4 py-6">
+          <Button
+            size="lg"
+            className="rounded-full bg-hero w-full text-black cursor-pointer h-12 font-normal"
+          >
+            Continue shopping
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/marquee-banner.tsx">
+"use client";
+
+import { motion } from "motion/react";
+
+const items = [
+  "Welcome to our store",
+  "We are Open from 8am - 5pm! ⌚",
+  "No refunds unless we don't deliver",
+  "⚠️ No changes allowed after placing your order",
+  "Feedback / Complaints are only valid within 4 hours after receiving your order",
+];
+
+export default function MarqueeBanner() {
+  return (
+    <div className="overflow-hidden bg-banner py-2">
+      <motion.div
+        className="flex w-max items-center gap-10 px-4 text-center text-caps font-light"
+        animate={{ x: ["0%", "-50%"] }}
+        transition={{
+          duration: 18,
+          ease: "linear",
+          repeat: Infinity,
+        }}
+      >
+        {[...items, ...items].map((item, index) => (
+          <span key={index} className="whitespace-nowrap">
+            {item}
+          </span>
+        ))}
+      </motion.div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/ui/button.tsx">
+import * as React from "react"
+import { cva, type VariantProps } from "class-variance-authority"
+import { Slot } from "radix-ui"
+
+import { cn } from "@/lib/utils"
+
+const buttonVariants = cva(
+  "group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+  {
+    variants: {
+      variant: {
+        default: "bg-primary text-primary-foreground [a]:hover:bg-primary/80",
+        outline:
+          "border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80 aria-expanded:bg-secondary aria-expanded:text-secondary-foreground",
+        ghost:
+          "hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
+        destructive:
+          "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
+        link: "text-primary underline-offset-4 hover:underline",
+      },
+      size: {
+        default:
+          "h-8 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2",
+        xs: "h-6 gap-1 rounded-[min(var(--radius-md),10px)] px-2 text-xs in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3",
+        sm: "h-7 gap-1 rounded-[min(var(--radius-md),12px)] px-2.5 text-[0.8rem] in-data-[slot=button-group]:rounded-lg has-data-[icon=inline-end]:pr-1.5 has-data-[icon=inline-start]:pl-1.5 [&_svg:not([class*='size-'])]:size-3.5",
+        lg: "h-9 gap-1.5 px-2.5 has-data-[icon=inline-end]:pr-3 has-data-[icon=inline-start]:pl-3",
+        icon: "size-8",
+        "icon-xs":
+          "size-6 rounded-[min(var(--radius-md),10px)] in-data-[slot=button-group]:rounded-lg [&_svg:not([class*='size-'])]:size-3",
+        "icon-sm":
+          "size-7 rounded-[min(var(--radius-md),12px)] in-data-[slot=button-group]:rounded-lg",
+        "icon-lg": "size-9",
+      },
+    },
+    defaultVariants: {
+      variant: "default",
+      size: "default",
+    },
+  }
+)
+
+function Button({
+  className,
+  variant = "default",
+  size = "default",
+  asChild = false,
+  ...props
+}: React.ComponentProps<"button"> &
+  VariantProps<typeof buttonVariants> & {
+    asChild?: boolean
+  }) {
+  const Comp = asChild ? Slot.Root : "button"
+
+  return (
+    <Comp
+      data-slot="button"
+      data-variant={variant}
+      data-size={size}
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    />
+  )
+}
+
+export { Button, buttonVariants }
+</file>
+
+<file path="components/ui/drawer.tsx">
+"use client";
+
+import * as React from "react";
+import { Drawer as DrawerPrimitive } from "vaul";
+
+import { cn } from "@/lib/utils";
+
+function Drawer({
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Root>) {
+  return <DrawerPrimitive.Root data-slot="drawer" {...props} />;
+}
+
+function DrawerTrigger({
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Trigger>) {
+  return <DrawerPrimitive.Trigger data-slot="drawer-trigger" {...props} />;
+}
+
+function DrawerPortal({
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Portal>) {
+  return <DrawerPrimitive.Portal data-slot="drawer-portal" {...props} />;
+}
+
+function DrawerClose({
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Close>) {
+  return <DrawerPrimitive.Close data-slot="drawer-close" {...props} />;
+}
+
+function DrawerOverlay({
+  className,
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Overlay>) {
+  return (
+    <DrawerPrimitive.Overlay
+      data-slot="drawer-overlay"
+      className={cn(
+        "fixed inset-0 z-50 bg-black/10 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function DrawerContent({
+  className,
+  children,
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Content>) {
+  return (
+    <DrawerPortal data-slot="drawer-portal">
+      <DrawerOverlay />
+      <DrawerPrimitive.Content
+        data-slot="drawer-content"
+        className={cn(
+          "group/drawer-content fixed z-50 flex h-auto flex-col bg-popover text-sm text-popover-foreground data-[vaul-drawer-direction=bottom]:inset-x-0 data-[vaul-drawer-direction=bottom]:bottom-0 data-[vaul-drawer-direction=bottom]:mt-24 data-[vaul-drawer-direction=bottom]:max-h-[80vh] data-[vaul-drawer-direction=bottom]:rounded-t-xl data-[vaul-drawer-direction=bottom]:border-t data-[vaul-drawer-direction=left]:inset-y-0 data-[vaul-drawer-direction=left]:left-0 data-[vaul-drawer-direction=left]:w-3/4 data-[vaul-drawer-direction=left]:rounded-r-xl data-[vaul-drawer-direction=left]:border-r data-[vaul-drawer-direction=right]:inset-y-0 data-[vaul-drawer-direction=right]:right-0 data-[vaul-drawer-direction=right]:w-full  data-[vaul-drawer-direction=right]:border-l data-[vaul-drawer-direction=top]:inset-x-0 data-[vaul-drawer-direction=top]:top-0 data-[vaul-drawer-direction=top]:mb-24 data-[vaul-drawer-direction=top]:max-h-[80vh] data-[vaul-drawer-direction=top]:rounded-b-xl data-[vaul-drawer-direction=top]:border-b data-[vaul-drawer-direction=left]:sm:max-w-sm data-[vaul-drawer-direction=right]:sm:max-w-sm",
+          className,
+        )}
+        {...props}
+      >
+        <div className="mx-auto mt-4 hidden h-1 w-[100px] shrink-0 rounded-full bg-muted group-data-[vaul-drawer-direction=bottom]/drawer-content:block" />
+        {children}
+      </DrawerPrimitive.Content>
+    </DrawerPortal>
+  );
+}
+
+function DrawerHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="drawer-header"
+      className={cn(
+        "flex flex-col gap-0.5 p-4 group-data-[vaul-drawer-direction=bottom]/drawer-content:text-center group-data-[vaul-drawer-direction=top]/drawer-content:text-center md:gap-0.5 md:text-left",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function DrawerFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="drawer-footer"
+      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
+      {...props}
+    />
+  );
+}
+
+function DrawerTitle({
+  className,
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Title>) {
+  return (
+    <DrawerPrimitive.Title
+      data-slot="drawer-title"
+      className={cn(
+        "font-heading text-base font-medium text-foreground",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function DrawerDescription({
+  className,
+  ...props
+}: React.ComponentProps<typeof DrawerPrimitive.Description>) {
+  return (
+    <DrawerPrimitive.Description
+      data-slot="drawer-description"
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  );
+}
+
+export {
+  Drawer,
+  DrawerPortal,
+  DrawerOverlay,
+  DrawerTrigger,
+  DrawerClose,
+  DrawerContent,
+  DrawerHeader,
+  DrawerFooter,
+  DrawerTitle,
+  DrawerDescription,
+};
+</file>
+
+<file path="components/ui/dropdown-menu.tsx">
+"use client"
+
+import * as React from "react"
+import { DropdownMenu as DropdownMenuPrimitive } from "radix-ui"
+
+import { cn } from "@/lib/utils"
+import { CheckIcon, ChevronRightIcon } from "lucide-react"
+
+function DropdownMenu({
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Root>) {
+  return <DropdownMenuPrimitive.Root data-slot="dropdown-menu" {...props} />
+}
+
+function DropdownMenuPortal({
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Portal>) {
+  return (
+    <DropdownMenuPrimitive.Portal data-slot="dropdown-menu-portal" {...props} />
+  )
+}
+
+function DropdownMenuTrigger({
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Trigger>) {
+  return (
+    <DropdownMenuPrimitive.Trigger
+      data-slot="dropdown-menu-trigger"
+      {...props}
+    />
+  )
+}
+
+function DropdownMenuContent({
+  className,
+  align = "start",
+  sideOffset = 4,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Content>) {
+  return (
+    <DropdownMenuPrimitive.Portal>
+      <DropdownMenuPrimitive.Content
+        data-slot="dropdown-menu-content"
+        sideOffset={sideOffset}
+        align={align}
+        className={cn("z-50 max-h-(--radix-dropdown-menu-content-available-height) w-(--radix-dropdown-menu-trigger-width) min-w-32 origin-(--radix-dropdown-menu-content-transform-origin) overflow-x-hidden overflow-y-auto rounded-lg bg-popover p-1 text-popover-foreground shadow-md ring-1 ring-foreground/10 duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-[state=closed]:overflow-hidden data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95", className )}
+        {...props}
+      />
+    </DropdownMenuPrimitive.Portal>
+  )
+}
+
+function DropdownMenuGroup({
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Group>) {
+  return (
+    <DropdownMenuPrimitive.Group data-slot="dropdown-menu-group" {...props} />
+  )
+}
+
+function DropdownMenuItem({
+  className,
+  inset,
+  variant = "default",
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Item> & {
+  inset?: boolean
+  variant?: "default" | "destructive"
+}) {
+  return (
+    <DropdownMenuPrimitive.Item
+      data-slot="dropdown-menu-item"
+      data-inset={inset}
+      data-variant={variant}
+      className={cn(
+        "group/dropdown-menu-item relative flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-[variant=destructive]:text-destructive data-[variant=destructive]:focus:bg-destructive/10 data-[variant=destructive]:focus:text-destructive dark:data-[variant=destructive]:focus:bg-destructive/20 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 data-[variant=destructive]:*:[svg]:text-destructive",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function DropdownMenuCheckboxItem({
+  className,
+  children,
+  checked,
+  inset,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.CheckboxItem> & {
+  inset?: boolean
+}) {
+  return (
+    <DropdownMenuPrimitive.CheckboxItem
+      data-slot="dropdown-menu-checkbox-item"
+      data-inset={inset}
+      className={cn(
+        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      checked={checked}
+      {...props}
+    >
+      <span
+        className="pointer-events-none absolute right-2 flex items-center justify-center"
+        data-slot="dropdown-menu-checkbox-item-indicator"
+      >
+        <DropdownMenuPrimitive.ItemIndicator>
+          <CheckIcon
+          />
+        </DropdownMenuPrimitive.ItemIndicator>
+      </span>
+      {children}
+    </DropdownMenuPrimitive.CheckboxItem>
+  )
+}
+
+function DropdownMenuRadioGroup({
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioGroup>) {
+  return (
+    <DropdownMenuPrimitive.RadioGroup
+      data-slot="dropdown-menu-radio-group"
+      {...props}
+    />
+  )
+}
+
+function DropdownMenuRadioItem({
+  className,
+  children,
+  inset,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.RadioItem> & {
+  inset?: boolean
+}) {
+  return (
+    <DropdownMenuPrimitive.RadioItem
+      data-slot="dropdown-menu-radio-item"
+      data-inset={inset}
+      className={cn(
+        "relative flex cursor-default items-center gap-1.5 rounded-md py-1 pr-8 pl-1.5 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground focus:**:text-accent-foreground data-inset:pl-7 data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    >
+      <span
+        className="pointer-events-none absolute right-2 flex items-center justify-center"
+        data-slot="dropdown-menu-radio-item-indicator"
+      >
+        <DropdownMenuPrimitive.ItemIndicator>
+          <CheckIcon
+          />
+        </DropdownMenuPrimitive.ItemIndicator>
+      </span>
+      {children}
+    </DropdownMenuPrimitive.RadioItem>
+  )
+}
+
+function DropdownMenuLabel({
+  className,
+  inset,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Label> & {
+  inset?: boolean
+}) {
+  return (
+    <DropdownMenuPrimitive.Label
+      data-slot="dropdown-menu-label"
+      data-inset={inset}
+      className={cn(
+        "px-1.5 py-1 text-xs font-medium text-muted-foreground data-inset:pl-7",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function DropdownMenuSeparator({
+  className,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Separator>) {
+  return (
+    <DropdownMenuPrimitive.Separator
+      data-slot="dropdown-menu-separator"
+      className={cn("-mx-1 my-1 h-px bg-border", className)}
+      {...props}
+    />
+  )
+}
+
+function DropdownMenuShortcut({
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
+  return (
+    <span
+      data-slot="dropdown-menu-shortcut"
+      className={cn(
+        "ml-auto text-xs tracking-widest text-muted-foreground group-focus/dropdown-menu-item:text-accent-foreground",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+function DropdownMenuSub({
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.Sub>) {
+  return <DropdownMenuPrimitive.Sub data-slot="dropdown-menu-sub" {...props} />
+}
+
+function DropdownMenuSubTrigger({
+  className,
+  inset,
+  children,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.SubTrigger> & {
+  inset?: boolean
+}) {
+  return (
+    <DropdownMenuPrimitive.SubTrigger
+      data-slot="dropdown-menu-sub-trigger"
+      data-inset={inset}
+      className={cn(
+        "flex cursor-default items-center gap-1.5 rounded-md px-1.5 py-1 text-sm outline-hidden select-none focus:bg-accent focus:text-accent-foreground not-data-[variant=destructive]:focus:**:text-accent-foreground data-inset:pl-7 data-open:bg-accent data-open:text-accent-foreground [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        className
+      )}
+      {...props}
+    >
+      {children}
+      <ChevronRightIcon className="ml-auto" />
+    </DropdownMenuPrimitive.SubTrigger>
+  )
+}
+
+function DropdownMenuSubContent({
+  className,
+  ...props
+}: React.ComponentProps<typeof DropdownMenuPrimitive.SubContent>) {
+  return (
+    <DropdownMenuPrimitive.SubContent
+      data-slot="dropdown-menu-sub-content"
+      className={cn("z-50 min-w-[96px] origin-(--radix-dropdown-menu-content-transform-origin) overflow-hidden rounded-lg bg-popover p-1 text-popover-foreground shadow-lg ring-1 ring-foreground/10 duration-100 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2 data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95", className )}
+      {...props}
+    />
+  )
+}
+
+export {
+  DropdownMenu,
+  DropdownMenuPortal,
+  DropdownMenuTrigger,
+  DropdownMenuContent,
+  DropdownMenuGroup,
+  DropdownMenuLabel,
+  DropdownMenuItem,
+  DropdownMenuCheckboxItem,
+  DropdownMenuRadioGroup,
+  DropdownMenuRadioItem,
+  DropdownMenuSeparator,
+  DropdownMenuShortcut,
+  DropdownMenuSub,
+  DropdownMenuSubTrigger,
+  DropdownMenuSubContent,
+}
+</file>
+
+<file path="components/ui/input.tsx">
+import * as React from "react"
+
+import { cn } from "@/lib/utils"
+
+function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+  return (
+    <input
+      type={type}
+      data-slot="input"
+      className={cn(
+        "h-8 w-full min-w-0 rounded-lg border border-input bg-transparent px-2.5 py-1 text-base transition-colors outline-none file:inline-flex file:h-6 file:border-0 file:bg-transparent file:text-sm file:font-medium file:text-foreground placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:pointer-events-none disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
+        className
+      )}
+      {...props}
+    />
+  )
+}
+
+export { Input }
+</file>
+
+<file path="components/ui/pagination.tsx">
+import * as React from "react";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MoreHorizontalIcon,
+} from "lucide-react";
+
+function Pagination({ className, ...props }: React.ComponentProps<"nav">) {
+  return (
+    <nav
+      role="navigation"
+      aria-label="pagination"
+      data-slot="pagination"
+      className={cn("mx-auto flex w-full justify-center", className)}
+      {...props}
+    />
+  );
+}
+
+function PaginationContent({
+  className,
+  ...props
+}: React.ComponentProps<"ul">) {
+  return (
+    <ul
+      data-slot="pagination-content"
+      className={cn("flex items-center gap-0.5", className)}
+      {...props}
+    />
+  );
+}
+
+function PaginationItem({ ...props }: React.ComponentProps<"li">) {
+  return <li data-slot="pagination-item" {...props} />;
+}
+
+type PaginationLinkProps = {
+  isActive?: boolean;
+} & Pick<React.ComponentProps<typeof Button>, "size"> &
+  React.ComponentProps<"a">;
+
+function PaginationLink({
+  className,
+  isActive,
+  size = "icon",
+  ...props
+}: PaginationLinkProps) {
+  return (
+    <Button
+      asChild
+      variant={isActive ? "outline" : "ghost"}
+      size={size}
+      className={cn(className)}
+    >
+      <a
+        aria-current={isActive ? "page" : undefined}
+        data-slot="pagination-link"
+        data-active={isActive}
+        {...props}
+      />
+    </Button>
+  );
+}
+
+function PaginationPrevious({
+  className,
+  text = "Previous",
+  ...props
+}: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
+  return (
+    <PaginationLink
+      aria-label="Go to previous page"
+      size="default"
+      className={cn("pl-1.5!", className)}
+      {...props}
+    >
+      <ChevronLeftIcon data-icon="inline-start" />
+      <span className="hidden sm:block">{text}</span>
+    </PaginationLink>
+  );
+}
+
+function PaginationNext({
+  className,
+  text = "Next",
+  ...props
+}: React.ComponentProps<typeof PaginationLink> & { text?: string }) {
+  return (
+    <PaginationLink
+      aria-label="Go to next page"
+      size="default"
+      className={cn("pr-1.5!", className)}
+      {...props}
+    >
+      <span className="hidden sm:block">{text}</span>
+      <ChevronRightIcon data-icon="inline-end" />
+    </PaginationLink>
+  );
+}
+
+function PaginationEllipsis({
+  className,
+  ...props
+}: React.ComponentProps<"span">) {
+  return (
+    <span
+      aria-hidden
+      data-slot="pagination-ellipsis"
+      className={cn(
+        "flex size-8 items-center justify-center [&_svg:not([class*='size-'])]:size-4",
+        className,
+      )}
+      {...props}
+    >
+      <MoreHorizontalIcon />
+      <span className="sr-only">More pages</span>
+    </span>
+  );
+}
+
+export {
+  Pagination,
+  PaginationContent,
+  PaginationEllipsis,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+};
+</file>
+
+<file path="components/ui/sheet.tsx">
+"use client";
+
+import * as React from "react";
+import { Dialog as SheetPrimitive } from "radix-ui";
+
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { XIcon } from "lucide-react";
+
+function Sheet({ ...props }: React.ComponentProps<typeof SheetPrimitive.Root>) {
+  return <SheetPrimitive.Root data-slot="sheet" {...props} />;
+}
+
+function SheetTrigger({
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Trigger>) {
+  return <SheetPrimitive.Trigger data-slot="sheet-trigger" {...props} />;
+}
+
+function SheetClose({
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Close>) {
+  return <SheetPrimitive.Close data-slot="sheet-close" {...props} />;
+}
+
+function SheetPortal({
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Portal>) {
+  return <SheetPrimitive.Portal data-slot="sheet-portal" {...props} />;
+}
+
+function SheetOverlay({
+  className,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Overlay>) {
+  return (
+    <SheetPrimitive.Overlay
+      data-slot="sheet-overlay"
+      className={cn(
+        "fixed inset-0 z-50 bg-black/10 duration-100 supports-backdrop-filter:backdrop-blur-xs data-open:animate-in data-open:fade-in-0 data-closed:animate-out data-closed:fade-out-0",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function SheetContent({
+  className,
+  children,
+  side = "right",
+  showCloseButton = true,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Content> & {
+  side?: "top" | "right" | "bottom" | "left";
+  showCloseButton?: boolean;
+}) {
+  return (
+    <SheetPortal>
+      <SheetOverlay />
+      <SheetPrimitive.Content
+        data-slot="sheet-content"
+        data-side={side}
+        className={cn(
+          "fixed z-50 flex flex-col gap-4 bg-popover bg-clip-padding text-sm text-popover-foreground shadow-lg transition duration-200 ease-in-out data-[side=bottom]:inset-x-0 data-[side=bottom]:bottom-0 data-[side=bottom]:h-auto data-[side=bottom]:border-t data-[side=left]:inset-y-0 data-[side=left]:left-0 data-[side=left]:h-full data-[side=left]:w-3/4 data-[side=left]:border-r data-[side=right]:inset-y-0 data-[side=right]:right-0 data-[side=right]:h-full data-[side=right]:w-full data-[side=right]:border-l data-[side=top]:inset-x-0 data-[side=top]:top-0 data-[side=top]:h-auto data-[side=top]:border-b data-[side=left]:sm:max-w-sm data-[side=right]:sm:max-w-md data-open:animate-in data-open:fade-in-0 data-[side=bottom]:data-open:slide-in-from-bottom-10 data-[side=left]:data-open:slide-in-from-left-10 data-[side=right]:data-open:slide-in-from-right-10 data-[side=top]:data-open:slide-in-from-top-10 data-closed:animate-out data-closed:fade-out-0 data-[side=bottom]:data-closed:slide-out-to-bottom-10 data-[side=left]:data-closed:slide-out-to-left-10 data-[side=right]:data-closed:slide-out-to-right-10 data-[side=top]:data-closed:slide-out-to-top-10",
+          className,
+        )}
+        {...props}
+      >
+        {children}
+        {showCloseButton && (
+          <SheetPrimitive.Close data-slot="sheet-close" asChild>
+            <Button
+              variant="ghost"
+              className="absolute top-3 right-3"
+              size="icon-sm"
+            >
+              <XIcon />
+              <span className="sr-only">Close</span>
+            </Button>
+          </SheetPrimitive.Close>
+        )}
+      </SheetPrimitive.Content>
+    </SheetPortal>
+  );
+}
+
+function SheetHeader({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="sheet-header"
+      className={cn("flex flex-col gap-0.5 p-4", className)}
+      {...props}
+    />
+  );
+}
+
+function SheetFooter({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="sheet-footer"
+      className={cn("mt-auto flex flex-col gap-2 p-4", className)}
+      {...props}
+    />
+  );
+}
+
+function SheetTitle({
+  className,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Title>) {
+  return (
+    <SheetPrimitive.Title
+      data-slot="sheet-title"
+      className={cn(
+        "font-heading text-base font-medium text-foreground",
+        className,
+      )}
+      {...props}
+    />
+  );
+}
+
+function SheetDescription({
+  className,
+  ...props
+}: React.ComponentProps<typeof SheetPrimitive.Description>) {
+  return (
+    <SheetPrimitive.Description
+      data-slot="sheet-description"
+      className={cn("text-sm text-muted-foreground", className)}
+      {...props}
+    />
+  );
+}
+
+export {
+  Sheet,
+  SheetTrigger,
+  SheetClose,
+  SheetContent,
+  SheetHeader,
+  SheetFooter,
+  SheetTitle,
+  SheetDescription,
+};
+</file>
+
+<file path="components/ui/sonner.tsx">
+"use client";
+
+import { useTheme } from "next-themes";
+import { Toaster as Sonner, type ToasterProps } from "sonner";
+import {
+  CircleCheckIcon,
+  InfoIcon,
+  TriangleAlertIcon,
+  OctagonXIcon,
+  Loader2Icon,
+} from "lucide-react";
+
+const Toaster = ({ ...props }: ToasterProps) => {
+  const { theme = "system" } = useTheme();
+
+  return (
+    <Sonner
+      theme={theme as ToasterProps["theme"]}
+      className="toaster group"
+      icons={{
+        success: <CircleCheckIcon className="size-4" />,
+        info: <InfoIcon className="size-4" />,
+        warning: <TriangleAlertIcon className="size-4" />,
+        error: <OctagonXIcon className="size-4" />,
+        loading: <Loader2Icon className="size-4 animate-spin" />,
+      }}
+      style={
+        {
+          "--normal-bg": "var(--banner)",
+          "--normal-text": "var(--popover-foreground)",
+          "--normal-border": "var(--border)",
+          "--border-radius": "var(--radius)",
+        } as React.CSSProperties
+      }
+      toastOptions={{
+        classNames: {
+          toast: "!py-2 !px-3",
+        },
+      }}
+      {...props}
+    />
+  );
+};
+
+export { Toaster };
+</file>
+
+<file path="eslint.config.mjs">
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+const eslintConfig = defineConfig([
+  ...nextVitals,
+  ...nextTs,
+  // Override default ignores of eslint-config-next.
+  globalIgnores([
+    // Default ignores of eslint-config-next:
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+]);
+
+export default eslintConfig;
+</file>
+
+<file path="lib/checkout-type.ts">
+export interface DeliveryLocation {
+  id: number;
+  storeName: string;
+  address: string;
+  readyTime: string;
+  fee: number;
+}
+</file>
+
+<file path="lib/utils.ts">
+import { clsx, type ClassValue } from "clsx"
+import { twMerge } from "tailwind-merge"
+
+export function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs))
+}
+</file>
+
+<file path="postcss.config.mjs">
+const config = {
+  plugins: {
+    "@tailwindcss/postcss": {},
+  },
+};
+
+export default config;
+</file>
+
+<file path="providers/cart-provider.tsx">
+// src/providers/cart-provider.tsx
+"use client";
+
+import { createContext, useContext, useState } from "react";
+import { useStore } from "zustand";
+import { createCartStore } from "@/stores/cart-store";
+
+type CartStore = ReturnType<typeof createCartStore>;
+
+const CartContext = createContext<CartStore | null>(null);
+
+export function CartProvider({ children }: { children: React.ReactNode }) {
+  const [store] = useState(() => createCartStore());
+
+  return <CartContext.Provider value={store}>{children}</CartContext.Provider>;
+}
+
+export function useCart<T>(
+  selector: (state: ReturnType<CartStore["getState"]>) => T,
+) {
+  const store = useContext(CartContext);
+  if (!store) throw new Error("useCart must be used inside CartProvider");
+  return useStore(store, selector);
+}
+</file>
+
+<file path="public/file.svg">
+<svg fill="none" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg"><path d="M14.5 13.5V5.41a1 1 0 0 0-.3-.7L9.8.29A1 1 0 0 0 9.08 0H1.5v13.5A2.5 2.5 0 0 0 4 16h8a2.5 2.5 0 0 0 2.5-2.5m-1.5 0v-7H8v-5H3v12a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1M9.5 5V2.12L12.38 5zM5.13 5h-.62v1.25h2.12V5zm-.62 3h7.12v1.25H4.5zm.62 3h-.62v1.25h7.12V11z" clip-rule="evenodd" fill="#666" fill-rule="evenodd"/></svg>
+</file>
+
+<file path="public/globe.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><g clip-path="url(#a)"><path fill-rule="evenodd" clip-rule="evenodd" d="M10.27 14.1a6.5 6.5 0 0 0 3.67-3.45q-1.24.21-2.7.34-.31 1.83-.97 3.1M8 16A8 8 0 1 0 8 0a8 8 0 0 0 0 16m.48-1.52a7 7 0 0 1-.96 0H7.5a4 4 0 0 1-.84-1.32q-.38-.89-.63-2.08a40 40 0 0 0 3.92 0q-.25 1.2-.63 2.08a4 4 0 0 1-.84 1.31zm2.94-4.76q1.66-.15 2.95-.43a7 7 0 0 0 0-2.58q-1.3-.27-2.95-.43a18 18 0 0 1 0 3.44m-1.27-3.54a17 17 0 0 1 0 3.64 39 39 0 0 1-4.3 0 17 17 0 0 1 0-3.64 39 39 0 0 1 4.3 0m1.1-1.17q1.45.13 2.69.34a6.5 6.5 0 0 0-3.67-3.44q.65 1.26.98 3.1M8.48 1.5l.01.02q.41.37.84 1.31.38.89.63 2.08a40 40 0 0 0-3.92 0q.25-1.2.63-2.08a4 4 0 0 1 .85-1.32 7 7 0 0 1 .96 0m-2.75.4a6.5 6.5 0 0 0-3.67 3.44 29 29 0 0 1 2.7-.34q.31-1.83.97-3.1M4.58 6.28q-1.66.16-2.95.43a7 7 0 0 0 0 2.58q1.3.27 2.95.43a18 18 0 0 1 0-3.44m.17 4.71q-1.45-.12-2.69-.34a6.5 6.5 0 0 0 3.67 3.44q-.65-1.27-.98-3.1" fill="#666"/></g><defs><clipPath id="a"><path fill="#fff" d="M0 0h16v16H0z"/></clipPath></defs></svg>
+</file>
+
+<file path="public/next.svg">
+<svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 394 80"><path fill="#000" d="M262 0h68.5v12.7h-27.2v66.6h-13.6V12.7H262V0ZM149 0v12.7H94v20.4h44.3v12.6H94v21h55v12.6H80.5V0h68.7zm34.3 0h-17.8l63.8 79.4h17.9l-32-39.7 32-39.6h-17.9l-23 28.6-23-28.6zm18.3 56.7-9-11-27.1 33.7h17.8l18.3-22.7z"/><path fill="#000" d="M81 79.3 17 0H0v79.3h13.6V17l50.2 62.3H81Zm252.6-.4c-1 0-1.8-.4-2.5-1s-1.1-1.6-1.1-2.6.3-1.8 1-2.5 1.6-1 2.6-1 1.8.3 2.5 1a3.4 3.4 0 0 1 .6 4.3 3.7 3.7 0 0 1-3 1.8zm23.2-33.5h6v23.3c0 2.1-.4 4-1.3 5.5a9.1 9.1 0 0 1-3.8 3.5c-1.6.8-3.5 1.3-5.7 1.3-2 0-3.7-.4-5.3-1s-2.8-1.8-3.7-3.2c-.9-1.3-1.4-3-1.4-5h6c.1.8.3 1.6.7 2.2s1 1.2 1.6 1.5c.7.4 1.5.5 2.4.5 1 0 1.8-.2 2.4-.6a4 4 0 0 0 1.6-1.8c.3-.8.5-1.8.5-3V45.5zm30.9 9.1a4.4 4.4 0 0 0-2-3.3 7.5 7.5 0 0 0-4.3-1.1c-1.3 0-2.4.2-3.3.5-.9.4-1.6 1-2 1.6a3.5 3.5 0 0 0-.3 4c.3.5.7.9 1.3 1.2l1.8 1 2 .5 3.2.8c1.3.3 2.5.7 3.7 1.2a13 13 0 0 1 3.2 1.8 8.1 8.1 0 0 1 3 6.5c0 2-.5 3.7-1.5 5.1a10 10 0 0 1-4.4 3.5c-1.8.8-4.1 1.2-6.8 1.2-2.6 0-4.9-.4-6.8-1.2-2-.8-3.4-2-4.5-3.5a10 10 0 0 1-1.7-5.6h6a5 5 0 0 0 3.5 4.6c1 .4 2.2.6 3.4.6 1.3 0 2.5-.2 3.5-.6 1-.4 1.8-1 2.4-1.7a4 4 0 0 0 .8-2.4c0-.9-.2-1.6-.7-2.2a11 11 0 0 0-2.1-1.4l-3.2-1-3.8-1c-2.8-.7-5-1.7-6.6-3.2a7.2 7.2 0 0 1-2.4-5.7 8 8 0 0 1 1.7-5 10 10 0 0 1 4.3-3.5c2-.8 4-1.2 6.4-1.2 2.3 0 4.4.4 6.2 1.2 1.8.8 3.2 2 4.3 3.4 1 1.4 1.5 3 1.5 5h-5.8z"/></svg>
+</file>
+
+<file path="public/vercel.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1155 1000"><path d="m577.3 0 577.4 1000H0z" fill="#fff"/></svg>
+</file>
+
+<file path="public/window.svg">
+<svg fill="none" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 16 16"><path fill-rule="evenodd" clip-rule="evenodd" d="M1.5 2.5h13v10a1 1 0 0 1-1 1h-11a1 1 0 0 1-1-1zM0 1h16v11.5a2.5 2.5 0 0 1-2.5 2.5h-11A2.5 2.5 0 0 1 0 12.5zm3.75 4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5M7 4.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0m1.75.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5" fill="#666"/></svg>
+</file>
+
+<file path="README.md">
+This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+
+## Getting Started
+
+First, run the development server:
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+# or
+bun dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+
+## Learn More
+
+To learn more about Next.js, take a look at the following resources:
+
+- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
+- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+
+You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+
+## Deploy on Vercel
+
+The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+
+Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+</file>
+
+<file path="src/entities/errors/index.ts">
+import { ApiResponse } from "../models/api";
+
+export interface BaseErrorType {
+  message: string;
+  cause?: unknown;
+}
+
+export interface ApiErrorCause {
+  body?: BodyInit | null;
+  init?: ResponseInit;
+}
+
+interface NotFoundError extends BaseErrorType {
+  type: "NotFoundError";
+}
+
+interface UniqueConstraintViolationError extends BaseErrorType {
+  type: "UniqueConstraintViolationError";
+}
+
+interface InputParseError extends BaseErrorType {
+  type: "InputParseError";
+}
+
+interface AuthenticationError extends BaseErrorType {
+  type: "AuthenticationError";
+}
+
+interface UnauthenticatedError extends BaseErrorType {
+  type: "UnauthenticatedError";
+}
+
+interface UnauthorizedError extends BaseErrorType {
+  type: "UnauthorizedError";
+}
+
+interface OperationError extends BaseErrorType {
+  type: "OperationError";
+}
+
+interface InvalidToken extends BaseErrorType {
+  type: "InvalidToken";
+}
+
+interface TooManyRequests extends BaseErrorType {
+  type: "To Many Requests";
+}
+
+interface NetworkError extends BaseErrorType {
+  type: "Network Error";
+}
+
+interface Conflict extends BaseErrorType {
+  type: "Conflict";
+}
+
+interface BadGateway extends BaseErrorType {
+  type: "BadGateway";
+}
+
+export type ApplicationError =
+  | NotFoundError
+  | UniqueConstraintViolationError
+  | InputParseError
+  | AuthenticationError
+  | UnauthenticatedError
+  | UnauthorizedError
+  | OperationError
+  | InvalidToken
+  | TooManyRequests
+  | NetworkError
+  | Conflict
+  | BadGateway;
+
+export type ApplicationErrorApiExtended = ApplicationError & ApiResponse;
+
+export const makeError = <T extends ApplicationError["type"]>(
+  errorType: T,
+  message: string,
+  options?: ErrorOptions,
+): Extract<ApplicationError, { type: T }> => {
+  return {
+    type: errorType,
+    message: message,
+    cause: options?.cause,
+  } as Extract<ApplicationError, { type: T }>;
+};
+
+const PostgrestErrorCodes = {
+  NOT_FOUND: "PGRST116",
+  UNIQUE_CONSTRAINT_VIOLATION: "23505",
+  NETWORK_ERROR: "ENOTFOUND",
+} as const;
+
+type PostgrestError = {
+  code: string;
+  message: string;
+};
+
+export const mapPostgrestErrorToApplicationError = (
+  error: PostgrestError,
+): ApplicationError => {
+  switch (error.code) {
+    case PostgrestErrorCodes.NOT_FOUND:
+      return makeError("NotFoundError", error.message, { cause: error });
+    case PostgrestErrorCodes.UNIQUE_CONSTRAINT_VIOLATION:
+      return makeError("UniqueConstraintViolationError", error.message, {
+        cause: error,
+      });
+    case PostgrestErrorCodes.NETWORK_ERROR:
+      return makeError("Network Error", error.message, {
+        cause: error,
+      });
+    default:
+      return makeError("OperationError", error.message, { cause: error });
+  }
+};
+
+export const mapErrorToStatusCode = (
+  type: ApplicationError["type"],
+): number => {
+  switch (type) {
+    case "To Many Requests":
+      return 429;
+    case "UnauthenticatedError":
+      return 401;
+    case "UnauthorizedError":
+      return 403;
+    case "InputParseError":
+      return 400;
+    case "NotFoundError":
+      return 404;
+    case "Conflict":
+      return 409;
+    case "BadGateway":
+      return 502;
+    default:
+      return 500;
+  }
+};
+</file>
+
+<file path="src/entities/models/api.ts">
+export type ApiResponse = {
+  body: BodyInit;
+  init: ResponseInit;
+};
+</file>
+
+<file path="src/lib/fp.ts">
+type Compose = <A, B, C>(f: (x: B) => C, g: (x: A) => B) => (x: A) => C;
+
+export const compose: Compose = (f, g) => (x) => f(g(x));
+
+export type Option<A> = Some<A> | None;
+
+export interface Some<A> {
+  _tag: "Some";
+  value: A;
+}
+
+export interface None {
+  _tag: "None";
+}
+
+export const some = <A>(x: A): Option<A> => ({ _tag: "Some", value: x });
+
+export const none: Option<never> = { _tag: "None" };
+
+const isNone = <A>(x: Option<A>): x is None => x._tag === "None";
+
+type MatchOption = <A, B, C>(
+  onNone: () => B,
+  onSome: (a: A) => C,
+) => (x: Option<A>) => B | C;
+
+export const matchOption: MatchOption = (onNone, onSome) => (x) =>
+  isNone(x) ? onNone() : onSome(x.value);
+
+export type Either<A, B> = Left<A> | Right<B>;
+
+export interface Left<A> {
+  _tag: "Left";
+  left: A;
+}
+
+export interface Right<B> {
+  _tag: "Right";
+  right: B;
+}
+
+export const left = <A, B = never>(a: A): Either<A, B> => ({
+  _tag: "Left",
+  left: a,
+});
+
+export const right = <B, A = never>(b: B): Either<A, B> => ({
+  _tag: "Right",
+  right: b,
+});
+
+export const isLeft = <A, B>(x: Either<A, B>): x is Left<A> =>
+  x._tag === "Left";
+
+type MatchEither = <A, B, C, D>(
+  onLeft: (a: A) => C,
+  onRight: (b: B) => D,
+) => (x: Either<A, B>) => C | D;
+
+export const matchEither: MatchEither = (onLeft, onRight) => (x) =>
+  isLeft(x) ? onLeft(x.left) : onRight(x.right);
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+    "paths": {
+      "@/*": ["./*"]
+    }
+  },
+  "include": [
+    "next-env.d.ts",
+    "**/*.ts",
+    "**/*.tsx",
+    ".next/types/**/*.ts",
+    ".next/dev/types/**/*.ts",
+    "**/*.mts"
+  ],
+  "exclude": ["node_modules"]
+}
+</file>
+
+<file path="app/(shopping)/cart/page.tsx">
+import CartHeroSection from "./_sections/cart-hero";
+import CartBody from "./_sections/cart-body";
+
+export default function CartComponent() {
+  return (
+    <div>
+      <CartHeroSection />
+      <CartBody />
+    </div>
+  );
+}
+</file>
+
+<file path="app/(shopping)/shop/_sections/pagination.tsx">
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+  PaginationNext,
+  PaginationPrevious,
+} from "@/components/ui/pagination";
+import { cn } from "@/lib/utils";
+import {
+  getPaginatedLink,
+  PaginationSearchParams,
+} from "@/lib/nuqs/search-params";
+
+type PaginationControlsProps = {
+  numPages: number;
+  pagination: Promise<PaginationSearchParams>;
+};
+
+export default async function ServerPaginationControls({
+  numPages,
+  pagination,
+}: PaginationControlsProps) {
+  const { page, sort, category, query } = await pagination;
+
+  const isFirstPage = page <= 1;
+  const isLastPage = page >= numPages;
+
+  function pageURL(nextPage: number) {
+    const safePage = Math.min(Math.max(nextPage, 1), numPages);
+
+    return getPaginatedLink("/shop", {
+      page: safePage,
+      sort,
+      category,
+      query,
+    });
+  }
+
+  return (
+    <Pagination className="not-prose items-center gap-2">
+      <PaginationContent>
+        <PaginationItem>
+          <PaginationPrevious
+            href={pageURL(page - 1)}
+            aria-disabled={isFirstPage}
+            tabIndex={isFirstPage ? -1 : undefined}
+            className={cn(isFirstPage && "pointer-events-none opacity-50")}
+          />
+        </PaginationItem>
+
+        {Array.from({ length: numPages }, (_, i) => {
+          const current = i + 1;
+          const active = page === current;
+
+          return (
+            <PaginationItem key={current}>
+              <PaginationLink
+                href={pageURL(current)}
+                aria-current={active ? "page" : undefined}
+                className={cn(active && "bg-white")}
+              >
+                {current}
+              </PaginationLink>
+            </PaginationItem>
+          );
+        })}
+
+        <PaginationItem>
+          <PaginationNext
+            href={pageURL(page + 1)}
+            aria-disabled={isLastPage}
+            tabIndex={isLastPage ? -1 : undefined}
+            className={cn(isLastPage && "pointer-events-none opacity-50")}
+          />
+        </PaginationItem>
+      </PaginationContent>
+    </Pagination>
+  );
+}
+</file>
+
+<file path="app/(shopping)/shop/_sections/product-display.tsx">
+import { Product } from "@/lib/product-types";
+import ProductCard from "@/components/product-card";
+import PaginationComponent from "@/app/(shopping)/shop/_sections/pagination";
+import { PaginationSearchParams } from "@/lib/nuqs/search-params";
+
+type ProductDisplayProps = {
+  products: Product[];
+  currentPage: number;
+  totalPages: number;
+  pagination: Promise<PaginationSearchParams>;
+};
+
+export default function ProductDisplay({
+  products,
+  totalPages,
+  pagination,
+}: ProductDisplayProps) {
+  return (
+    <div className="space-y-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+        {products.map((product, index) => (
+          <ProductCard key={index} product={product} />
+        ))}
+      </div>
+
+      <PaginationComponent numPages={totalPages} pagination={pagination} />
+    </div>
+  );
+}
+</file>
+
+<file path="app/checkout/_sections/checkout-icons.tsx">
+import { CircleQuestionMark } from "lucide-react";
+
+export const ChevronRight = () => (
+  <svg
+    width="13"
+    height="13"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+  >
+    <path d="M9 18l6-6-6-6" />
+  </svg>
+);
+
+export const ChevronDown = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+  >
+    <path d="M6 9l6 6 6-6" />
+  </svg>
+);
+
+export const InfoIcon = () => <CircleQuestionMark size={13} />;
+
+export const LockIcon = () => (
+  <svg
+    width="13"
+    height="13"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+    className="shrink-0"
+  >
+    <rect x="3" y="11" width="18" height="11" rx="2" />
+    <path d="M7 11V7a5 5 0 0110 0v4" />
+  </svg>
+);
+
+export const ClockIcon = () => (
+  <svg
+    width="12"
+    height="12"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    className="shrink-0"
+  >
+    <circle cx="12" cy="12" r="10" />
+    <path d="M12 6v6l4 2" />
+  </svg>
+);
+
+export const TagIcon = () => (
+  <svg
+    width="14"
+    height="14"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M20.59 13.41l-7.17 7.17a2 2 0 01-2.83 0L2 12V2h10l8.59 8.59a2 2 0 010 2.82z" />
+    <line x1="7" y1="7" x2="7.01" y2="7" />
+  </svg>
+);
+
+export const PinIcon = () => (
+  <svg
+    width="13"
+    height="13"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2.5"
+  >
+    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z" />
+    <circle cx="12" cy="9" r="2.5" />
+  </svg>
+);
+
+export const BagIcon = () => (
+  <svg
+    width="16"
+    height="16"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+  >
+    <path d="M6 2L3 6v14a2 2 0 002 2h14a2 2 0 002-2V6l-3-4zM3 6h18M16 10a4 4 0 01-8 0" />
+  </svg>
+);
+</file>
+
+<file path="app/checkout/_sections/float-input.tsx">
+import React from "react";
+
+export function FloatInput({
+  id,
+  label,
+  value,
+  onChange,
+  type = "text",
+  autoComplete,
+  className = "",
+}: {
+  id: string;
+  label: string;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  type?: string;
+  autoComplete?: string;
+  className?: string;
+}) {
+  return (
+    <div className={`relative w-full ${className}`}>
+      <label htmlFor={id}>{label}</label>
+      <input
+        id={id}
+        type={type}
+        placeholder=" "
+        value={value}
+        onChange={onChange}
+        autoComplete={autoComplete}
+        className="peer w-full rounded-lg border border-[#d4d0ca] bg-white px-4 pb-2 pt-5 text-[15px] outline-none transition-colors placeholder-transparent focus:border-[#111] appearance-none"
+      />
+    </div>
+  );
+}
+</file>
+
+<file path="components/cart-item-component.tsx">
+"use client";
+import Image from "next/image";
+import { useCart } from "@/providers/cart-provider";
+import { Minus, Plus, X } from "lucide-react";
+
+type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+};
+
+export default function CartItemComponent({
+  item: { id, name, price, image, quantity },
+}: {
+  item: CartItem;
+}) {
+  const increaseQty = useCart((state) => state.increaseQty);
+  const decreaseQty = useCart((state) => state.decreaseQty);
+  const removeItem = useCart((state) => state.removeItem);
+
+  return (
+    <div className="p-4 bg-category flex gap-4 items-center">
+      {/* 1. Optimized Image Container */}
+      <div className="relative w-[100px] aspect-square shrink-0 overflow-hidden rounded-sm">
+        <Image
+          src={image}
+          alt={name}
+          fill
+          sizes="100px"
+          className="object-cover transition-transform hover:scale-105"
+        />
+      </div>
+
+      {/* 2. Content Section */}
+      <div className="space-y-4 flex-1">
+        <div className="flex flex-col gap-2">
+          <h3 className="font-medium">{name}</h3>
+          <p className="opacity-80">₦{(price * quantity).toLocaleString()}</p>
+        </div>
+
+        <div className="flex justify-between">
+          <div className="flex items-center gap-1">
+            <button onClick={() => decreaseQty(id)} disabled={quantity <= 1}>
+              <Minus className="w-3 h-3" />
+            </button>
+
+            <span className="w-4 text-center">{quantity}</span>
+
+            <button onClick={() => increaseQty(id)}>
+              <Plus className="w-3 h-3" />
+            </button>
+          </div>
+
+          <button onClick={() => removeItem(id)}>
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/footer.tsx">
+import { Input } from "@/components/ui/input";
+import {
+  SiInstagram,
+  SiFacebook,
+  SiWhatsapp,
+  SiTiktok,
+} from "@icons-pack/react-simple-icons";
+
+export default function Footer() {
+  return (
+    <footer className="bg-hero mt-14 px-4 py-10 grid md:grid-cols-2 gap-7">
+      <div className="grid md:grid-cols-2">
+        <div className="space-y-2">
+          <p>
+            Enter your email for the latest updates about our newest product
+            launches, member discounts, and more!
+          </p>
+
+          <Input
+            placeholder="Enter your email address"
+            className="bg-white rounded-sm h-10 text-body"
+          />
+
+          <div className="flex mb-15 mt-16 gap-4">
+            <SiInstagram size={18} />
+            <SiFacebook size={18} />
+            <SiWhatsapp size={18} />
+            <SiTiktok size={18} />
+          </div>
+        </div>
+        <div className="hidden md:block">
+          <div></div>
+        </div>
+      </div>
+
+      <div className="grid gap-7">
+        <div className="flex flex-wrap gap-14 md:gap-20">
+          <div className="space-y-2">
+            <p className="font-bold">Shop</p>
+            <ul>
+              <li>Pots</li>
+              <li>Blenders</li>
+              <li>Air fryers</li>
+              <li>Kettle</li>
+              <li>Gas cookers</li>
+              <li>Knives</li>
+              <li>Childrens toys</li>
+            </ul>
+          </div>
+
+          <div className="space-y-2">
+            <p className="font-bold">Useful links</p>
+            <ul>
+              <li>Home</li>
+              <li>About us</li>
+              <li>Contact</li>
+            </ul>
+          </div>
+
+          <div className="space-y-2">
+            <p className="font-bold">Get help</p>
+            <ul>
+              <li>Stocklist</li>
+              <li>
+                Shipping <br /> & Returns
+              </li>
+              <li>Refunds</li>
+            </ul>
+          </div>
+        </div>
+
+        <div className="self-end text-[10px]">
+          <div className="space-x-4">
+            <span>Privacy Policy</span>
+            <span>Terms & Conditions</span>
+            <span>Site by thecodemaster</span>
+          </div>
+          <p>© 2026 Blessing Tokunbo Store. All rights reserved.</p>
+        </div>
+      </div>
+    </footer>
+  );
+}
+</file>
+
+<file path="lib/sanity/image-utility.ts">
+import { createImageUrlBuilder } from "@sanity/image-url";
+import { client } from "./client";
+
+const builder = createImageUrlBuilder(client);
+
+export function urlFor(source: any) {
+  return builder.image(source);
+}
+</file>
+
+<file path="next.config.ts">
+import type { NextConfig } from "next";
+
+const nextConfig: NextConfig = {
+  /* config options here */
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "cdn.sanity.io",
+      },
+    ],
+  },
+};
+
+export default nextConfig;
+</file>
+
+<file path="stores/cart-store.ts">
+// src/stores/cart-store.ts
+import { createStore } from "zustand/vanilla";
+import { persist, createJSONStorage } from "zustand/middleware";
+
+export type CartItem = {
+  id: string;
+  name: string;
+  price: number;
+  image: string;
+  quantity: number;
+};
+
+type CartState = {
+  items: CartItem[];
+  addItem: (item: CartItem) => void;
+  removeItem: (id: string) => void;
+  increaseQty: (id: string) => void;
+  decreaseQty: (id: string) => void;
+  clearCart: () => void;
+  totalItems: () => number;
+  totalPrice: () => number;
+};
+
+const initialState = {
+  items: [],
+};
+
+export const createCartStore = () =>
+  createStore<CartState>()(
+    persist(
+      (set, get) => ({
+        ...initialState,
+
+        addItem: (item) =>
+          set((state) => {
+            const existing = state.items.find((p) => p.id === item.id);
+            const quantityToAdd = item.quantity ? item.quantity : 1;
+
+            if (existing) {
+              const quantityToAdd = item.quantity ? item.quantity : 1;
+              return {
+                items: state.items.map((p) =>
+                  p.id === item.id
+                    ? { ...p, quantity: p.quantity + quantityToAdd }
+                    : p,
+                ),
+              };
+            }
+
+            return {
+              items: [...state.items, { ...item, quantity: quantityToAdd }],
+            };
+          }),
+
+        removeItem: (id) =>
+          set((state) => ({
+            items: state.items.filter((item) => item.id !== id),
+          })),
+
+        increaseQty: (id) =>
+          set((state) => ({
+            items: state.items.map((item) =>
+              item.id === id ? { ...item, quantity: item.quantity + 1 } : item,
+            ),
+          })),
+
+        decreaseQty: (id) =>
+          set((state) => ({
+            items: state.items
+              .map((item) =>
+                item.id === id
+                  ? { ...item, quantity: item.quantity - 1 }
+                  : item,
+              )
+              .filter((item) => item.quantity > 0),
+          })),
+
+        clearCart: () => set({ items: [] }),
+
+        totalItems: () =>
+          get().items.reduce((sum, item) => sum + item.quantity, 0),
+
+        totalPrice: () =>
+          get().items.reduce(
+            (sum, item) => sum + item.price * item.quantity,
+            0,
+          ),
+      }),
+      {
+        name: "cart-storage",
+        storage: createJSONStorage(() => localStorage),
+      },
+    ),
+  );
+</file>
+
+<file path="app/(shopping)/shop/_sections/category.tsx">
+"use client";
+
+import { useState } from "react";
+import { ChevronDown, ChevronUp, X, SlidersHorizontal } from "lucide-react";
+import { searchParams, useSearchParams } from "@/lib/nuqs/search-params";
+
+const FILTER_OPTIONS: Record<string, { name: string; slug: string }[]> = {
+  "Kitchen Utensils": [
+    { name: "Pots", slug: "pots" },
+    { name: "Pot covers", slug: "pot-covers" },
+    { name: "Frying pans", slug: "frying-pans" },
+    { name: "Knives", slug: "knives" },
+    { name: "Kettles", slug: "kettles" },
+  ],
+  "Kitchen Appliances": [
+    { name: "Air fryer", slug: "air-fryers" },
+    { name: "Gas cookers", slug: "gas-cookers" },
+    { name: "Blenders", slug: "blenders" },
+  ],
+  Other: [{ name: "Children's Toys", slug: "children-s-toy-s" }],
+};
+
+const SORT_OPTIONS = [
+  "Featured",
+  "Best Selling",
+  "Alphabetical A To Z",
+  "Alphabetical Z To A",
+  "Price Low To High",
+  "Price High To Low",
+];
+
+export default function ShopCategory() {
+  const [openFilter, setOpenFilter] = useState<string | null>(null);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isSortOpen, setIsSortOpen] = useState(false);
+
+  const [{ category, sort, page, query }, setParams] = useSearchParams();
+
+  const updateCategory = (value: string, checked: boolean) => {
+    const next = checked
+      ? [...category, value]
+      : category.filter((item) => item !== value);
+
+    setParams({ category: next, page: 1 });
+  };
+
+  const updateSort = (value: string) => {
+    setParams({ sort: value, page: 1 });
+    setIsSortOpen(false);
+  };
+
+  const selectedCategories = Object.values(FILTER_OPTIONS)
+    .flat()
+    .filter((item) => category.includes(item.slug));
+
+  const removeCategory = (value: string) => {
+    setParams({
+      category: category.filter((item) => item !== value),
+      page: 1,
+    });
+  };
+
+  const clearAllFilters = () => {
+    setParams(null);
+  };
+
+  const hasFilters = category.length > 0 || query !== "";
+
+  return (
+    <div className="py-4 border-b border-gray-200">
+      {openFilter !== null && (
+        <div
+          className="fixed top-0 left-0 right-0 bottom-0 z-50"
+          onClick={() => setOpenFilter(null)}
+        />
+      )}
+
+      <div className="hidden md:flex items-center gap-2 relative z-50">
+        <div className="flex flex-wrap items-center gap-2">
+          {Object.entries(FILTER_OPTIONS).map(([group, options]) => (
+            <div key={group} className="relative">
+              <button
+                onClick={() => {
+                  setOpenFilter(openFilter === group ? null : group);
+                  setIsSortOpen(false);
+                }}
+                className={`flex items-center gap-2 px-4 py-2 uppercase bg-category text-caps font-mono rounded-full transition-colors ${
+                  openFilter === group
+                    ? "border-blue-600 ring-1 ring-blue-600"
+                    : ""
+                }`}
+              >
+                {group}
+                {openFilter === group ? (
+                  <ChevronUp size={16} />
+                ) : (
+                  <ChevronDown size={16} />
+                )}
+              </button>
+
+              {openFilter === group && (
+                <div className="absolute left-0 mt-2 w-64 bg-white border-black z-50 shadow-lg p-4">
+                  <div className="flex flex-col gap-3">
+                    {options.map((option) => {
+                      const checked = category.includes(option.slug);
+
+                      return (
+                        <label
+                          key={option.slug}
+                          className="flex items-center gap-3 cursor-pointer hover:text-gray-600"
+                        >
+                          <input
+                            type="checkbox"
+                            checked={checked}
+                            onChange={(e) =>
+                              updateCategory(option.slug, e.target.checked)
+                            }
+                            className="w-5 h-5 border-black rounded-none accent-black"
+                          />
+                          <span className="text-sm">{option.name}</span>
+                        </label>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+
+        <div className="ml-auto">
+          <SortDropdown
+            isMobile={false}
+            setIsSortOpen={setIsSortOpen}
+            isSortOpen={isSortOpen}
+            setActiveSort={() => {}}
+            activeSort={sort}
+            onSelectSort={updateSort}
+          />
+        </div>
+      </div>
+
+      <div className="flex md:hidden gap-2">
+        <button
+          onClick={() => {
+            setIsMobileMenuOpen(true);
+            setIsSortOpen(false);
+          }}
+          className="flex items-center rounded-full justify-center gap-2 bg-category py-2 px-4 text-caps font-mono uppercase rouded-full"
+        >
+          <SlidersHorizontal size={20} /> Filters
+        </button>
+
+        <SortDropdown
+          isMobile={true}
+          setIsSortOpen={setIsSortOpen}
+          isSortOpen={isSortOpen}
+          setActiveSort={() => {}}
+          activeSort={sort}
+          onSelectSort={updateSort}
+        />
+      </div>
+
+      {hasFilters && (
+        <div className="flex flex-wrap items-center gap-3 my-4">
+          {selectedCategories.map((item) => (
+            <button
+              key={item.slug}
+              type="button"
+              onClick={() => removeCategory(item.slug)}
+              className="flex items-center gap-2 bg-banner text-sm cursor-pointer px-3 py-1"
+            >
+              <span>{item.name}</span>
+              <X size={16} />
+            </button>
+          ))}
+        </div>
+      )}
+
+      {hasFilters && (
+        <button
+          type="button"
+          onClick={clearAllFilters}
+          className="underline text-sm cursor-pointer"
+        >
+          Clear all Filters
+        </button>
+      )}
+
+      {isMobileMenuOpen && (
+        <div className="fixed inset-0 bg-white z-[100] overflow-y-auto p-6">
+          <div className="flex justify-between items-start mb-8">
+            <div>
+              <h2 className="text-4xl font-bold">Filters</h2>
+              <p className="text-sm text-gray-500">(50 items)</p>
+            </div>
+            <button
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="p-1 border border-gray-300"
+            >
+              <X size={28} />
+            </button>
+          </div>
+
+          <div className="flex flex-col">
+            {Object.entries(FILTER_OPTIONS).map(([group, options]) => (
+              <div key={group} className="border-t border-black/20 py-5">
+                <p className="mb-3 font-medium">{group}</p>
+                <div className="flex flex-col gap-3">
+                  {options.map((option) => {
+                    const checked = category.includes(option.slug);
+
+                    return (
+                      <label
+                        key={option.slug}
+                        className="flex items-center gap-3 cursor-pointer"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={checked}
+                          onChange={(e) =>
+                            updateCategory(option.slug, e.target.checked)
+                          }
+                          className="w-5 h-5 border-black rounded-none accent-black"
+                        />
+                        <span className="text-sm">{option.name}</span>
+                      </label>
+                    );
+                  })}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+const SortDropdown = ({
+  isMobile = false,
+  setIsSortOpen,
+  isSortOpen,
+  activeSort,
+  onSelectSort,
+}: {
+  isMobile: boolean;
+  setIsSortOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  isSortOpen: boolean;
+  setActiveSort: React.Dispatch<React.SetStateAction<string>>;
+  activeSort: string;
+  onSelectSort: (value: string) => void;
+}) => (
+  <div className={`relative ${isMobile ? "flex-1" : ""}`}>
+    <button
+      onClick={() => setIsSortOpen(!isSortOpen)}
+      className="flex items-center justify-between gap-2 bg-category uppercase font-mono text-caps rounded-full transition-colors px-4 py-2 md:ml-auto"
+    >
+      <span>Sort By</span>
+      {isSortOpen ? (
+        <ChevronUp size={isMobile ? 20 : 16} />
+      ) : (
+        <ChevronDown size={isMobile ? 20 : 16} />
+      )}
+    </button>
+
+    {isSortOpen && (
+      <div className="absolute right-0 mt-1 bg-white z-50 shadow-xl p-6 w-72">
+        <div className="flex flex-col gap-5">
+          {SORT_OPTIONS.map((option, idx) => (
+            <div key={option}>
+              <label
+                className="flex items-center gap-4 cursor-pointer group"
+                onClick={() => onSelectSort(option)}
+              >
+                <div
+                  className={`w-5 h-5 border border-black flex-shrink-0 transition-colors ${
+                    activeSort === option ? "bg-black" : "bg-white"
+                  }`}
+                >
+                  {activeSort === option && (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <div className="w-1.5 h-1.5 bg-white" />
+                    </div>
+                  )}
+                </div>
+                <span className="whitespace-nowrap">{option}</span>
+              </label>
+              {idx === 3 && <hr className="mt-5 border-black/20" />}
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+);
+</file>
+
+<file path="app/(shopping)/shop/page.tsx">
+// app/shop/page.tsx
+import Link from "next/link";
+import Category from "@/app/(shopping)/shop/_sections/category";
+import ProductDisplay from "@/app/(shopping)/shop/_sections/product-display";
+import { getProducts, getTotalProductsCount } from "@/lib/dal";
+import { loadSearchParams } from "@/lib/nuqs/search-params";
+import type { SearchParams } from "nuqs/server";
+
+export type PageProps = {
+  searchParams: Promise<SearchParams>;
+};
+
+export default async function Shop({ searchParams }: PageProps) {
+  const pagination = loadSearchParams(searchParams);
+
+  const { page, sort, category, query } = await pagination;
+
+  const [products, totalCount] = await Promise.all([
+    getProducts({
+      page,
+      limit: 20,
+      categories: category,
+      sort,
+      query,
+    }),
+    getTotalProductsCount(),
+  ]);
+
+  const totalPages = Math.max(1, Math.ceil(totalCount / 20));
+
+  return (
+    <div className="pt-4 px-4 lg:px-6">
+      <div className="uppercase gap-1 items-center font-mono py-4">
+        <Link
+          href="/"
+          className="bg-category px-3 rounded-full py-1 text-[11px]"
+        >
+          Home
+        </Link>
+        <span>/</span>
+        <span className="bg-category px-3 rounded-full py-1 text-[11px]">
+          shop products
+        </span>
+      </div>
+
+      <h1 className="text-h2 -tracking-[0.034em]">Shop Products</h1>
+
+      <Category />
+      <ProductDisplay
+        products={products}
+        currentPage={page}
+        totalPages={totalPages}
+        pagination={pagination}
+      />
+    </div>
+  );
+}
+</file>
+
+<file path="app/checkout/_sections/checkout-client.tsx">
+"use client";
+
+import { useState } from "react";
+import { FloatInput } from "@/app/checkout/_sections/float-input";
+import { SectionHead } from "@/app/checkout/_sections/section-head";
+import { MiniCard } from "@/app/checkout/_sections/mini-card";
+import { SummaryContent } from "@/app/checkout/_sections/summary-content";
+import { ChevronDown, LockIcon } from "@/app/checkout/_sections/checkout-icons";
+import { useCart } from "@/providers/cart-provider";
+import { Input } from "@/components/ui/input";
+import DeliveryForm from "./delivery-form";
+
+const TAX_RATE = 0.002;
+const TIP_AMOUNT = 500;
+
+const fmt = (n: number) =>
+  "₦" +
+  n.toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+export type CheckoutForm = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  address: string;
+  phone: string;
+  city: string;
+  zip: string;
+  state: string;
+};
+
+const defaultFormValue = {
+  email: "",
+  firstName: "",
+  lastName: "",
+  address: "",
+  phone: "",
+  city: "",
+  zip: "",
+  state: "",
+};
+
+export default function CheckoutClient() {
+  const [checkoutForm, setCheckoutForm] =
+    useState<CheckoutForm>(defaultFormValue);
+  const [marketing, setMarketing] = useState(false);
+  const [payMethod, setPayMethod] = useState<"paystack" | "nomba">("paystack");
+  const [addTip, setAddTip] = useState(false);
+  const [discountCode, setDiscountCode] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [discountMsg, setDiscountMsg] = useState<{
+    ok: boolean;
+    text: string;
+  } | null>(null);
+  const [showDiscountInput, setShowDiscountInput] = useState(false);
+  const [summaryOpen, setSummaryOpen] = useState(false);
+  const [paying, setPaying] = useState(false);
+  const CART_ITEMS = useCart((state) => state.items);
+  const subtotal = useCart((state) => state.totalPrice());
+  const tax = Math.round(subtotal * TAX_RATE);
+  const tipAmt = addTip ? TIP_AMOUNT : 0;
+  const total = subtotal + tax + tipAmt - discount;
+  const totalItemsFn = useCart((state) => state.totalItems);
+  const totalItems = totalItemsFn();
+
+  const applyDiscount = () => {
+    if (!discountCode.trim()) {
+      setDiscountMsg({ ok: false, text: "Please enter a code." });
+      return;
+    }
+    if (discountCode.toUpperCase() === "BERRY10") {
+      const d = Math.round(subtotal * 0.1);
+      setDiscount(d);
+      setDiscountMsg({ ok: true, text: `Code applied — you saved ${fmt(d)}` });
+    } else {
+      setDiscount(0);
+      setDiscountMsg({ ok: false, text: "Invalid discount code." });
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-background">
+      <div className="lg:hidden">
+        <button
+          onClick={() => setSummaryOpen((v) => !v)}
+          className=" w-full flex   bg-category border-b justify-center"
+        >
+          <span className="flex w-full items-center justify-between  min-h-[4.5rem] sm:max-w-[580px] px-3.5 py-2">
+            <span className="flex items-center gap-2">
+              <span className="text-[#414042]">Order summary</span>
+              <span
+                className={
+                  summaryOpen
+                    ? "rotate-180 transition-transform"
+                    : "transition-transform"
+                }
+              >
+                <ChevronDown />
+              </span>
+            </span>
+
+            <span className="text-[18px] font-bold">{fmt(total)}</span>
+          </span>
+        </button>
+
+        {summaryOpen && (
+          <div className="border-t border-[#ddd8d0] bg-category px-3.5 pt-2 pb-4">
+            <SummaryContent
+              cartItems={CART_ITEMS}
+              subtotal={subtotal}
+              tax={tax}
+              total={total}
+              totalItems={totalItems}
+              discount={discount}
+              discountCode={discountCode}
+              discountMsg={discountMsg}
+              showDiscountInput={showDiscountInput}
+              setShowDiscountInput={setShowDiscountInput}
+              setDiscountCode={setDiscountCode}
+              setDiscountMsg={setDiscountMsg}
+              applyDiscount={applyDiscount}
+              addTip={addTip}
+              setAddTip={setAddTip}
+              tipAmount={TIP_AMOUNT}
+            />
+          </div>
+        )}
+      </div>
+
+      <div className="mx-auto grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(min-content,calc(50%+5rem))_1fr]">
+        <main className="flex lg:justify-end justify-center">
+          <div className="w-full px-3.5 py-11 lg:px-9 sm:max-w-[580px]">
+            <section className="mb-9">
+              <div className="space-y-4">
+                <h3 className="text-[20px] font-medium">Contact</h3>
+
+                <Input
+                  placeholder="Email"
+                  className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
+                />
+              </div>
+              <label className="mt-4 flex items-center gap-2 text-sm text-[#444]">
+                <input
+                  type="checkbox"
+                  checked={marketing}
+                  onChange={(e) => setMarketing(e.target.checked)}
+                  className="h-4 w-4 shrink-0 accent-[#111]"
+                />
+                <span>Email me with news and offers</span>
+              </label>
+            </section>
+
+            <section className="mb-9">
+              <DeliveryForm
+                formValues={checkoutForm}
+                setFormValues={setCheckoutForm}
+              />
+            </section>
+
+            <section className="mb-9">
+              <SectionHead title="Payment" />
+              <p className="mb-3.5 flex items-center gap-1.5 text-[13.5px] text-[#666]">
+                <LockIcon /> All transactions are secure and encrypted.
+              </p>
+
+              <div className="overflow-hidden rounded-[10px] border border-[#d4d0ca] bg-white">
+                <label
+                  className={`flex items-center gap-3 px-4 py-3.5 border-b border-[#e8e4de] cursor-pointer ${payMethod === "paystack" ? "bg-[#eef2ff]" : ""}`}
+                >
+                  <input
+                    type="radio"
+                    name="pay"
+                    checked={payMethod === "paystack"}
+                    onChange={() => setPayMethod("paystack")}
+                    className="shrink-0 accent-blue-600"
+                  />
+                  <span className="flex-1 text-sm font-medium">Paystack</span>
+                  <div className="flex items-center gap-1.5">
+                    <MiniCard label="MC" textColor="#fff" bg="#EB001B" />
+                    <MiniCard label="VISA" textColor="#fff" bg="#00579F" />
+                    <MiniCard label="MTN" textColor="#000" bg="#FFC107" />
+                    <span className="rounded bg-[#f0ece6] px-1.5 py-[2px] text-[12px] font-semibold text-[#666]">
+                      +5
+                    </span>
+                  </div>
+                </label>
+
+                {payMethod === "paystack" && (
+                  <div className="border-b border-[#e8e4de] bg-[#f8f7f5] px-4 py-3 text-center text-[13.5px] text-[#555]">
+                    You&apos;ll be redirected to Paystack to complete your
+                    purchase.
+                  </div>
+                )}
+              </div>
+            </section>
+
+            <section className="mb-9">
+              <SectionHead title="Add tip" />
+              <label className="flex items-center gap-3 rounded-[10px] border border-[#d4d0ca] bg-white px-4 py-3.5 text-sm text-[#333]">
+                <input
+                  type="checkbox"
+                  checked={addTip}
+                  onChange={(e) => setAddTip(e.target.checked)}
+                  className="h-[17px] w-[17px] shrink-0 accent-[#111]"
+                />
+                <span>Show your support for the team at Blessing Tokunbo</span>
+              </label>
+            </section>
+
+            <button
+              onClick={() => {}}
+              disabled={paying}
+              className="mb-6 flex w-full items-center justify-center rounded-[10px] bg-hero p-[17px] text-[16px] font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-70"
+            >
+              {paying ? (
+                <span className="h-[22px] w-[22px] animate-spin rounded-full border-[2.5px] border-white/30 border-t-white" />
+              ) : (
+                "Pay now"
+              )}
+            </button>
+
+            <div className="flex flex-wrap gap-5">
+              {["Refund policy", "Shipping", "Terms of service"].map((link) => (
+                <a
+                  key={link}
+                  href={`/${link.toLowerCase().replace(" ", "-")}`}
+                  className="text-[13px] text-blue-600 no-underline"
+                >
+                  {link}
+                </a>
+              ))}
+            </div>
+          </div>
+        </main>
+
+        <aside className="hidden border-l border-[#ddd8d0] bg-[#eeeae4]  lg:block">
+          <div className="sticky top-8 px-9 py-11 max-w-[420px]">
+            <SummaryContent
+              cartItems={CART_ITEMS}
+              subtotal={subtotal}
+              tax={tax}
+              total={total}
+              totalItems={totalItems}
+              discount={discount}
+              discountCode={discountCode}
+              discountMsg={discountMsg}
+              showDiscountInput={showDiscountInput}
+              setShowDiscountInput={setShowDiscountInput}
+              setDiscountCode={setDiscountCode}
+              setDiscountMsg={setDiscountMsg}
+              applyDiscount={applyDiscount}
+              addTip={addTip}
+              setAddTip={setAddTip}
+              tipAmount={TIP_AMOUNT}
+            />
+          </div>
+        </aside>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/checkout/_sections/checkout-navbar.tsx">
+import Link from "next/link";
+import { BagIcon } from "./checkout-icons";
+import { Handbag } from "lucide-react";
+
+export default function CheckoutNavBar() {
+  return (
+    <header className="flex justify-center items-center border-b ">
+      <div className="py-5 px-3.5 w-full sm:max-w-[580px] lg:max-w-[1024px] lg:px-9 flex items-center justify-between">
+        <div>
+          <Link href="/">
+            <span className="tracking-[-0.04em] text-[32px] font-bold">
+              Tokunbo
+            </span>
+          </Link>
+        </div>
+
+        <Link href="/cart">
+          <Handbag size={24} strokeWidth={1.5} />
+        </Link>
+      </div>
+    </header>
+  );
+}
+</file>
+
+<file path="app/checkout/page.tsx">
+import CheckoutClient from "@/app/checkout/_sections/checkout-client";
+import CheckoutNavBar from "@/app/checkout/_sections/checkout-navbar";
+
+export default function Checkout() {
+  return (
+    <div>
+      <CheckoutNavBar />
+      <CheckoutClient />
+    </div>
+  );
+}
+</file>
+
+<file path="components/quantity-selector.tsx">
+"use client";
+import React, { useState } from "react";
+import { Minus, Plus } from "lucide-react";
+
+export default function QuantitySelector({
+  quantity,
+  setQuantity,
+}: {
+  quantity: number;
+  setQuantity: React.Dispatch<React.SetStateAction<number>>;
+}) {
+  return (
+    <div className="space-y-2">
+      <div>
+        <span>Quanity</span>
+      </div>
+      <div className="flex items-center max-w-[150px] justify-between border border-gray-400  px-4 py-3">
+        {/* Decrease Button */}
+        <button
+          onClick={() => setQuantity(Math.max(1, quantity - 1))}
+          className="text-gray-600 hover:text-black transition-colors"
+          aria-label="Decrease quantity"
+        >
+          <Minus size={20} strokeWidth={1.5} />
+        </button>
+
+        {/* Number Display */}
+        <span className=" text-black select-none">{quantity}</span>
+
+        {/* Increase Button */}
+        <button
+          onClick={() => setQuantity(quantity + 1)}
+          className="text-gray-600 hover:text-black transition-colors"
+          aria-label="Increase quantity"
+        >
+          <Plus size={20} strokeWidth={1.5} />
+        </button>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/search-bar.tsx">
+"use client";
+
+import { useEffect, useTransition } from "react";
+import { Search, Loader2 } from "lucide-react";
+import { useSearchParams } from "@/lib/nuqs/search-params";
+import { debounce } from "nuqs";
+
+export default function SearchBar({
+  showSearch,
+  setShowSearch,
+}: {
+  showSearch: boolean;
+  setShowSearch: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
+  const [isPending, startTransition] = useTransition();
+  const [{ query }, setParams] = useSearchParams({ startTransition });
+
+  useEffect(() => {
+    if (query.length > 0 && !showSearch) {
+      setShowSearch(true);
+    }
+  }, [query, showSearch, setShowSearch]);
+
+  return (
+    <div className="flex items-center bg-white gap-2 rounded-full border w-full max-w-[500px] px-4 py-2">
+      <input
+        value={query}
+        onChange={(e) =>
+          startTransition(async () => {
+            await setParams(
+              { query: e.target.value },
+              {
+                limitUrlUpdates: e.target.value ? debounce(250) : undefined,
+              },
+            );
+          })
+        }
+        placeholder="Search products..."
+        className="w-full bg-transparent outline-none"
+        autoFocus
+        onBlur={() => setShowSearch(false)}
+      />
+
+      {isPending ? (
+        <Loader2 className="animate-spin opacity-80" />
+      ) : (
+        <Search size={18} />
+      )}
+    </div>
+  );
+}
+</file>
+
+<file path="lib/sanity/client.ts">
+import { createClient } from "next-sanity";
+
+export const client = createClient({
+  projectId: "e4e3wdqx",
+  dataset: "production",
+  apiVersion: "2025-04-20",
+  useCdn: true,
+  token: process.env.SANITY_API_READ_TOKEN!,
+});
+</file>
+
+<file path="app/_sections/hero.tsx">
+"use client";
+
+import { useState, useTransition } from "react";
+import Image from "next/image";
+import { useRouter } from "next/navigation";
+import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { getPaginatedLink } from "@/lib/nuqs/search-params";
+
+export default function HeroSection() {
+  const [query, setQuery] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const router = useRouter();
+
+  function pageURL(query: string) {
+    return getPaginatedLink("/shop", {
+      query,
+    });
+  }
+
+  const handleSearch = () => {
+    const urlToPush = pageURL(query);
+
+    startTransition(() => {
+      router.push(urlToPush);
+    });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      handleSearch();
+    }
+  };
+
+  return (
+    <div className="relative bg-hero">
+      <div className="bg-hero px-4 pt-20 pb-15 space-y-4">
+        <h1 className="text-h2 text-center -tracking-[0.05em] font-light">
+          <span>Your</span>{" "}
+          <span className="font-tenor-sans font-semibold opacity-100">
+            Quality
+          </span>{" "}
+          <span>Fairly Used Products.</span>
+        </h1>
+
+        <div className="max-w-[450px] mx-auto">
+          <div className="relative">
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
+              placeholder="what are you looking for?"
+              className="bg-white rounded-full h-11 px-4 pr-14"
+            />
+            <Button
+              type="button"
+              size="icon"
+              variant="ghost"
+              onClick={handleSearch}
+              disabled={isPending}
+              className="absolute top-1/2 right-4 -translate-y-1/2"
+            >
+              {isPending ? (
+                <span className="h-4 w-4 animate-spin rounded-full border-2 border-black/40 border-t-black" />
+              ) : (
+                <Search />
+              )}
+            </Button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/checkout/_sections/summary-content.tsx">
+import { TagIcon, InfoIcon } from "./checkout-icons";
+import { CartItem } from "@/stores/cart-store";
+import { Input } from "@/components/ui/input";
+
+const fmt = (n: number) =>
+  "₦" +
+  n.toLocaleString("en-NG", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
+
+export function SummaryContent({
+  cartItems,
+  subtotal,
+  tax,
+  total,
+  totalItems,
+  discount,
+  discountCode,
+  discountMsg,
+  showDiscountInput,
+  setShowDiscountInput,
+  setDiscountCode,
+  setDiscountMsg,
+  applyDiscount,
+  addTip,
+  setAddTip,
+  tipAmount,
+}: {
+  cartItems: CartItem[];
+  subtotal: number;
+  tax: number;
+  total: number;
+  totalItems: number;
+  discount: number;
+  discountCode: string;
+  discountMsg: { ok: boolean; text: string } | null;
+  showDiscountInput: boolean;
+  setShowDiscountInput: (v: boolean) => void;
+  setDiscountCode: (v: string) => void;
+  setDiscountMsg: (v: { ok: boolean; text: string } | null) => void;
+  applyDiscount: () => void;
+  addTip: boolean;
+  setAddTip: (v: boolean) => void;
+  tipAmount: number;
+}) {
+  return (
+    <>
+      <ul className="mb-4 flex flex-col gap-4 list-none lg:h-60 lg:overflow-y-auto py-4">
+        {cartItems.map((item) => (
+          <li key={item.id} className="flex items-center gap-3.5">
+            <div className="relative shrink-0">
+              <img
+                src={item.image}
+                alt={item.name}
+                className="h-16 w-16 rounded-[10px] border border-white border-3 bg-[#f0ece6] object-cover"
+              />
+              <span className="absolute -right-2 -top-2 flex h-[22px] w-[22px] border-2 border-white items-center justify-center rounded-md bg-[#333] text-[11px] font-bold text-white">
+                {item.quantity}
+              </span>
+            </div>
+            <span className="flex-1 text-sm">{item.name}</span>
+            <span className="whitespace-nowrap text-sm">
+              {fmt(item.price * item.quantity)}
+            </span>
+          </li>
+        ))}
+      </ul>
+
+      <div className="my-4 h-px bg-border" />
+
+      <div>
+        <div className="flex gap-2.5">
+          <Input
+            placeholder="Discount code"
+            value={discountCode}
+            onChange={(e) => {
+              setDiscountCode(e.target.value);
+              setDiscountMsg(null);
+            }}
+            className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
+          />
+          <button className="rounded-lg border border-[#c0bcb4] bg-white px-[18px] py-[11px] text-sm font-medium text-[#444]">
+            Apply
+          </button>
+        </div>
+      </div>
+
+      <div className="flex flex-col gap-4 mt-4">
+        <div className="flex items-center justify-between text-sm">
+          <span className="flex items-center gap-[5px]">
+            Subtotal · {totalItems} items
+          </span>
+          <span>{fmt(subtotal)}</span>
+        </div>
+
+        <div className="flex items-center justify-between text-sm">
+          <span className="flex items-center gap-[5px]">
+            Pickup in store <InfoIcon />
+          </span>
+          <span>free</span>
+        </div>
+
+        {discount > 0 && (
+          <div className="flex items-center justify-between text-sm text-green-600">
+            <span>Discount</span>
+            <span>−{fmt(discount)}</span>
+          </div>
+        )}
+
+        {addTip && (
+          <div className="flex items-center justify-between text-sm">
+            <span>Tip</span>
+            <span>{fmt(tipAmount)}</span>
+          </div>
+        )}
+
+        <div className="flex items-center justify-between text-sm">
+          <span className="flex items-center gap-[5px]">
+            Estimated taxes <InfoIcon />
+          </span>
+          <span>{fmt(tax)}</span>
+        </div>
+      </div>
+
+      <div className="my-4 h-px bg-border" />
+
+      <div className="flex items-baseline justify-between">
+        <span className="text-[17px] font-bold ">Total</span>
+        <span className="text-xl font-bold">
+          <small className="mr-[2px] text-xs font-normal">NGN </small>
+          {fmt(total)}
+        </span>
+      </div>
+    </>
+  );
+}
+</file>
+
+<file path="lib/nuqs/search-params.ts">
+// lib/searchParams.ts
+import {
+  parseAsArrayOf,
+  parseAsInteger,
+  parseAsString,
+  createLoader,
+  createSerializer,
+  type Options,
+  type inferParserType,
+} from "nuqs/server";
+
+import { useQueryState, useQueryStates } from "nuqs";
+
+export const searchParams = {
+  query: parseAsString.withDefault(""),
+  page: parseAsInteger.withDefault(1),
+  sort: parseAsString.withDefault("Featured"),
+  category: parseAsArrayOf(parseAsString).withDefault([]),
+};
+
+export type PaginationSearchParams = inferParserType<typeof searchParams>;
+
+export const usePage = (options: Options = {}) =>
+  useQueryState(
+    "page",
+    searchParams.page.withOptions({ ...options, shallow: false }),
+  );
+
+export const useSearchParams = (options: Options = {}) =>
+  useQueryStates(searchParams, {
+    ...options,
+    shallow: false,
+  });
+
+export const loadSearchParams = createLoader(searchParams);
+export const getPaginatedLink = createSerializer(searchParams);
+</file>
+
+<file path="app/_sections/featured-products.tsx">
+import ProductCard from "@/components/product-card";
+import { Product } from "@/lib/product-types";
+import Link from "next/link";
+import { getFeaturedProducts } from "@/lib/dal";
+
+export default async function FeaturedProducts() {
+  const featuredProducts = await getFeaturedProducts();
+
+  return (
+    <div className="px-4 pt-7">
+      <div className="flex items-center justify-between">
+        <h2 className="text-h3 -tracking-[0.015em] font-medium">
+          Featured products
+        </h2>
+        <Link href="/best-sellers" className="underline opacity-80 ">
+          <span className="hidden md:inline">See more featured products</span>
+          <span className="md:hidden underline">See more</span>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+        {featuredProducts.map((product, index) => (
+          <ProductCard key={index} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/_sections/product_categories.tsx">
+import Category from "@/components/category";
+import { getCategories } from "@/lib/dal";
+
+export default async function ProductCategories() {
+  const categories = await getCategories();
+  return (
+    <div className="overflow-x-hidden px-4 lg:px-6">
+      <div className="flex flex-wrap md:w-max gap-2 items-center py-4">
+        {categories.map((category, index) => (
+          <Category key={index} category={category} />
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/category.tsx">
+"use client";
+import Image from "next/image";
+import { Category as CategoryType } from "@/lib/product-types";
+import Link from "next/link";
+import { urlFor } from "@/lib/sanity/image-utility";
+
+export default function Category({ category }: { category: CategoryType }) {
+  return (
+    <Link href={`/shop?category=${category.slug.current}`}>
+      <div className="font-mono flex cursor-pointer gap-2 uppercase text-[12px] md:text-caps bg-category md:py-2 md:px-4 px-3 py-1  items-center rounded-full">
+        <div className="w-6 h-6 md:w-10 md:h-10 flex justify-center items-center rounded-full bg-banner p-1">
+          <Image
+            src={urlFor(category.image).width(600).url()}
+            width={25}
+            height={35}
+            className="rounded-full w-full"
+            alt={category.image.alt}
+          />
+        </div>
+        <span>{category.name}</span>
+      </div>
+    </Link>
+  );
+}
+</file>
+
+<file path="components/cart.tsx">
+"use client";
+
+import { Button } from "@/components/ui/button";
+import {
+  Sheet,
+  SheetClose,
+  SheetContent,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { Handbag, X } from "lucide-react";
+import CartEmpty from "@/components/cart-empty";
+import { useCart } from "@/providers/cart-provider";
+import CartItemComponent from "@/components/cart-item-component";
+import Link from "next/link";
+
+export default function Cart() {
+  const items = useCart((state) => state.items);
+  const totalPrice = useCart((state) => state.totalPrice);
+  const totalItemsFn = useCart((state) => state.totalItems);
+  const totalItems = totalItemsFn();
+  return (
+    <Sheet>
+      <SheetTrigger asChild>
+        <button className="flex gap-2 items-center cursor-pointer">
+          <Handbag className="w-5 h-5 cursor-pointer" />
+          <span>Cart</span> {totalItems > 0 && <span>({totalItems})</span>}
+        </button>
+      </SheetTrigger>
+      <SheetContent className=" h-svh flex gap-4 z-60" showCloseButton={false}>
+        <SheetHeader className="border-b h-15 flex justify-between items-center w-full flex-row">
+          <SheetTitle className="text-h4 font-normal">Your Cart</SheetTitle>
+
+          <SheetClose asChild>
+            <X className="w-5 h-5 cursor-pointer" />
+          </SheetClose>
+        </SheetHeader>
+        <div className="h-[calc(100svh_-_60px_-_16px)]">
+          {items.length == 0 ? (
+            <CartEmpty />
+          ) : (
+            <>
+              <div className="overflow-y-auto h-[calc(100svh_-_132px_-_16px)] py-4  px-4 space-y-4 border">
+                {items.map((item) => (
+                  <CartItemComponent key={item.id} item={item} />
+                ))}
+              </div>
+
+              <SheetFooter className="h-18 flex items-center justify-center">
+                <Button
+                  size="lg"
+                  type="submit"
+                  className="w-full h-12 bg-hero text-black hover:bg-amber-600 rounded-full cursor-pointer uppercase font-medium"
+                >
+                  <Link
+                    href="/checkout"
+                    className="w-full h-full inline-flex items-center justify-center"
+                  >
+                    <span>{` Checkout - ₦${totalPrice().toLocaleString()}`}</span>
+                  </Link>
+                </Button>
+              </SheetFooter>
+            </>
+          )}
+        </div>
+      </SheetContent>
+    </Sheet>
+  );
+}
+</file>
+
+<file path="app/globals.css">
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+
+@custom-variant dark (&:is(.dark *));
+
+:root {
+    --background: #f5f6ee;
+    --foreground: oklch(0.145 0 0);
+    --hero: #f08822;
+    --category: #edebec;
+    --banner: #d9e2fd;
+
+    --fs-body: clamp(13px, 1.3vw, 15px);
+    --fs-caps: clamp(12px, 0.8vw + 0.3rem, 13px);
+    --fs-h1: clamp(2rem, 5vw + 1rem, 4.5rem);
+    --fs-h2: clamp(1.5rem, 2.5vw + 0.8rem, 2rem);
+    --fs-h3: clamp(1rem, 2vw + 0.1rem, 1.3rem);
+    --fs-h4: clamp(15px, 1.5vw + 0.3rem, 1.1rem);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.87 0 0);
+    --chart-2: oklch(0.556 0 0);
+    --chart-3: oklch(0.439 0 0);
+    --chart-4: oklch(0.371 0 0);
+    --chart-5: oklch(0.269 0 0);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
+}
+
+@theme inline {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-category: var(--category);
+    --color-hero: var(--hero);
+    --color-banner: var(--banner);
+    --font-inter: var(--font-inter);
+    --font-mono: var(--font-geist-mono);
+    --font-tenor-sans: var(--tenor-sans);
+
+    --text-body: var(--fs-body);
+    --text-caps: var(--fs-caps);
+    --text-h1: var(--fs-h1);
+    --text-h2: var(--fs-h2);
+    --text-h3: var(--fs-h3);
+    --text-h4: var(--fs-h4);
+    --font-heading: var(--font-inter);
+
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+body {
+    @apply font-inter;
+}
+
+.dark {
+    --background: oklch(0.145 0 0);
+
+    --foreground: oklch(0.985 0 0);
+
+    --card: oklch(0.205 0 0);
+
+    --card-foreground: oklch(0.985 0 0);
+
+    --popover: oklch(0.205 0 0);
+
+    --popover-foreground: oklch(0.985 0 0);
+
+    --primary: oklch(0.922 0 0);
+
+    --primary-foreground: oklch(0.205 0 0);
+
+    --secondary: oklch(0.269 0 0);
+
+    --secondary-foreground: oklch(0.985 0 0);
+
+    --muted: oklch(0.269 0 0);
+
+    --muted-foreground: oklch(0.708 0 0);
+
+    --accent: oklch(0.269 0 0);
+
+    --accent-foreground: oklch(0.985 0 0);
+
+    --destructive: oklch(0.704 0.191 22.216);
+
+    --border: oklch(1 0 0 / 10%);
+
+    --input: oklch(1 0 0 / 15%);
+
+    --ring: oklch(0.556 0 0);
+
+    --chart-1: oklch(0.87 0 0);
+
+    --chart-2: oklch(0.556 0 0);
+
+    --chart-3: oklch(0.439 0 0);
+
+    --chart-4: oklch(0.371 0 0);
+
+    --chart-5: oklch(0.269 0 0);
+
+    --sidebar: oklch(0.205 0 0);
+
+    --sidebar-foreground: oklch(0.985 0 0);
+
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+
+    --sidebar-accent: oklch(0.269 0 0);
+
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+
+    --sidebar-border: oklch(1 0 0 / 10%);
+
+    --sidebar-ring: oklch(0.556 0 0);
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+    body {
+        @apply bg-background text-foreground text-body;
+    }
+    html {
+        @apply font-sans;
+    }
+}
+</file>
+
+<file path="app/_sections/new-arrivals.tsx">
+import ProductCard from "@/components/product-card";
+import { Product } from "@/lib/product-types";
+import Link from "next/link";
+import { getNewestArrivals } from "@/lib/dal";
+
+export default async function NewestArrivals() {
+  const newestArrivals = await getNewestArrivals();
+
+  return (
+    <div className="px-4 pt-7">
+      <div className="flex items-center justify-between">
+        <h2 className="text-h3 -tracking-[0.015em] font-medium">
+          Newest arrivals
+        </h2>
+        <Link href="/best-sellers" className="underline opacity-80">
+          <span className="hidden md:inline"> See newest arrivals</span>
+          <span className="md:hidden underline">See more</span>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+        {newestArrivals.map((product, index) => (
+          <ProductCard key={index} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="app/layout.tsx">
+import type { Metadata } from "next";
+import { Geist_Mono, Tenor_Sans } from "next/font/google";
+import "./globals.css";
+import { Inter } from "next/font/google";
+import { CartProvider } from "@/providers/cart-provider";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { Toaster } from "@/components/ui/sonner";
+
+const tenor_sans = Tenor_Sans({
+  variable: "--tenor-sans",
+  subsets: ["latin"],
+  weight: "400",
+  display: "swap",
+});
+
+const inter = Inter({
+  variable: "--font-inter",
+  subsets: ["latin"],
+  display: "swap",
+});
+
+const geistMono = Geist_Mono({
+  variable: "--font-geist-mono",
+  subsets: ["latin"],
+});
+
+export const metadata: Metadata = {
+  title: "Reusable kitchen utensils",
+  description: "Created by thecodemaster",
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
+  return (
+    <html
+      lang="en"
+      className={`${inter.variable} ${geistMono.variable} ${tenor_sans.variable} h-full antialiased`}
+    >
+      <body className="min-h-full flex flex-col">
+        <CartProvider>
+          <NuqsAdapter>{children}</NuqsAdapter>
+          <Toaster visibleToasts={1} />
+        </CartProvider>
+      </body>
+    </html>
+  );
+}
+</file>
+
+<file path="app/_sections/best-selling-products.tsx">
+import ProductCard from "@/components/product-card";
+import { getBestSellingProducts } from "@/lib/dal";
+import Link from "next/link";
+
+export default async function BestSellingProductsSection() {
+  const bestSellingProducts = await getBestSellingProducts();
+
+  return (
+    <div className="px-4 pt-7">
+      <div className="flex items-center justify-between">
+        <h2 className="text-h3 -tracking-[0.015em] font-medium">
+          Best selling products
+        </h2>
+        <Link href="/best-sellers" className="underline opacity-80 ">
+          <span className="hidden md:inline">See more best sellers</span>
+          <span className="md:hidden underline">See more</span>
+        </Link>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4">
+        {bestSellingProducts.map((product, index) => (
+          <ProductCard key={index} product={product} />
+        ))}
+      </div>
+    </div>
+  );
+}
+</file>
+
+<file path="components/navbar.tsx">
+"use client";
+
+import { Search, Menu, X } from "lucide-react";
+import Link from "next/link";
+import { useState } from "react";
+import { useQueryState, parseAsString } from "nuqs";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import Cart from "@/components/cart";
+import MarqueeBanner from "@/components/marquee-banner";
+import SearchBar from "@/components/search-bar";
+
+export default function Navbar() {
+  const [isOpen, setIsOpen] = useState(false);
+  const [showSearch, setShowSearch] = useState(false);
+
+  return (
+    <header className="border-b border-gray-200 bg-background sticky top-0 z-60">
+      <MarqueeBanner />
+
+      <nav className="px-4 lg:px-6 relative">
+        <div className="flex items-center gap-1 md:justify-between h-14">
+          <Button
+            className="md:hidden shrink-0"
+            size="icon"
+            variant="ghost"
+            onClick={() => setIsOpen(true)}
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+
+          <div className="hidden md:flex items-center gap-5">
+            <Link href="/">Home</Link>
+            <Link href="/shop">Shop products</Link>
+            <Link href="/contact">Contact</Link>
+          </div>
+
+          {showSearch ? (
+            <SearchBar showSearch={showSearch} setShowSearch={setShowSearch} />
+          ) : (
+            <div className="md:absolute left-1/2 top-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
+              <Link href="/">
+                <span className="tracking-[-0.03em] uppercase text-[18px] font-bold opacity-70">
+                  tokunbo
+                </span>
+              </Link>
+            </div>
+          )}
+
+          <div className="flex items-center gap-5 ml-auto md:ml-0">
+            {!showSearch && (
+              <button
+                type="button"
+                onClick={() => setShowSearch((prev) => !prev)}
+                className="flex gap-2 items-center"
+              >
+                <Search className="w-5 h-5 cursor-pointer" />
+                <span>Search</span>
+              </button>
+            )}
+
+            <Cart />
+          </div>
+        </div>
+      </nav>
+
+      {isOpen && (
+        <div
+          className="fixed inset-0 bg-black/50 z-50 md:hidden"
+          onClick={() => setIsOpen(false)}
+        >
+          <div
+            className="fixed inset-y-0 left-0 w-4/5 max-w-xs bg-background p-6 flex flex-col"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex justify-between items-center mb-8">
+              <Link href="/">
+                <span className="tracking-[-0.03em] uppercase text-[18px] font-bold opacity-70">
+                  tokunbo
+                </span>
+              </Link>
+              <button
+                className="text-gray-700 hover:text-gray-900"
+                aria-label="Close menu"
+                onClick={() => setIsOpen(false)}
+              >
+                <X />
+              </button>
+            </div>
+
+            <div className="flex flex-col gap-6">
+              <Link href="/home" onClick={() => setIsOpen(false)}>
+                Home
+              </Link>
+              <Link href="/shop" onClick={() => setIsOpen(false)}>
+                Shop
+              </Link>
+              <Link href="/about" onClick={() => setIsOpen(false)}>
+                About
+              </Link>
+              <Link href="/contact" onClick={() => setIsOpen(false)}>
+                Contact
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
+    </header>
+  );
+}
+</file>
+
+<file path="components/product-card.tsx">
+"use client";
+import Image from "next/image";
+import { Product } from "@/lib/product-types";
+import { Handbag } from "lucide-react";
+import Link from "next/link";
+import { useCart } from "@/providers/cart-provider";
+import { urlFor } from "@/lib/sanity/image-utility";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
+
+export default function ProductCard({ product }: { product: Product }) {
+  const addItem = useCart((state) => state.addItem);
+
+  return (
+    <div className="p-3 bg-category rounded-md space-y-4 h-full relative">
+      <button
+        onClick={() => {
+          addItem({
+            id: product._id,
+            name: product.name,
+            price: product.price,
+            image: urlFor(product.images[0]).width(600).url(),
+            quantity: 1,
+          });
+          toast.success("Item added to cart", {
+            position: "bottom-center",
+            action: (
+              <Button className="ml-auto bg-white text-black">
+                <Link href="/cart">View cart</Link>
+              </Button>
+            ),
+          });
+        }}
+        className="absolute z- top-4 right-4 text-caps bg-category cursor-pointer w-8 h-8 flex justify-center items-center rounded-full"
+      >
+        <Handbag className="w-4 h-4 cursor-pointer" />
+      </button>
+      <Link
+        className="inline-block space-y-2"
+        href={`/products/${product.slug.current}`}
+      >
+        <div className="w-full aspect-[1/1.1]">
+          <Image
+            src={urlFor(product.images[0]).width(600).url()}
+            alt={product.images[0]?.alt || product.name}
+            width={200}
+            height={200}
+            className="w-full h-full rounded-md"
+          />
+        </div>
+
+        <div>
+          <p className="font-bold">{`₦${product.price}`}</p>
+          <p>{product.name}</p>
+        </div>
+
+        <div className="flex gap-2 flex-wrap">
+          <div className="uppercase text-[11px] font-mono bg-banner w-max px-3 py-1 rounded-full">
+            <span>{product.category.name}</span>
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
+}
+</file>
+
+<file path="lib/product-types.ts">
+export type Category = {
+  name: string;
+  _id: string;
+  slug: {
+    current: string;
+  };
+  image: {
+    alt: string;
+    asset: {
+      _ref: string;
+    };
+  };
+};
+
+export type BestSellingProduct = {
+  _id: string;
+  name: string;
+  slug: {
+    _type: "slug";
+    current: string;
+  };
+  price: number;
+  discountPrice?: number;
+  shortDescription?: string;
+  images: Array<{
+    _key: string;
+    _type: "image";
+    alt?: string;
+    asset: {
+      _type: "reference";
+      _ref: string;
+    };
+  }>;
+  featured: boolean;
+  status: "draft" | "active" | "archived";
+};
+
+export type Product = {
+  _id: string;
+  _type: "product";
+  _createdAt: string;
+  _updatedAt: string;
+  _rev: string;
+  _originalId?: string;
+  name: string;
+  description: string;
+  price: number;
+  stock: number;
+  featured: boolean;
+  productType: "appliance" | "kitchenUtensil" | "toy";
+  status: "draft" | "active" | "archived";
+  sku: string;
+  slug: {
+    _type: "slug";
+    current: string;
+  };
+  category: {
+    _id: string;
+    _type: "reference";
+    _ref: string;
+    name: string;
+  };
+  images: Array<{
+    _key: string;
+    _type: "image";
+    alt?: string;
+    asset: {
+      _type: "reference";
+      _ref: string;
+    };
+  }>;
+  productDetails?: string[];
+  shortDescription?: string;
+  discountPrice?: number;
+  categoryName: string;
+};
+</file>
+
+<file path="lib/sanity/queries.ts">
+export const newestArrivalQuery = `*[_type == "product" && status == "active"] | order(_createdAt desc)[0...4]{
+  ...,
+  category->
+  }`;
+
+export const bestSellingProductsQuery = `*[_type == "siteSettings"][0].homepage.bestSellersProducts[]->{
+    ...,
+    category->
+  }`;
+
+export const featuredProductsQuery = `*[_type == "siteSettings"][0].homepage.featuredProducts[]->{
+    ...,
+    category->
+  }`;
+
+export const productsQuery = `*[_type == "product" && status == "active" &&
+  (count($categories) == 0 || category->slug.current in $categories) &&
+  (
+    !defined($query) || $query == "" ||
+    name match $query + "*" ||
+    brand match $query + "*" ||
+    sku match $query ||
+    tags[] match $query
+  )
+]
+| order(_createdAt desc) [$offset...$offset + $limit] {
+   ...,
+    "category": category->{
+      name,
+      "slug": slug.current
+    }
+}`;
+
+export const singleProductQuery = `*[_type == "product" && slug.current == $slug][0]`;
+
+export const relatedProductsQuery = `
+  *[_type == "product" &&
+    category._ref == $categoryId &&
+    _id != $productId &&
+    status == "active"
+  ][0...4] {
+    ...,
+    category ->
+  }
+`;
+
+export const categoriesQuery = `*[_type == "category"]{
+  _id,
+  name,
+  slug,
+  image
+}`;
+</file>
+
+<file path="package.json">
+{
+  "name": "nf-aunty-store",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build --debug-prerender",
+    "start": "next start",
+    "lint": "eslint",
+    "db:generate": "drizzle-kit generate"
+  },
+  "dependencies": {
+    "@icons-pack/react-simple-icons": "^13.13.0",
+    "@sanity/image-url": "^2.1.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "dotenv": "^17.4.2",
+    "dotenv-expand": "^13.0.0",
+    "drizzle-orm": "^0.45.2",
+    "lucide-react": "^0.577.0",
+    "motion": "^12.38.0",
+    "next": "16.2.1",
+    "next-sanity": "^12.3.0",
+    "next-themes": "^0.4.6",
+    "nuqs": "^2.8.9",
+    "postgres": "^3.4.9",
+    "radix-ui": "^1.4.3",
+    "react": "19.2.4",
+    "react-dom": "19.2.4",
+    "shadcn": "^4.1.0",
+    "sonner": "^2.0.7",
+    "tailwind-merge": "^3.5.0",
+    "tw-animate-css": "^1.4.0",
+    "vaul": "^1.1.2",
+    "zod": "^4.4.2",
+    "zustand": "^5.0.12"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "drizzle-kit": "^0.31.10",
+    "eslint": "^9",
+    "eslint-config-next": "16.2.1",
+    "tailwindcss": "^4",
+    "tsx": "^4.21.0",
+    "typescript": "^5"
+  }
+}
+</file>
+
+<file path="lib/dal.ts">
+import {
+  bestSellingProductsQuery,
+  featuredProductsQuery,
+  newestArrivalQuery,
+  productsQuery,
+  singleProductQuery,
+  relatedProductsQuery,
+  categoriesQuery,
+} from "@/lib/sanity/queries";
+import { client } from "@/lib/sanity/client";
+import { Category } from "./product-types";
+
+import { Product } from "./product-types";
+import { cache } from "react";
+
+//move this out to a separate file.
+
+export const getBestSellingProducts = cache(async () => {
+  const products: Product[] = await client.fetch(bestSellingProductsQuery);
+  return products;
+});
+
+export const getFeaturedProducts = cache(async () => {
+  const products: Product[] = await client.fetch(featuredProductsQuery);
+  return products;
+});
+
+export const getNewestArrivals = cache(async () => {
+  const products: Product[] = await client.fetch(newestArrivalQuery);
+  return products;
+});
+
+export const getProducts = cache(
+  async ({
+    page,
+    limit = 20,
+    categories = [],
+    sort,
+    query,
+  }: {
+    page: number;
+    limit?: number;
+    categories?: string[];
+    sort?: string;
+    query?: string;
+  }) => {
+    const offset = (page - 1) * limit;
+
+    const products = await client.fetch(productsQuery, {
+      offset,
+      limit,
+      categories,
+      sort,
+      query: query ?? "",
+    } as Record<string, unknown>); //find a better fix for this.
+
+    console.log(products);
+
+    return products;
+  },
+);
+
+export const getTotalProductsCount = cache(async () => {
+  const total = await client.fetch(
+    `count(*[_type == "product" && status == "active"])`,
+  );
+
+  return total as number;
+});
+
+export const getSingleProduct = cache(async (slug: string) => {
+  const product: Product = await client.fetch(singleProductQuery, {
+    slug,
+  });
+
+  return product;
+});
+
+export const getSimilarProductsFromCategory = cache(
+  async (categoryId: string, productId: string) => {
+    const products: Product[] = await client.fetch(relatedProductsQuery, {
+      categoryId: categoryId,
+      productId: productId,
+    });
+    return products;
+  },
+);
+
+export const getCategories = cache(async () => {
+  return (await client.fetch(categoriesQuery)) as Category[];
+});
+</file>
+
+</files>

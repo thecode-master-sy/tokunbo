@@ -9,6 +9,10 @@ import { ChevronDown, LockIcon } from "@/app/checkout/_sections/checkout-icons";
 import { useCart } from "@/providers/cart-provider";
 import { Input } from "@/components/ui/input";
 import DeliveryForm from "./delivery-form";
+import { initializePaymentAction } from "../actions";
+import { Loader2 } from "lucide-react";
+import { toast } from "sonner";
+import { showErrorToast } from "@/components/showError";
 
 const TAX_RATE = 0.002;
 const TIP_AMOUNT = 500;
@@ -21,24 +25,22 @@ const fmt = (n: number) =>
   });
 
 export type CheckoutForm = {
-  email: string;
-  firstName: string;
-  lastName: string;
+  customerEmail: string;
+  customerFirstName: string;
+  customerLastName: string;
   address: string;
   phone: string;
   city: string;
-  zip: string;
   state: string;
 };
 
 const defaultFormValue = {
-  email: "",
-  firstName: "",
-  lastName: "",
+  customerEmail: "",
+  customerFirstName: "",
+  customerLastName: "",
   address: "",
   phone: "",
   city: "",
-  zip: "",
   state: "",
 };
 
@@ -77,6 +79,42 @@ export default function CheckoutClient() {
     } else {
       setDiscount(0);
       setDiscountMsg({ ok: false, text: "Invalid discount code." });
+    }
+  };
+
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    setPaying(true);
+
+    const input = {
+      ...checkoutForm,
+      items: CART_ITEMS.map((item) => ({
+        sanityProductId: item.id,
+        sanityProductName: item.name,
+        quantity: item.quantity,
+        unitPrice: item.price,
+        imageUrl: item.image,
+      })),
+      country: "Nigeria",
+      discountAmount: discount,
+    };
+
+    console.log(input);
+
+    const response = await initializePaymentAction(input);
+
+    if (response.error) {
+      setPaying(false);
+      console.log(response.errorType);
+      showErrorToast({ errorDetail: response.message });
+    }
+
+    if (response.data) {
+      setPaying(false);
+      if (response.data.authorizationUrl) {
+        window.location.href = response.data.authorizationUrl;
+      }
     }
   };
 
@@ -131,14 +169,24 @@ export default function CheckoutClient() {
 
       <div className="mx-auto grid min-h-screen grid-cols-1 lg:grid-cols-[minmax(min-content,calc(50%+5rem))_1fr]">
         <main className="flex lg:justify-end justify-center">
-          <div className="w-full px-3.5 py-11 lg:px-9 sm:max-w-[580px]">
+          <form
+            className="w-full px-3.5 py-11 lg:px-9 sm:max-w-[580px]"
+            onSubmit={(e) => handleFormSubmit(e)}
+          >
             <section className="mb-9">
               <div className="space-y-4">
                 <h3 className="text-[20px] font-medium">Contact</h3>
 
                 <Input
+                  value={checkoutForm.customerEmail}
                   placeholder="Email"
                   className="w-full px-3 py-3.5 h-auto bg-white border text-sm"
+                  onChange={(e) =>
+                    setCheckoutForm((prev) => ({
+                      ...prev,
+                      customerEmail: e.target.value,
+                    }))
+                  }
                 />
               </div>
               <label className="mt-4 flex items-center gap-2 text-sm text-[#444]">
@@ -210,12 +258,15 @@ export default function CheckoutClient() {
             </section>
 
             <button
-              onClick={() => {}}
               disabled={paying}
+              type="submit"
               className="mb-6 flex w-full items-center justify-center rounded-[10px] bg-hero p-[17px] text-[16px] font-semibold text-white transition-opacity disabled:cursor-not-allowed disabled:opacity-70"
             >
               {paying ? (
-                <span className="h-[22px] w-[22px] animate-spin rounded-full border-[2.5px] border-white/30 border-t-white" />
+                <>
+                  <Loader2 size={18} className=" animate-spin mr-2" />{" "}
+                  Processing...
+                </>
               ) : (
                 "Pay now"
               )}
@@ -232,7 +283,7 @@ export default function CheckoutClient() {
                 </a>
               ))}
             </div>
-          </div>
+          </form>
         </main>
 
         <aside className="hidden border-l border-[#ddd8d0] bg-[#eeeae4]  lg:block">
