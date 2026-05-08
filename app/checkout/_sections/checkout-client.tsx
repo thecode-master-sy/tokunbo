@@ -111,7 +111,6 @@ export default function CheckoutClient() {
     }
 
     if (response.data) {
-      setPaying(false);
       if (response.data.authorizationUrl) {
         window.location.href = response.data.authorizationUrl;
       }

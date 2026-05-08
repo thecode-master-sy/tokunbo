@@ -50,7 +50,7 @@ const initializePaymentUseCase = async (
         amount: Math.round(Number(total) * 100),
         reference: orderNumber,
         currency: "NGN",
-        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/verify?reference=${orderNumber}`,
+        callback_url: `${process.env.NEXT_PUBLIC_APP_URL}/checkout/verify`,
         metadata: { orderNumber },
       }),
   )(await createOrderOrError);
