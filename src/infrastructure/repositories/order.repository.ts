@@ -7,9 +7,10 @@ import {
 import { IOrderRepository } from "@/src/application/repositories/order.repository.interface";
 import { NewOrder } from "@/src/entities/models/order";
 import db from "@/db";
+import { eq } from "drizzle-orm";
 import { orderTable } from "@/db/schema";
 import { PostgresError } from "postgres";
-import { Order } from "@/src/entities/models/order";
+import { Order, UpdateOrderInput } from "@/src/entities/models/order";
 
 const makeOrderRepository = (): IOrderRepository => {
   const createOrder = async (
@@ -24,7 +25,33 @@ const makeOrderRepository = (): IOrderRepository => {
     }
   };
 
-  return { createOrder };
+  const updateOrder = async (
+    reference: string,
+    input: UpdateOrderInput,
+  ): Promise<Either<ApplicationError, Order>> => {
+    try {
+      const [updated] = await db
+        .update(orderTable)
+        .set({ ...input, updatedAt: new Date() })
+        .where(eq(orderTable.paymentReference, reference))
+        .returning();
+
+      if (!updated) {
+        return left(
+          makeError(
+            "NotFoundError",
+            `Order with reference ${reference} not found`,
+          ),
+        );
+      }
+
+      return right(updated);
+    } catch (error) {
+      return left(mapPostgrestErrorToApplicationError(error as PostgresError));
+    }
+  };
+
+  return { createOrder, updateOrder };
 };
 
 export default makeOrderRepository;
