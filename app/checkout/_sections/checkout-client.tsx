@@ -66,6 +66,7 @@ export default function CheckoutClient() {
   const total = subtotal + tax + tipAmt - discount;
   const totalItemsFn = useCart((state) => state.totalItems);
   const totalItems = totalItemsFn();
+  const clearCart = useCart((state) => state.clearCart)
 
   const applyDiscount = () => {
     if (!discountCode.trim()) {
@@ -112,6 +113,7 @@ export default function CheckoutClient() {
 
     if (response.data) {
       if (response.data.authorizationUrl) {
+        clearCart()
         window.location.href = response.data.authorizationUrl;
       }
     }

@@ -7,6 +7,7 @@ import { useCart } from "@/providers/cart-provider";
 import { urlFor } from "@/lib/sanity/image-utility";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
+import { showItemAddedToCart } from "@/components/show-item-added-to-cart";
 
 export default function ProductCard({ product }: { product: Product }) {
   const addItem = useCart((state) => state.addItem);
@@ -22,14 +23,7 @@ export default function ProductCard({ product }: { product: Product }) {
             image: urlFor(product.images[0]).width(600).url(),
             quantity: 1,
           });
-          toast.success("Item added to cart", {
-            position: "bottom-center",
-            action: (
-              <Button className="ml-auto bg-white text-black">
-                <Link href="/cart">View cart</Link>
-              </Button>
-            ),
-          });
+          showItemAddedToCart("Item added to cart");
         }}
         className="absolute z- top-4 right-4 text-caps bg-category cursor-pointer w-8 h-8 flex justify-center items-center rounded-full"
       >
