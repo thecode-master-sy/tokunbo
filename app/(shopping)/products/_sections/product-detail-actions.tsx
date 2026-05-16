@@ -40,7 +40,7 @@ export default function ProductDetailActions({
   const isOutOfStock = !selectedVariant || selectedVariant.stock < 1;
 
   return (
-    <div className="flex flex-col border-b">
+    <div className="flex flex-col">
       <div className="grid gap-2 py-7">
         {/* Size selector */}
         {sizes.length > 0 && (
@@ -149,9 +149,9 @@ export default function ProductDetailActions({
           });
         }}
         size="lg"
-        className="w-full bg-hero text-foreground cursor-pointer rounded-full h-12 uppercase font-medium -tracking-[0.01em] disabled:cursor-not-allowed disabled:opacity-50"
+        className="w-full bg-hero mt-7 text-foreground cursor-pointer rounded-full h-12 uppercase font-medium -tracking-[0.01em] disabled:cursor-not-allowed disabled:opacity-50"
       >
-        {isOutOfStock ? "Out of stock" : "Add to cart"}
+        {isOutOfStock ? "Notify me" : "Add to cart"}
       </Button>
     </div>
   );
