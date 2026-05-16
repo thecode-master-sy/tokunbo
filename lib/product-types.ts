@@ -100,5 +100,6 @@ export type Product = {
   category: {
     _ref: string;
     _type: string;
+    name: string;
   };
 };

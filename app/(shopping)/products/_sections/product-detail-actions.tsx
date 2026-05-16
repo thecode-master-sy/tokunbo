@@ -46,9 +46,13 @@ export default function ProductDetailActions({
         <div className="space-y-3">
           <div className="flex items-center justify-between">
             <p className="font-medium">Size</p>
-            {selectedSize && (
-              <p className="text-sm text-gray-500">{selectedSize}</p>
-            )}
+
+            <div className="flex">
+              <Button variant="link">Size guide</Button>
+              {selectedSize && (
+                <p className="text-sm text-gray-500">{selectedSize}</p>
+              )}
+            </div>
           </div>
 
           <div className="flex flex-wrap gap-3">
@@ -63,7 +67,7 @@ export default function ProductDetailActions({
                   className={`min-w-16 rounded-full border px-4 py-1 text-sm transition ${
                     isActive
                       ? " bg-banner"
-                      : "border-gray-300 bg-category text-black hover:border-hero"
+                      : "border-gray-300 bg-category hover:border-hero"
                   }`}
                 >
                   {size}
