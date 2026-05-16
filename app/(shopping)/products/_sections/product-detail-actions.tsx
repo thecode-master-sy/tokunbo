@@ -40,47 +40,55 @@ export default function ProductDetailActions({
   const isOutOfStock = !selectedVariant || selectedVariant.stock < 1;
 
   return (
-    <div className="flex flex-col gap-8 border-b">
-      {/* Size selector */}
-      {sizes.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex items-center justify-between">
-            <p className="font-medium">Size</p>
+    <div className="flex flex-col border-b">
+      <div className="grid gap-2 py-7">
+        {/* Size selector */}
+        {sizes.length > 0 && (
+          <div className="space-y-3">
+            <div className="flex items-center justify-between">
+              <p className="font-medium">Size</p>
 
-            <div className="flex">
-              <Button variant="link">Size guide</Button>
-              {selectedSize && (
-                <p className="text-sm text-gray-500">{selectedSize}</p>
-              )}
+              <div className="flex">
+                {selectedSize && (
+                  <p className="text-sm text-gray-500">{selectedSize}</p>
+                )}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-3">
+              {sizes.map((size) => {
+                const isActive = selectedSize === size;
+
+                return (
+                  <button
+                    key={size}
+                    type="button"
+                    onClick={() => setSelectedSize(size)}
+                    className={`min-w-16 rounded-full border px-4 py-1 text-sm transition ${
+                      isActive
+                        ? " bg-banner"
+                        : "border-gray-300 bg-category hover:border-hero"
+                    }`}
+                  >
+                    {size}
+                  </button>
+                );
+              })}
             </div>
           </div>
+        )}
 
-          <div className="flex flex-wrap gap-3">
-            {sizes.map((size) => {
-              const isActive = selectedSize === size;
-
-              return (
-                <button
-                  key={size}
-                  type="button"
-                  onClick={() => setSelectedSize(size)}
-                  className={`min-w-16 rounded-full border px-4 py-1 text-sm transition ${
-                    isActive
-                      ? " bg-banner"
-                      : "border-gray-300 bg-category hover:border-hero"
-                  }`}
-                >
-                  {size}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
+        <Button
+          variant="link"
+          className="cursor-pointer text-underline text-hero ml-auto"
+        >
+          Size guide
+        </Button>
+      </div>
 
       {/* Knob selector */}
       {knobTypes.length > 0 && (
-        <div className="space-y-3 border-t pt-7">
+        <div className="space-y-3 border-t py-7">
           <div className="flex items-center justify-between">
             <p className="font-medium">Knob type</p>
             {selectedKnobType && (
@@ -114,7 +122,7 @@ export default function ProductDetailActions({
       )}
 
       {/* Price from selected variant */}
-      <div className="border-t border-gray-200 pt-6">
+      <div className="border-t border-gray-200 py-7">
         <p className="text-sm text-gray-500">Price</p>
         <p className="mt-1 text-2xl font-semibold">₦{selectedPrice}</p>
 

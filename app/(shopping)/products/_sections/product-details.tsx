@@ -38,32 +38,34 @@ export default function ProductDetails({ product }: { product: Product }) {
           </div>*/}
           <ProductImageGallery product={product} />
         </div>
-        <div className="w-full md:flex flex-col items-center  px-4 lg:px-20 md:px-12 md:py-12">
-          <div className="space-y-6 md:max-w-[400px]">
-            <div>
-              <div className=" uppercase md:flex gap-1 items-center font-mono hidden ">
-                <Link
-                  href="/"
-                  className="bg-category px-3 rounded-full py-1 text-[11px]"
-                >
-                  Home
-                </Link>{" "}
-                <span>{"/"}</span>
-                <span className="bg-category px-3 rounded-full py-1 text-[11px]">
-                  {product.name}
-                </span>
+        <div className="w-full md:flex flex-col items-center  px-4 lg:px-20 md:px-12">
+          <div className="md:max-w-[400px]">
+            <div className="space-y-2 py-7">
+              <div>
+                <div className=" uppercase md:flex gap-1 items-center font-mono hidden ">
+                  <Link
+                    href="/"
+                    className="bg-category px-3 rounded-full py-1 text-[11px]"
+                  >
+                    Home
+                  </Link>{" "}
+                  <span>{"/"}</span>
+                  <span className="bg-category px-3 rounded-full py-1 text-[11px]">
+                    {product.name}
+                  </span>
+                </div>
+                <h1 className="text-h2 font-bold mt-2">{product.name}</h1>
               </div>
-              <h1 className="text-h2 font-bold mt-2">{product.name}</h1>
-            </div>
 
-            <div className="flex items-center gap-1">
-              {/* Star icons would go here */}
-              <span className="text-xl">★★★★★</span>
-            </div>
+              <div className="flex items-center gap-1">
+                {/* Star icons would go here */}
+                <span className="text-xl">★★★★★</span>
+              </div>
 
-            <p className="text-gray-700 leading-relaxed md:max-w-[45ch]">
-              {product.description}
-            </p>
+              <p className="text-gray-700 leading-relaxed md:max-w-[45ch]">
+                {product.description}
+              </p>
+            </div>
 
             {/* Spacer to demonstrate the scroll/sticky effect */}
             <div className="border-y border-border py-10">
