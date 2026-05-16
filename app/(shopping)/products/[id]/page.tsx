@@ -15,7 +15,7 @@ export default async function Product({
     product._id,
   );
   return (
-    <div className="px-4 lg:px-6">
+    <div>
       <ProductDetails product={product} />
       <RecommendedProducts recommendedProducts={recommendedProducts} />
     </div>

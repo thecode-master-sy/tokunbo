@@ -26,7 +26,8 @@ export default function Cart() {
       <SheetTrigger asChild>
         <button className="flex gap-2 items-center cursor-pointer">
           <Handbag className="w-5 h-5 cursor-pointer" />
-          <span>Cart</span> {totalItems > 0 && <span>({totalItems})</span>}
+          <span className="hidden md:inline-block">Cart</span>{" "}
+          {totalItems > 0 && <span>({totalItems})</span>}
         </button>
       </SheetTrigger>
       <SheetContent className=" h-svh flex gap-4 z-60" showCloseButton={false}>

@@ -12,7 +12,7 @@ const items = [
 
 export default function MarqueeBanner() {
   return (
-    <div className="overflow-hidden bg-banner py-2">
+    <div className="overflow-hidden bg-banner h-7 flex items-center">
       <motion.div
         className="flex w-max items-center gap-10 px-4 text-center text-caps font-light"
         animate={{ x: ["0%", "-50%"] }}

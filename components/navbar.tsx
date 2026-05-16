@@ -40,8 +40,8 @@ export default function Navbar() {
           ) : (
             <div className="md:absolute left-1/2 top-1/2 md:-translate-x-1/2 md:-translate-y-1/2">
               <Link href="/">
-                <span className="tracking-[-0.03em] uppercase text-[18px] font-bold opacity-70">
-                  tokunbo
+                <span className="tracking-[-0.03em] uppercase text-[16px] md:text-[18px] font-bold opacity-70">
+                  <span>blossom</span> <span>tokunbo</span>
                 </span>
               </Link>
             </div>
@@ -55,7 +55,7 @@ export default function Navbar() {
                 className="flex gap-2 items-center"
               >
                 <Search className="w-5 h-5 cursor-pointer" />
-                <span>Search</span>
+                <span className="hidden md:inline-block">Search</span>
               </button>
             )}
 
@@ -76,7 +76,7 @@ export default function Navbar() {
             <div className="flex justify-between items-center mb-8">
               <Link href="/">
                 <span className="tracking-[-0.03em] uppercase text-[18px] font-bold opacity-70">
-                  tokunbo
+                  blossom tokunbo
                 </span>
               </Link>
               <button

@@ -10,18 +10,18 @@ export default function QuantitySelector({
   setQuantity: React.Dispatch<React.SetStateAction<number>>;
 }) {
   return (
-    <div className="space-y-2">
+    <div className="py-4 flex items-center w-full justify-between border-y">
       <div>
         <span>Quanity</span>
       </div>
-      <div className="flex items-center max-w-[150px] justify-between border border-gray-400  px-4 py-3">
+      <div className="flex items-center max-w-[150px] justify-between px-4 py-3 gap-4">
         {/* Decrease Button */}
         <button
           onClick={() => setQuantity(Math.max(1, quantity - 1))}
           className="text-gray-600 hover:text-black transition-colors"
           aria-label="Decrease quantity"
         >
-          <Minus size={20} strokeWidth={1.5} />
+          <Minus size={16} strokeWidth={1.5} />
         </button>
 
         {/* Number Display */}
@@ -33,7 +33,7 @@ export default function QuantitySelector({
           className="text-gray-600 hover:text-black transition-colors"
           aria-label="Increase quantity"
         >
-          <Plus size={20} strokeWidth={1.5} />
+          <Plus size={16} strokeWidth={1.5} />
         </button>
       </div>
     </div>

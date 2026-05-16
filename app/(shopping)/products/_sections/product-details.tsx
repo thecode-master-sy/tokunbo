@@ -5,6 +5,7 @@ import QuantitySelector from "@/components/quantity-selector";
 import { Product } from "@/lib/product-types";
 import { urlFor } from "@/lib/sanity/image-utility";
 import ProductDetailActions from "./product-detail-actions";
+import ProductImageGallery from "./product-image-gallery";
 
 export default function ProductDetails({ product }: { product: Product }) {
   return (
@@ -22,19 +23,22 @@ export default function ProductDetails({ product }: { product: Product }) {
         </span>
       </div>
       <div className="flex flex-col md:flex-row">
-        <div className="md:sticky self-start md:top-23 w-full">
-          <div className="w-full">
+        <div className="md:sticky self-start md:top-20 w-full">
+          {/*<div className="w-full">
+
+            <div></div>
             <Image
               src={urlFor(product.images[0]).width(600).url()}
-              className="w-full aspect-[1/1.1] md:min-h-screen"
+              className="w-full aspect-[1/1.1]  md:min-h-[calc(100vh_-_56px_-_28px)]"
               alt="product image"
               width={800}
               height={880}
               priority={true}
             />
-          </div>
+          </div>*/}
+          <ProductImageGallery product={product} />
         </div>
-        <div className="w-full md:flex flex-col items-center  lg:px-20 md:px-12 md:py-12">
+        <div className="w-full md:flex flex-col items-center  px-4 lg:px-20 md:px-12 md:py-12">
           <div className="space-y-6 md:max-w-[400px]">
             <div>
               <div className=" uppercase md:flex gap-1 items-center font-mono hidden ">
@@ -50,7 +54,6 @@ export default function ProductDetails({ product }: { product: Product }) {
                 </span>
               </div>
               <h1 className="text-h2 font-bold mt-2">{product.name}</h1>
-              <p className="text-h3 mt-4">{`₦${product.price}`}</p>
             </div>
 
             <div className="flex items-center gap-1">
@@ -63,7 +66,7 @@ export default function ProductDetails({ product }: { product: Product }) {
             </p>
 
             {/* Spacer to demonstrate the scroll/sticky effect */}
-            <div className="border-t border-gray-200 pt-10">
+            <div className="border-y border-border py-10">
               <h3 className="font-bold">Product Details & Features</h3>
               <ul className="list-disc ml-5 mt-4 space-y-2">
                 {product.productDetails?.map((item, index) => (
