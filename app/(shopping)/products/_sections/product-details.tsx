@@ -10,7 +10,7 @@ import ProductImageGallery from "./product-image-gallery";
 export default function ProductDetails({ product }: { product: Product }) {
   return (
     <div>
-      <div className=" uppercase  gap-1 items-center font-mono md:hidden py-4">
+      <div className=" uppercase  gap-1 items-center font-mono md:hidden py-4 px-4">
         <Link
           href="/"
           className="bg-category px-3 rounded-full py-1 text-[11px]"

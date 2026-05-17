@@ -21,9 +21,9 @@ export default function CartItemComponent({
   const removeItem = useCart((state) => state.removeItem);
 
   return (
-    <div className="p-4 bg-category flex gap-4 items-center">
+    <div className="p-3 rounded-sm bg-category flex gap-4 items-center">
       {/* 1. Optimized Image Container */}
-      <div className="relative w-[100px] aspect-square shrink-0 overflow-hidden rounded-sm">
+      <div className="relative w-[110px] aspect-square shrink-0 overflow-hidden rounded-sm">
         <Image
           src={image}
           alt={name}
@@ -40,21 +40,28 @@ export default function CartItemComponent({
           <p className="opacity-80">₦{(price * quantity).toLocaleString()}</p>
         </div>
 
-        <div className="flex justify-between">
-          <div className="flex items-center gap-1">
-            <button onClick={() => decreaseQty(id)} disabled={quantity <= 1}>
+        <div className="flex gap-2">
+          <div className="flex w-full items-center bg-banner rounded-sm gap-1">
+            <button
+              className="p-2 flex-1"
+              onClick={() => decreaseQty(id)}
+              disabled={quantity <= 1}
+            >
               <Minus className="w-3 h-3" />
             </button>
 
             <span className="w-4 text-center">{quantity}</span>
 
-            <button onClick={() => increaseQty(id)}>
+            <button className="p-2 flex-1" onClick={() => increaseQty(id)}>
               <Plus className="w-3 h-3" />
             </button>
           </div>
 
-          <button onClick={() => removeItem(id)}>
-            <X className="w-4 h-4" />
+          <button
+            className="w-full bg-banner flex justify-center items-center py-1 rounded-sm"
+            onClick={() => removeItem(id)}
+          >
+            <span>Remove</span>
           </button>
         </div>
       </div>

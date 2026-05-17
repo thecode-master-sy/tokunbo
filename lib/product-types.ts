@@ -61,10 +61,10 @@ export type ProductImage = {
 
 export type ProductVariant = {
   _key: string;
+  variantId: string;
   size: string;
-  knobType: "black" | "stainless" | string;
+  knobType: "black" | "stainless";
   price: number;
-  sku: string;
   stock: number;
 };
 

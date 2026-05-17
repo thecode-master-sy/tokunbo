@@ -15,7 +15,7 @@ export default function Navbar() {
   const [showSearch, setShowSearch] = useState(false);
 
   return (
-    <header className="border-b border-gray-200 bg-background sticky top-0 z-60">
+    <header className="border-b border-gray-200 bg-background sticky top-0 z-50">
       <MarqueeBanner />
 
       <nav className="px-4 lg:px-6 relative">

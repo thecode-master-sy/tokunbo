@@ -6,6 +6,7 @@ import { useCart } from "@/providers/cart-provider";
 import { Product } from "@/lib/product-types";
 import { urlFor } from "@/lib/sanity/image-utility";
 import { useMemo, useState } from "react";
+import SizeGuideModal from "./size-guide-modal";
 
 export default function ProductDetailActions({
   product,
@@ -78,12 +79,7 @@ export default function ProductDetailActions({
           </div>
         )}
 
-        <Button
-          variant="link"
-          className="cursor-pointer text-underline text-hero ml-auto"
-        >
-          Size guide
-        </Button>
+        <SizeGuideModal />
       </div>
 
       {/* Knob selector */}
@@ -141,9 +137,9 @@ export default function ProductDetailActions({
           if (!selectedVariant) return;
 
           addItem({
-            id: product._id,
-            name: product.name,
-            price: selectedPrice,
+            id: selectedVariant.variantId,
+            name: `${product.name} (${selectedVariant.size}, ${selectedVariant.knobType} knob)`,
+            price: selectedVariant.price,
             image: urlFor(product.images[0]).width(600).url(),
             quantity,
           });

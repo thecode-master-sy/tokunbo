@@ -9,7 +9,7 @@ export default function CartBody() {
   const items = useCart((state) => state.items);
   const totalPrice = useCart((state) => state.totalPrice);
   return (
-    <div className="py-10 w-full relative grid md:grid-cols-[1.5fr_1fr] md:justify-between gap-y-4 gap-x-16 px-4">
+    <div className="py-10 w-full relative grid md:grid-cols-[1.1fr_1fr] md:justify-between gap-y-4 gap-x-16 px-4">
       <div className="w-full ">
         {items.length == 0 ? (
           <div>
